@@ -17,10 +17,9 @@ int main () {
     test_network.add_source("U1", 5, "in", "gnd");
     test_network.add_resistor("R1", 10, "in", "out");
     test_network.add_resistor("R2", 10, "out", "gnd");
+    test_network.compute();
     test_network.print();
-    test_network.compute_cycles();
     test_network.print_cycles();
-    test_network.compute_equations();
     test_network.print_equations();
 
 /*

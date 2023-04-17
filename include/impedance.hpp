@@ -17,6 +17,7 @@ public:
     void set_rectangular (double resistance, double reactance);
     void set_polar (double modulus, double argument);
 
+    std::complex<double> get_impedance () const;
     double get_modulus () const;
     double get_argument () const;
     double get_resistance () const;

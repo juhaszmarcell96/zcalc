@@ -30,6 +30,8 @@ struct Edge {
     edge_type type;
     std::shared_ptr<Impedance> impedance_ptr = nullptr;
     std::shared_ptr<Source> source_ptr = nullptr;
+    std::size_t voltage_index = 0; /* index of its voltage variable in the matrix's row */
+    std::size_t current_index = 0; /* index of its current variable in the matrix's row */
 };
 
 enum class cycle_unit_type {
@@ -54,8 +56,10 @@ private:
     std::vector<Edge> m_edges;
 
     std::vector<Cycle> m_cycles;
-    std::vector<std::vector<std::string>> m_matrix;
+    std::vector<std::vector<std::complex<double>>> m_matrix;
 
+    void compute_cycles ();
+    void compute_equations ();
     void node_cycle (std::size_t node_index, Cycle cycle);
     bool are_cycles_same (Cycle cycle_0, Cycle cycle_1);
 
@@ -69,10 +73,9 @@ public:
     void add_inductor (const std::string& designator, double inductance, const std::string& node_0_name, const std::string& node_1_name);
     void add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_name, const std::string& node_1_name);
     void add_source (const std::string& designator, double voltage, const std::string& node_0_name, const std::string& node_1_name);
+    void compute ();
     void print ();
-    void compute_cycles ();
     void print_cycles ();
-    void compute_equations ();
     void print_equations ();
 };
 

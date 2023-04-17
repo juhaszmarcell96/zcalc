@@ -16,6 +16,7 @@ void Impedance::set_polar (double modulus, double argument) {
     m_value = std::polar(modulus, argument);
 }
 
+std::complex<double> Impedance::get_impedance () const { return m_value; }
 double Impedance::get_modulus () const { return std::abs(m_value); }
 double Impedance::get_argument () const { return std::arg(m_value); }
 double Impedance::get_resistance () const { return std::real(m_value); }

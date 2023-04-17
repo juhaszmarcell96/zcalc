@@ -5,6 +5,8 @@
 #include <include/resistor.hpp>
 
 #include <algorithm>
+#include <iostream>
+#include <iomanip>
 
 namespace zcalc {
 
@@ -169,6 +171,10 @@ void Network::add_source (const std::string& designator, double voltage, const s
             std::cout << "ERROR : edge already exists" << std::endl;
             return;
         }
+        if (edge.type == edge_type::source) {
+            std::cout << "ERROR : only one source can be added" << std::endl;
+            return;
+        }
     }
     Edge e;
     e.designator = designator;
@@ -193,6 +199,50 @@ void Network::add_source (const std::string& designator, double voltage, const s
     m_edges.push_back(std::move(e));
 }
 
+void Network::compute () {
+    bool source_found = false;
+    for (const Edge& edge : m_edges) {
+        if (edge.type == edge_type::source) {
+            source_found = true;
+            break;
+        }
+    }
+    if (!source_found) {
+        std::cout << "ERROR : source not found" << std::endl;
+        return;
+    }
+    /* assign the matrix indexes and allocate the matrix */
+    /* source voltage has the last index */
+    std::size_t index = 0;
+    for (Edge& edge : m_edges) {
+        if (edge.type == edge_type::impedance) {
+            edge.current_index = index;
+            edge.voltage_index = index + m_edges.size();
+            ++index;
+        }
+        else {
+            edge.current_index = m_edges.size() - 1;
+            edge.voltage_index = m_edges.size() * 2 - 1;
+
+        }
+    }
+    compute_cycles();
+    std::vector<std::complex<double>> row (m_edges.size() * 2, std::complex<double>{0.0, 0.0});
+    /* one equation for every node */
+    for (size_t i = 0; i < m_nodes.size(); ++i) {
+        m_matrix.push_back(row);
+    }
+    /* one equation for every loop */
+    for (size_t i = 0; i < m_cycles.size(); ++i) {
+        m_matrix.push_back(row);
+    }
+    /* one equation for impedance */
+    for (size_t i = 0; i < m_edges.size() - 1; ++i) {
+        m_matrix.push_back(row);
+    }
+    compute_equations();
+}
+
 void Network::print () {
     std::cout << "frequency : " << m_frequency << std::endl;
     std::cout << "nodes" << std::endl;
@@ -204,6 +254,7 @@ void Network::print () {
         std::cout << "    " << m_nodes[edge.node_0_index].name << " - " << edge.designator << " - " << m_nodes[edge.node_1_index].name << std::endl;
     }
 }
+
 void Network::compute_cycles () {
     m_cycles.clear();
     for (std::size_t i = 0; i < m_nodes.size(); ++i) {
@@ -235,44 +286,42 @@ void Network::print_cycles () {
     }
 }
 void Network::compute_equations () {
-    std::vector<std::string> row;
-    for (Edge& edge : m_edges) {
-        row.push_back("i{" + edge.designator + "}");
-    }
-    for (Edge& edge : m_edges) {
-        row.push_back("u{" + edge.designator + "}");
-    }
-    m_matrix.push_back(row);
+    std::size_t row_index = 0;
+    /* Kirchhoff's current law */
     for (std::size_t i = 0; i < m_nodes.size(); ++i) {
-        row.clear();
         for (const Edge& edge : m_edges) {
-            if (edge.node_0_index == i) { /* outgoing current */
-                row.push_back(" -1  ");
+            if (edge.node_0_index == i) {
+                /* outgoing current */
+                m_matrix[row_index][edge.current_index] = std::complex<double>{-1.0, 0.0};
             }
-            else if (edge.node_1_index == i) { /* incoming current */
-                row.push_back("  1  ");
+            else if (edge.node_1_index == i) {
+                /* incoming current */
+                m_matrix[row_index][edge.current_index] = std::complex<double>{1.0, 0.0};
             }
             else {
-                row.push_back("  0  ");
+                /* is not connected to the node */
+                m_matrix[row_index][edge.current_index] = std::complex<double>{0.0, 0.0};
             }
+            /* voltage coefficients are 0 when writing the equations for the current law */
+            m_matrix[row_index][edge.voltage_index] = std::complex<double>{0.0, 0.0};
         }
-        for (const Edge& edge : m_edges) {
-            row.push_back("  0  ");
-        }
-        m_matrix.push_back(row);
+        ++row_index;
     }
-    for (std::size_t i = 0; i < m_edges.size(); ++i) {
-        for (std::string& val : row) {
-            val = "  0  ";
+
+    /* equation for every impedance */
+    for (const Edge& edge : m_edges) {
+        if (edge.type == edge_type::impedance) {
+            m_matrix[row_index][edge.current_index] = -edge.impedance_ptr->get_impedance();;
+            m_matrix[row_index][edge.voltage_index] = std::complex<double>{1.0, 0.0};
         }
-        row[i + row.size() / 2] = "  1  ";
-        row[i] = "  " + m_edges[i].designator + " ";
-        m_matrix.push_back(row);
+        else {
+            continue;
+        }
+        ++row_index;
     }
+
+    /* Kirchhoff's voltage law */
     for (const Cycle& cycle : m_cycles) {
-        for (std::string& val : row) {
-            val = "  0  ";
-        }
         /* every cycle starts with a node */
         int from_node_id = 0;
         for (const CycleUnit& unit : cycle) {
@@ -285,21 +334,24 @@ void Network::compute_equations () {
             }
             else {
                 Edge* edge_ptr = unit.edge_ptr;
-                for (size_t i = 0; i < m_edges.size(); ++i) {
-                    if (edge_ptr->designator.compare(m_edges[i].designator) == 0) {
-                        if (edge_ptr->node_0_index == from_node_id) row[i] = "  1  ";
-                        else row[i] = " -1  ";
-                    }
+                if (edge_ptr->type == edge_type::impedance) {
+                    if (edge_ptr->node_0_index == from_node_id) m_matrix[row_index][edge_ptr->voltage_index] = std::complex<double>{1.0, 0.0};
+                    else m_matrix[row_index][edge_ptr->voltage_index] = std::complex<double>{-1.0, 0.0};
+                }
+                else {
+                    if (edge_ptr->node_0_index == from_node_id) m_matrix[row_index][edge_ptr->voltage_index] = edge_ptr->source_ptr->get_voltage();
+                    else m_matrix[row_index][edge_ptr->voltage_index] = -edge_ptr->source_ptr->get_voltage();
                 }
             }
         }
-        m_matrix.push_back(row);
+        ++row_index;
     }
 }
 void Network::print_equations () {
-    for (const std::vector<std::string>& row : m_matrix) {
-        for (const std::string& val : row) {
-            std::cout << val << " ";
+    std::cout << std::fixed << std::setprecision(2);
+    for (const std::vector<std::complex<double>>& row : m_matrix) {
+        for (const std::complex<double>& val : row) {
+            std::cout << val << "\t";
         }
         std::cout << std::endl;
     }

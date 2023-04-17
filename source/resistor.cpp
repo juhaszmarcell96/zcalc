@@ -3,8 +3,7 @@
 namespace zcalc {
 
 Resistor::Resistor(double resistance) {
-    m_modulus = resistance;
-    m_argument = 0;
+    m_value = std::complex<double> {resistance, 0};
 }
 
 } /* namespace zcalc */

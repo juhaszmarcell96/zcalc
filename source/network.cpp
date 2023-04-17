@@ -4,207 +4,208 @@
 #include <include/inductor.hpp>
 #include <include/resistor.hpp>
 
+#include <algorithm>
+
 namespace zcalc {
 
-Network::Network(double frequency, const std::string& ref_node) : m_frequency(frequency), m_ref_node(ref_node) {}
-
-void Network::add_resistor (double resistance, const std::string& endpoint_0, const std::string& endpoint_1) {
-    std::shared_ptr<Impedance> R = std::make_shared<Resistor>(resistance);
-    R->connect(endpoint_0, endpoint_1);
-    m_components.push_back(std::move(R));
-}
-
-void Network::add_capacitor (double capacitance, const std::string& endpoint_0, const std::string& endpoint_1) {
-    std::shared_ptr<Impedance> C = std::make_shared<Capacitor>(capacitance, m_frequency);
-    C->connect(endpoint_0, endpoint_1);
-    m_components.push_back(std::move(C));
-}
-
-void Network::add_inductor (double inductance, const std::string& endpoint_0, const std::string& endpoint_1) {
-    std::shared_ptr<Impedance> L = std::make_shared<Inductor>(inductance, m_frequency);
-    L->connect(endpoint_0, endpoint_1);
-    m_components.push_back(std::move(L));
-}
-
-void Network::clear () { m_components.clear(); }
-
-Impedance Network::calculate_impedance (const std::string& input_node, const std::string& output_node, const Impedance& termination) {
-    std::vector<std::shared_ptr<Impedance>> components = m_components;
-    std::shared_ptr<Impedance> z_term = std::make_shared<Impedance>(termination);
-    z_term->connect(output_node, m_ref_node);
-    components.push_back(z_term);
-    while (true) {
-        bool something_changed = false;
-        while (true) {
-            /* do parallel stuff iterative until nothing changes in an iteration */
-            /* find 2 parralel elements, meaning that their two einpoints are the same */
-            /* calculate the impedance */
-            std::size_t component_id_0 = 0;
-            std::size_t component_id_1 = 0;
-            std::string endpoint_0;
-            std::string endpoint_1;
-            /* do stuff */
-            for (std::size_t i = 0; i < components.size(); ++i) {
-                for (std::size_t e = i + 1; e < components.size(); ++e) {
-                    if ((components[i]->get_endpoint_0().compare(components[e]->get_endpoint_0()) == 0) &&
-                        (components[i]->get_endpoint_1().compare(components[e]->get_endpoint_1()) == 0))
-                    {
-                        endpoint_0 = components[i]->get_endpoint_0();
-                        endpoint_1 = components[i]->get_endpoint_1();
-                        component_id_0 = i;
-                        component_id_1 = e;
-                    }
-                    else if ((components[i]->get_endpoint_0().compare(components[e]->get_endpoint_1()) == 0) &&
-                                (components[i]->get_endpoint_1().compare(components[e]->get_endpoint_0()) == 0))
-                    {
-                        endpoint_0 = components[i]->get_endpoint_0();
-                        endpoint_1 = components[i]->get_endpoint_1();
-                        component_id_0 = i;
-                        component_id_1 = e;
-                    }
+void Network::node_cycle (std::size_t node_index, Cycle cycle) {
+    /* if this is the starting node but this node was not yet visited by the algorithm -> this is the starting node */
+    /* mark this node as visited */
+    /* put it in the path */
+    /* go through every unvisited edge of this node, set them to visited, add them to the path and call the cycle to their other node */
+    if (!m_nodes[node_index].visited) {
+        m_nodes[node_index].visited = true;                                     /* set the node to visited */
+        CycleUnit node_unit { .type = cycle_unit_type::node,
+                                .node_ptr = &m_nodes[node_index],
+                                .name = m_nodes[node_index].name };
+        cycle.push_back(std::move(node_unit));                                  /* put the node into the path */
+        for (Edge& edge : m_edges) {                                            /* go through every unvisited edge */
+            if (edge.visited == false) {
+                Cycle own_cycle = cycle;                                        /* clone the path */
+                edge.visited = true;                                            /* set the edge to visited */
+                CycleUnit edge_unit { .type = cycle_unit_type::edge, 
+                                        .edge_ptr = &edge,
+                                        .name = edge.designator };
+                own_cycle.push_back(std::move(edge_unit));                      /* add the edge to the path */
+                if (edge.node_0_index == node_index) {                          /* if one end of the edge is connected to this node */
+                    node_cycle(edge.node_1_index, own_cycle);                   /* call the node cycle */
                 }
-            }
-            if ((component_id_0 == 0) && (component_id_1 == 0)) break;
-
-            something_changed = true;
-
-            std::shared_ptr<Impedance> z = std::make_shared<Impedance>(Impedance::parallel(*components[component_id_0], *components[component_id_1]));
-            z->connect(endpoint_0, endpoint_1);
-
-            if constexpr (log_enabled) {
-                std::cout << "+------------------------------------------------------------+" << std::endl;
-                std::cout << "calculating impedance for parallel components" << std::endl;
-                std::cout << *components[component_id_0] << std::endl;
-                std::cout << *components[component_id_1] << std::endl;
-                std::cout << "between nodes '" << endpoint_0 << "' and '" << endpoint_1 << "'" << std::endl;
-                std::cout << "result is" << std::endl;
-                std::cout << *z << std::endl;
-                std::cout << "+------------------------------------------------------------+" << std::endl;
-            }
-
-            /* delete component_id_1 first because it is the larger index */
-            components.erase(components.begin() + component_id_1);
-            components.erase(components.begin() + component_id_0);
-
-            components.push_back(std::move(z));
-        }
-        while (true) {
-            /* do series stuff iterative until nothing changes in an iteration */
-            /* find 2 series elements */
-            /* two elements that have one node in common and their other node is different */
-            /* plus the common node cannot be the reference node */
-            /* and it cannot be the input node */
-            /* calculate the impedance */
-            std::size_t component_id_0 = 0;
-            std::size_t component_id_1 = 0;
-            std::string endpoint_0;
-            std::string endpoint_1;
-            /* do stuff */
-            for (std::size_t i = 0; i < components.size(); ++i) {
-                for (std::size_t e = i + 1; e < components.size(); ++e) {
-                    if ((components[i]->get_endpoint_0().compare(components[e]->get_endpoint_0()) == 0) &&
-                        (components[i]->get_endpoint_1().compare(components[e]->get_endpoint_1()) != 0) &&
-                        (components[i]->get_endpoint_0().compare(m_ref_node) != 0) &&
-                        (components[i]->get_endpoint_0().compare(input_node) != 0))
-                    {
-                        bool appears_elsewhere = false;
-                        for (std::size_t j = 0; j < components.size(); ++j) {
-                            if ((j != i) && (j != e)) {
-                                if (components[i]->get_endpoint_0().compare(components[j]->get_endpoint_0()) == 0) appears_elsewhere = true;
-                                if (components[i]->get_endpoint_0().compare(components[j]->get_endpoint_1()) == 0) appears_elsewhere = true;
-                            }
-                        }
-                        if (appears_elsewhere == true) continue;
-                        endpoint_0 = components[i]->get_endpoint_1();
-                        endpoint_1 = components[e]->get_endpoint_1();
-                        component_id_0 = i;
-                        component_id_1 = e;
-                    }
-                    else if ((components[i]->get_endpoint_1().compare(components[e]->get_endpoint_1()) == 0) &&
-                                (components[i]->get_endpoint_0().compare(components[e]->get_endpoint_0()) != 0) &&
-                                (components[i]->get_endpoint_1().compare(m_ref_node) != 0) &&
-                                (components[i]->get_endpoint_1().compare(input_node) != 0))
-                    {
-                        bool appears_elsewhere = false;
-                        for (std::size_t j = 0; j < components.size(); ++j) {
-                            if ((j != i) && (j != e)) {
-                                if (components[i]->get_endpoint_1().compare(components[j]->get_endpoint_0()) == 0) appears_elsewhere = true;
-                                if (components[i]->get_endpoint_1().compare(components[j]->get_endpoint_1()) == 0) appears_elsewhere = true;
-                            }
-                        }
-                        if (appears_elsewhere == true) continue;
-                        endpoint_0 = components[i]->get_endpoint_0();
-                        endpoint_1 = components[e]->get_endpoint_0();
-                        component_id_0 = i;
-                        component_id_1 = e;
-                    }
-                    else if ((components[i]->get_endpoint_0().compare(components[e]->get_endpoint_1()) == 0) &&
-                                (components[i]->get_endpoint_1().compare(components[e]->get_endpoint_0()) != 0) &&
-                                (components[i]->get_endpoint_0().compare(m_ref_node) != 0) &&
-                                (components[i]->get_endpoint_0().compare(input_node) != 0))
-                    {
-                        bool appears_elsewhere = false;
-                        for (std::size_t j = 0; j < components.size(); ++j) {
-                            if ((j != i) && (j != e)) {
-                                if (components[i]->get_endpoint_0().compare(components[j]->get_endpoint_0()) == 0) appears_elsewhere = true;
-                                if (components[i]->get_endpoint_0().compare(components[j]->get_endpoint_1()) == 0) appears_elsewhere = true;
-                            }
-                        }
-                        if (appears_elsewhere == true) continue;
-                        endpoint_0 = components[i]->get_endpoint_1();
-                        endpoint_1 = components[e]->get_endpoint_0();
-                        component_id_0 = i;
-                        component_id_1 = e;
-                    }
-                    else if ((components[i]->get_endpoint_1().compare(components[e]->get_endpoint_0()) == 0) &&
-                                (components[i]->get_endpoint_0().compare(components[e]->get_endpoint_1()) != 0) &&
-                                (components[i]->get_endpoint_1().compare(m_ref_node) != 0) &&
-                                (components[i]->get_endpoint_1().compare(input_node) != 0))
-                    {
-                        bool appears_elsewhere = false;
-                        for (std::size_t j = 0; j < components.size(); ++j) {
-                            if ((j != i) && (j != e)) {
-                                if (components[i]->get_endpoint_1().compare(components[j]->get_endpoint_0()) == 0) appears_elsewhere = true;
-                                if (components[i]->get_endpoint_1().compare(components[j]->get_endpoint_1()) == 0) appears_elsewhere = true;
-                            }
-                        }
-                        if (appears_elsewhere == true) continue;
-                        endpoint_0 = components[i]->get_endpoint_0();
-                        endpoint_1 = components[e]->get_endpoint_1();
-                        component_id_0 = i;
-                        component_id_1 = e;
-                    }
+                else if (edge.node_1_index == node_index) {
+                    node_cycle(edge.node_0_index, own_cycle);
                 }
+                edge.visited = false;
             }
-            if ((component_id_0 == 0) && (component_id_1 == 0)) break;
-
-            something_changed = true;
-
-            std::shared_ptr<Impedance> z = std::make_shared<Impedance>(Impedance::series(*components[component_id_0], *components[component_id_1]));
-            z->connect(endpoint_0, endpoint_1);
-
-            if constexpr (log_enabled) {
-                std::cout << "+------------------------------------------------------------+" << std::endl;
-                std::cout << "calculating impedance for series components" << std::endl;
-                std::cout << *components[component_id_0] << std::endl;
-                std::cout << *components[component_id_1] << std::endl;
-                std::cout << "between nodes '" << endpoint_0 << "' and '" << endpoint_1 << "'" << std::endl;
-                std::cout << "result is" << std::endl;
-                std::cout << *z << std::endl;
-                std::cout << "+------------------------------------------------------------+" << std::endl;
-            }
-
-            /* delete component_id_1 first because it is the larger index */
-            components.erase(components.begin() + component_id_1);
-            components.erase(components.begin() + component_id_0);
-
-            components.push_back(std::move(z));
         }
-        /* break if there was no series and parallel changes */
-        if (something_changed == false) break;
+        m_nodes[node_index].visited = false;
     }
-    /* only one single impedance should be in the vector */
-    return std::move(*components[0]);
+    /* if the node was already visited */
+    else {
+        if (m_nodes[node_index].start) {                                        /* if it is the starting node -> cycle */
+            //path.push_back(m_nodes[node_index].name);
+            m_cycles.push_back(cycle);
+        }
+    }
+}
+
+bool Network::are_cycles_same (Cycle cycle_0, Cycle cycle_1) {
+    if (cycle_0.size() != cycle_1.size()) return false;
+    std::sort(cycle_0.begin(), cycle_0.end(), [](const CycleUnit& a, const CycleUnit& b) -> bool { return a.name > b.name; });
+    std::sort(cycle_1.begin(), cycle_1.end(), [](const CycleUnit& a, const CycleUnit& b) -> bool { return a.name > b.name; });
+    for (std::size_t i = 0; i < cycle_0.size(); ++i) {
+        if (cycle_0[i].name.compare(cycle_1[i].name) != 0) return false;
+    }
+    return true;
+}
+
+void Network::add_node (const std::string& node_name) {
+    for (const Node& node : m_nodes) {
+        if (node_name.compare(node.name) == 0) {
+            std::cout << "ERROR : node already exists" << std::endl;
+            return;
+        }
+    }
+    Node n;
+    n.name = node_name;
+    n.visited = false;
+    n.start = false;
+    m_nodes.push_back(n);
+}
+void Network::add_edge (const std::string& designator, const std::string& node_0_name, const std::string& node_1_name) {
+    for (const Edge& edge : m_edges) {
+        if (designator.compare(edge.designator) == 0) {
+            std::cout << "ERROR : edge already exists" << std::endl;
+            return;
+        }
+    }
+    Edge e;
+    e.designator = designator;
+    bool node_0_exists = false;
+    bool node_1_exists = false;
+    for (std::size_t i = 0; i < m_nodes.size(); ++i) {
+        if (node_0_name.compare(m_nodes[i].name) == 0) {
+            node_0_exists = true;
+            e.node_0_index = i;
+        }
+        if (node_1_name.compare(m_nodes[i].name) == 0) {
+            node_1_exists = true;
+            e.node_1_index = i;
+        }
+    }
+    if (!node_0_exists || !node_1_exists) {
+        std::cout << "ERROR : edge endnode does not exists" << std::endl;
+        return;
+    }
+    m_edges.push_back(std::move(e));
+}
+void Network::print () {
+    std::cout << "nodes" << std::endl;
+    for (const Node& node : m_nodes) {
+        std::cout << "    " << node.name << std::endl;
+    }
+    std::cout << "edges" << std::endl;
+    for (const Edge& edge : m_edges) {
+        std::cout << "    " << m_nodes[edge.node_0_index].name << " - " << edge.designator << " - " << m_nodes[edge.node_1_index].name << std::endl;
+    }
+}
+void Network::compute_cycles () {
+    m_cycles.clear();
+    for (std::size_t i = 0; i < m_nodes.size(); ++i) {
+        Cycle cycle;
+        for (Node& node_tmp : m_nodes) {
+            node_tmp.start = false;
+            node_tmp.visited = false;
+        }
+        for (Edge& edge_tmp : m_edges) {
+            edge_tmp.visited = false;
+        }
+        m_nodes[i].start = true;
+        node_cycle(i, cycle);
+    }
+    for (std::size_t i = 0; i < m_cycles.size(); ++i) {
+        for (std::size_t e = m_cycles.size() - 1; e > i; --e) {
+            if (are_cycles_same(m_cycles[i], m_cycles[e])) {
+                m_cycles.erase(m_cycles.begin() + e);
+            }
+        }
+    }
+}
+void Network::print_cycles () {
+    for (const Cycle& cycle : m_cycles) {
+        for (const CycleUnit& element : cycle) {
+            std::cout << element.name << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+void Network::compute_equations () {
+    std::vector<std::string> row;
+    for (Edge& edge : m_edges) {
+        row.push_back("i{" + edge.designator + "}");
+    }
+    for (Edge& edge : m_edges) {
+        row.push_back("u{" + edge.designator + "}");
+    }
+    m_matrix.push_back(row);
+    for (std::size_t i = 0; i < m_nodes.size(); ++i) {
+        row.clear();
+        for (const Edge& edge : m_edges) {
+            if (edge.node_0_index == i) { /* outgoing current */
+                row.push_back(" -1  ");
+            }
+            else if (edge.node_1_index == i) { /* incoming current */
+                row.push_back("  1  ");
+            }
+            else {
+                row.push_back("  0  ");
+            }
+        }
+        for (const Edge& edge : m_edges) {
+            row.push_back("  0  ");
+        }
+        m_matrix.push_back(row);
+    }
+    for (std::size_t i = 0; i < m_edges.size(); ++i) {
+        for (std::string& val : row) {
+            val = "  0  ";
+        }
+        row[i + row.size() / 2] = "  1  ";
+        row[i] = "  " + m_edges[i].designator + " ";
+        m_matrix.push_back(row);
+    }
+    for (const Cycle& cycle : m_cycles) {
+        for (std::string& val : row) {
+            val = "  0  ";
+        }
+        /* every cycle starts with a node */
+        int from_node_id = 0;
+        for (const CycleUnit& unit : cycle) {
+            if (unit.type == cycle_unit_type::node) {
+                for (size_t i = 0; i < m_nodes.size(); ++i) {
+                    if (unit.node_ptr->name.compare(m_nodes[i].name) == 0) {
+                        from_node_id = i;
+                    }
+                }
+            }
+            else {
+                Edge* edge_ptr = unit.edge_ptr;
+                for (size_t i = 0; i < m_edges.size(); ++i) {
+                    if (edge_ptr->designator.compare(m_edges[i].designator) == 0) {
+                        if (edge_ptr->node_0_index == from_node_id) row[i] = "  1  ";
+                        else row[i] = " -1  ";
+                    }
+                }
+            }
+        }
+        m_matrix.push_back(row);
+    }
+}
+void Network::print_equations () {
+    for (const std::vector<std::string>& row : m_matrix) {
+        for (const std::string& val : row) {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
 } /* namespace zcalc */

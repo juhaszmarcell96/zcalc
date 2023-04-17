@@ -2,29 +2,18 @@
 
 #include <string>
 #include <iostream>
+#include <complex>
 
 namespace zcalc {
 
 class Impedance {
 protected:
-    double m_modulus;
-    double m_argument;
-
-    std::string m_endpoint_0;
-    std::string m_endpoint_1;
+    std::complex<double> m_value;
 public:
     Impedance () = default;
-    /* copy constructor */
-    Impedance(const Impedance& z);
-    /* move constructor */
-    Impedance(Impedance&& z);
-    /* copy assignment operator */
-    Impedance &operator=(const Impedance& z);
-    /* move assignment operator */
-    Impedance &operator=(Impedance&& z);
+    Impedance(std::complex<double> value);
     ~Impedance() = default;
 
-    
     void set_rectangular (double resistance, double reactance);
     void set_polar (double modulus, double argument);
 
@@ -32,13 +21,6 @@ public:
     double get_argument () const;
     double get_resistance () const;
     double get_reactance () const;
-    
-    const std::string& get_endpoint_0 () const;
-    const std::string& get_endpoint_1 () const;
-
-    void connect (const std::string& endpoint_0, const std::string& endpoint_1);
-    void disconnect ();
-    bool is_connected ();
 
     friend std::ostream& operator<<(std::ostream& os, const Impedance& z);
 

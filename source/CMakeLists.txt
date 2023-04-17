@@ -1,5 +1,7 @@
 include(CMakePrintHelpers)
 
+set (CMAKE_CXX_STANDARD 20)
+
 add_library(
     zcalc_obj OBJECT
     impedance.cpp

@@ -8,23 +8,54 @@
 
 namespace zcalc {
 
+
+struct Node {
+    std::string name;
+    bool visited = false;
+    bool start = false;
+};
+
+struct Edge {
+    std::string designator;
+    std::size_t node_0_index;
+    std::size_t node_1_index;
+    bool visited = false;
+};
+
+enum class cycle_unit_type {
+    node,
+    edge
+};
+
+struct CycleUnit {
+    cycle_unit_type type;
+    union {
+        Node* node_ptr;
+        Edge* edge_ptr;
+    };
+    std::string name;
+};
+
+typedef std::vector<CycleUnit> Cycle;
+
 class Network {
 private:
-    double m_frequency;
-    std::vector<std::shared_ptr<Impedance>> m_components;
-    std::string m_ref_node;
+    std::vector<Node> m_nodes;
+    std::vector<Edge> m_edges;
+
+    std::vector<Cycle> m_cycles;
+    std::vector<std::vector<std::string>> m_matrix;
+
+    void node_cycle (std::size_t node_index, Cycle cycle);
+    bool are_cycles_same (Cycle cycle_0, Cycle cycle_1);
 public:
-    Network() = delete;
-    ~Network() = default;
-    Network(double frequency, const std::string& ref_node);
-
-    void add_resistor (double resistance, const std::string& endpoint_0, const std::string& endpoint_1);
-    void add_capacitor (double capacitance, const std::string& endpoint_0, const std::string& endpoint_1);
-    void add_inductor (double inductance, const std::string& endpoint_0, const std::string& endpoint_1);
-
-    void clear ();
-
-    Impedance calculate_impedance (const std::string& input_node, const std::string& output_node, const Impedance& termination);
+    void add_node (const std::string& node_name);
+    void add_edge (const std::string& designator, const std::string& node_0_name, const std::string& node_1_name);
+    void print ();
+    void compute_cycles ();
+    void print_cycles ();
+    void compute_equations ();
+    void print_equations ();
 };
 
 } /* namespace zcalc */

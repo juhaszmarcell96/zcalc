@@ -10,6 +10,20 @@
 
 
 int main () {
+    zcalc::Network test_network { 50.0e3 };
+    test_network.add_node("gnd");
+    test_network.add_node("in");
+    test_network.add_node("out");
+    test_network.add_source("U1", 5, "in", "gnd");
+    test_network.add_resistor("R1", 10, "in", "out");
+    test_network.add_resistor("R2", 10, "out", "gnd");
+    test_network.print();
+    test_network.compute_cycles();
+    test_network.print_cycles();
+    test_network.compute_equations();
+    test_network.print_equations();
+
+/*
     zcalc::Network network;
     network.add_node("gnd");
     network.add_node("in");
@@ -52,7 +66,7 @@ int main () {
     std::cout << zcalc::Impedance::parallel(zcalc::Impedance::parallel(R, C), L) << std::endl;
     std::cout << zcalc::Impedance::parallel(zcalc::Impedance::parallel(C, L), R) << std::endl;
     std::cout << zcalc::Impedance::parallel(zcalc::Impedance::parallel(L, R), C) << std::endl;
-
+*/
     return 0;
 }
 

@@ -8,6 +8,8 @@
 
 namespace zcalc {
 
+Network::Network (double frequency): m_frequency(frequency) {}
+
 void Network::node_cycle (std::size_t node_index, Cycle cycle) {
     /* if this is the starting node but this node was not yet visited by the algorithm -> this is the starting node */
     /* mark this node as visited */
@@ -70,7 +72,8 @@ void Network::add_node (const std::string& node_name) {
     n.start = false;
     m_nodes.push_back(n);
 }
-void Network::add_edge (const std::string& designator, const std::string& node_0_name, const std::string& node_1_name) {
+
+void Network::add_resistor (const std::string& designator, double resistance, const std::string& node_0_name, const std::string& node_1_name) {
     for (const Edge& edge : m_edges) {
         if (designator.compare(edge.designator) == 0) {
             std::cout << "ERROR : edge already exists" << std::endl;
@@ -79,6 +82,8 @@ void Network::add_edge (const std::string& designator, const std::string& node_0
     }
     Edge e;
     e.designator = designator;
+    e.type = edge_type::impedance;
+    e.impedance_ptr = std::make_shared<Resistor>(resistance);
     bool node_0_exists = false;
     bool node_1_exists = false;
     for (std::size_t i = 0; i < m_nodes.size(); ++i) {
@@ -97,7 +102,99 @@ void Network::add_edge (const std::string& designator, const std::string& node_0
     }
     m_edges.push_back(std::move(e));
 }
+
+void Network::add_inductor (const std::string& designator, double inductance, const std::string& node_0_name, const std::string& node_1_name) {
+    for (const Edge& edge : m_edges) {
+        if (designator.compare(edge.designator) == 0) {
+            std::cout << "ERROR : edge already exists" << std::endl;
+            return;
+        }
+    }
+    Edge e;
+    e.designator = designator;
+    e.type = edge_type::impedance;
+    e.impedance_ptr = std::make_shared<Inductor>(inductance, m_frequency);
+    bool node_0_exists = false;
+    bool node_1_exists = false;
+    for (std::size_t i = 0; i < m_nodes.size(); ++i) {
+        if (node_0_name.compare(m_nodes[i].name) == 0) {
+            node_0_exists = true;
+            e.node_0_index = i;
+        }
+        if (node_1_name.compare(m_nodes[i].name) == 0) {
+            node_1_exists = true;
+            e.node_1_index = i;
+        }
+    }
+    if (!node_0_exists || !node_1_exists) {
+        std::cout << "ERROR : edge endnode does not exists" << std::endl;
+        return;
+    }
+    m_edges.push_back(std::move(e));
+}
+
+void Network::add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_name, const std::string& node_1_name) {
+    for (const Edge& edge : m_edges) {
+        if (designator.compare(edge.designator) == 0) {
+            std::cout << "ERROR : edge already exists" << std::endl;
+            return;
+        }
+    }
+    Edge e;
+    e.designator = designator;
+    e.type = edge_type::impedance;
+    e.impedance_ptr = std::make_shared<Capacitor>(capacitance, m_frequency);
+    bool node_0_exists = false;
+    bool node_1_exists = false;
+    for (std::size_t i = 0; i < m_nodes.size(); ++i) {
+        if (node_0_name.compare(m_nodes[i].name) == 0) {
+            node_0_exists = true;
+            e.node_0_index = i;
+        }
+        if (node_1_name.compare(m_nodes[i].name) == 0) {
+            node_1_exists = true;
+            e.node_1_index = i;
+        }
+    }
+    if (!node_0_exists || !node_1_exists) {
+        std::cout << "ERROR : edge endnode does not exists" << std::endl;
+        return;
+    }
+    m_edges.push_back(std::move(e));
+}
+
+void Network::add_source (const std::string& designator, double voltage, const std::string& node_0_name, const std::string& node_1_name) {
+    for (const Edge& edge : m_edges) {
+        if (designator.compare(edge.designator) == 0) {
+            std::cout << "ERROR : edge already exists" << std::endl;
+            return;
+        }
+    }
+    Edge e;
+    e.designator = designator;
+    e.type = edge_type::source;
+    e.source_ptr = std::make_shared<Source>(voltage);
+    bool node_0_exists = false;
+    bool node_1_exists = false;
+    for (std::size_t i = 0; i < m_nodes.size(); ++i) {
+        if (node_0_name.compare(m_nodes[i].name) == 0) {
+            node_0_exists = true;
+            e.node_0_index = i;
+        }
+        if (node_1_name.compare(m_nodes[i].name) == 0) {
+            node_1_exists = true;
+            e.node_1_index = i;
+        }
+    }
+    if (!node_0_exists || !node_1_exists) {
+        std::cout << "ERROR : edge endnode does not exists" << std::endl;
+        return;
+    }
+    m_edges.push_back(std::move(e));
+}
+
 void Network::print () {
+    std::cout << "frequency : " << m_frequency << std::endl;
     std::cout << "nodes" << std::endl;
     for (const Node& node : m_nodes) {
         std::cout << "    " << node.name << std::endl;

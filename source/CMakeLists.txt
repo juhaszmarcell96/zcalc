@@ -9,6 +9,7 @@ add_library(
     capacitor.cpp
     inductor.cpp
     network.cpp
+    source.cpp
 )
 
 target_include_directories(

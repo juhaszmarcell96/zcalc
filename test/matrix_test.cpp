@@ -84,4 +84,18 @@ TEST(MatrixTest, MatrixEliminationTest) {
     matrix_3(2, 0) = -8.0; matrix_3(2, 1) = -4.0; matrix_3(2, 2) = -12.0; matrix_3(2, 3) = -4.0;
 
     ASSERT_EQ(false, matrix_3.eliminate());
+
+    /* solution should be found */
+    /*  2x + 1y +  3z =  1 */
+    /*  2x + 6y +  8z =  3 */
+    /*  6x + 8y + 18z =  5 */
+    zcalc::Matrix<double> matrix_4 {3, 4};
+    matrix_4(0, 0) = 2.0; matrix_4(0, 1) = 1.0; matrix_4(0, 2) =  3.0; matrix_4(0, 3) = 1.0;
+    matrix_4(1, 0) = 2.0; matrix_4(1, 1) = 6.0; matrix_4(1, 2) =  8.0; matrix_4(1, 3) = 3.0;
+    matrix_4(2, 0) = 6.0; matrix_4(2, 1) = 8.0; matrix_4(2, 2) = 18.0; matrix_4(2, 3) = 5.0;
+
+    ASSERT_EQ(true, matrix_4.eliminate());
+    ASSERT_EQ(3.0/10.0, matrix_4[0][3]);
+    ASSERT_EQ(2.0/5.0, matrix_4[1][3]);
+    ASSERT_EQ(0.0, matrix_4[2][3]);
 }

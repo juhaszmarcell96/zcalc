@@ -7,5 +7,6 @@ add_executable(
     tests
     main.cpp
     matrix_test.cpp
+    expression_test.cpp
 )
 target_link_libraries(tests ${GTEST_LIBRARIES} pthread zcalc_static)

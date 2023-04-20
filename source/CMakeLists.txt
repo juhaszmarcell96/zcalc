@@ -11,6 +11,7 @@ add_library(
     inductor.cpp
     network.cpp
     source.cpp
+    expression.cpp
 )
 
 target_include_directories(
@@ -26,11 +27,13 @@ target_include_directories(
 
 set(
     ZCALC_INCLUDE_FILES
-    include/common.h
-    include/reistor.h
-    include/capacitor.h
-    include/inductor.h
-    include/network.h
+    include/common.hpp
+    include/reistor.hpp
+    include/capacitor.hpp
+    include/inductor.hpp
+    include/network.hpp
+    include/matrix.hpp
+    include/expression.hpp
 )
 
 set_target_properties(

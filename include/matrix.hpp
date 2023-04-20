@@ -207,7 +207,7 @@ public:
         return std::move(ret_matrix);
     }
     
-    bool eliminate() {
+    bool solve_system_of_linear_equations(std::vector<T>& solution) {
         const T zero_value {};
         //std::cout << "###################### elimination ######################" << std::endl;
         //print();
@@ -286,6 +286,16 @@ public:
             return false;
         }
         //std::cout << "#########################################################" << std::endl;
+        /* solution */
+        solution = std::vector<T>(get_num_cols() - 1, zero_value);
+        for (size_t i = 0; i < get_num_rows(); ++i) {
+            for (size_t j = 0; j < get_num_cols() - 1; ++j) {
+                if (m_matrix[i][j] != zero_value) {
+                    solution[j] = m_matrix[i][get_num_cols() - 1];
+                    break;
+                }
+            }
+        }
         return true;
     }
 

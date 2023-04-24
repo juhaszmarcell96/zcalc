@@ -186,41 +186,42 @@ Matrix Matrix::operator*(const Matrix& matrix) const {
     return std::move(ret_matrix);
 }
 
-bool Matrix::solve_system_of_linear_equations(std::vector<Complex>& solution) {
+bool Matrix::solve_system_of_linear_equations(std::vector<Complex>& solution) const {
     //std::cout << "###################### elimination ######################" << std::endl;
     //print();
     /* there must be more equations than variables -> equal or more more rows than columns */
     if (get_num_cols() > get_num_rows() + 1) return false;
+    Matrix matrix = *this;
     /* algorithm for reducing the matrix to row echelon form */
-    for (std::size_t row_index = 0; row_index < get_num_rows(); ++row_index) {
+    for (std::size_t row_index = 0; row_index < matrix.get_num_rows(); ++row_index) {
         /* STEP : determine the leftmost non-zero column */
         //std::cout << "STEP : determine the leftmost non-zero column" << std::endl;
         std::size_t leftmost_nonzero_col_index = 0;
         std::size_t leftmost_nonzero_row_index = 0;
-        if (!get_leftmost_nonzero_indexes(row_index, &leftmost_nonzero_row_index, &leftmost_nonzero_col_index)) {
+        if (!matrix.get_leftmost_nonzero_indexes(row_index, &leftmost_nonzero_row_index, &leftmost_nonzero_col_index)) {
             /* STEP : no more non-zero rows below the previous pivot position -> move on */
             //std::cout << "STEP : no more non-zero rows below the previous pivot position -> move on" << std::endl;
             break;
         }
         //std::cout << "leftmost_nonzero_col_index : " << leftmost_nonzero_col_index << std::endl;
         //std::cout << "leftmost_nonzero_row_index : " << leftmost_nonzero_row_index << std::endl;
-        switch_rows(row_index, leftmost_nonzero_row_index);
+        matrix.switch_rows(row_index, leftmost_nonzero_row_index);
         //print();
         /* STEP : use elementary row operations to put a 1 in the topmost position of this column */
         //std::cout << "STEP : use elementary row operations to put a 1 in the topmost position of this column" << std::endl;
-        Complex divisor = m_matrix[row_index][leftmost_nonzero_col_index];
-        m_matrix[row_index][leftmost_nonzero_col_index] = Complex { 1.0, 0.0 };
-        for (std::size_t col_index = leftmost_nonzero_col_index + 1; col_index < get_num_cols(); ++col_index) {
-            if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) m_matrix[row_index][col_index] = m_matrix[row_index][col_index] / divisor;
+        Complex divisor = matrix.m_matrix[row_index][leftmost_nonzero_col_index];
+        matrix.m_matrix[row_index][leftmost_nonzero_col_index] = Complex { 1.0, 0.0 };
+        for (std::size_t col_index = leftmost_nonzero_col_index + 1; col_index < matrix.get_num_cols(); ++col_index) {
+            if (matrix.m_matrix[row_index][col_index] != Complex{0.0, 0.0}) matrix.m_matrix[row_index][col_index] = matrix.m_matrix[row_index][col_index] / divisor;
         }
         //print();
         /* STEP : use elementary row operations to put zeros below the pivot position */
         /*        -> subtract the scalar multiplication of this row from every row below it so that the values of the same column become 0 */
         //std::cout << "STEP : use elementary row operations to put zeros below the pivot position" << std::endl;
-        for (std::size_t i = row_index + 1; i < get_num_rows(); ++i) {
-            Complex multiplier = m_matrix[i][leftmost_nonzero_col_index] / m_matrix[row_index][leftmost_nonzero_col_index];
-            for (std::size_t j = 0; j < get_num_cols(); ++j) {
-                m_matrix[i][j] = m_matrix[i][j] - multiplier * m_matrix[row_index][j];
+        for (std::size_t i = row_index + 1; i < matrix.get_num_rows(); ++i) {
+            Complex multiplier = matrix.m_matrix[i][leftmost_nonzero_col_index] / matrix.m_matrix[row_index][leftmost_nonzero_col_index];
+            for (std::size_t j = 0; j < matrix.get_num_cols(); ++j) {
+                matrix.m_matrix[i][j] = matrix.m_matrix[i][j] - multiplier * matrix.m_matrix[row_index][j];
             }
         }
         //print();
@@ -232,19 +233,19 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Complex>& solution) {
     /* something is wrong if only the last column is non zero but the variables all have 0 as coefficient */
     /* the matrix, excluding the zero rows, should be a square matrix? */
     /* start from the last row */
-    std::size_t last_col_index = get_num_cols() - 1;
-    int row_index = (int)get_num_rows() - 1;
+    std::size_t last_col_index = matrix.get_num_cols() - 1;
+    int row_index = (int)matrix.get_num_rows() - 1;
     /* skip every full zero row */
     for (row_index; row_index >= 0; --row_index) {
-        if (are_values_zero(row_index, 0, get_num_cols() - 1)) continue;
+        if (matrix.are_values_zero(row_index, 0, matrix.get_num_cols() - 1)) continue;
         std::size_t leading_one_index;
-        for (size_t col_index = 0; col_index < get_num_cols() - 1; ++col_index) {
-            if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) leading_one_index = col_index;
+        for (size_t col_index = 0; col_index < matrix.get_num_cols() - 1; ++col_index) {
+            if (matrix.m_matrix[row_index][col_index] != Complex{0.0, 0.0}) leading_one_index = col_index;
         }
         for (int backsub_row_index = row_index - 1; backsub_row_index >= 0; --backsub_row_index) {
-            Complex multiplier = m_matrix[backsub_row_index][leading_one_index] / m_matrix[row_index][leading_one_index];
-            m_matrix[backsub_row_index][leading_one_index] = m_matrix[backsub_row_index][leading_one_index] - (multiplier * m_matrix[row_index][leading_one_index]);
-            m_matrix[backsub_row_index][last_col_index] = m_matrix[backsub_row_index][last_col_index] - (multiplier * m_matrix[row_index][last_col_index]);
+            Complex multiplier = matrix.m_matrix[backsub_row_index][leading_one_index] / matrix.m_matrix[row_index][leading_one_index];
+            matrix.m_matrix[backsub_row_index][leading_one_index] = matrix.m_matrix[backsub_row_index][leading_one_index] - (multiplier * matrix.m_matrix[row_index][leading_one_index]);
+            matrix.m_matrix[backsub_row_index][last_col_index] = matrix.m_matrix[backsub_row_index][last_col_index] - (multiplier * matrix.m_matrix[row_index][last_col_index]);
         }
         --leading_one_index;
         //print();
@@ -253,24 +254,24 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Complex>& solution) {
     /* rank(A) == rank(A|b) == n -> single solution   */
     /* rank(A) == rank(A|b) <  n -> infinite solution */
     /* rank(A) != rank(A|b)      -> no solution       */
-    std::size_t rank_A  = count_nonzero_rows(0, get_num_rows() - 1, 0, get_num_cols() - 2);
-    std::size_t rank_Ab = count_nonzero_rows(0, get_num_rows() - 1, 0, get_num_cols() - 1);
+    std::size_t rank_A  = matrix.count_nonzero_rows(0, matrix.get_num_rows() - 1, 0, matrix.get_num_cols() - 2);
+    std::size_t rank_Ab = matrix.count_nonzero_rows(0, matrix.get_num_rows() - 1, 0, matrix.get_num_cols() - 1);
     //std::cout << rank_A << " " << rank_Ab << std::endl;
     if (rank_A != rank_Ab) {
         //std::cout << "ERROR : cannot solve equation system" << std::endl;
         return false;
     }
-    else if (rank_A < get_num_cols() - 1) {
+    else if (rank_A < matrix.get_num_cols() - 1) {
         //std::cout << "ERROR : equation system has infinite solutions" << std::endl;
         return false;
     }
     //std::cout << "#########################################################" << std::endl;
     /* solution */
-    solution = std::vector<Complex>(get_num_cols() - 1);
-    for (size_t i = 0; i < get_num_rows(); ++i) {
-        for (size_t j = 0; j < get_num_cols() - 1; ++j) {
-            if (m_matrix[i][j] != Complex{0.0, 0.0}) {
-                solution[j] = m_matrix[i][get_num_cols() - 1];
+    solution = std::vector<Complex>(matrix.get_num_cols() - 1);
+    for (size_t i = 0; i < matrix.get_num_rows(); ++i) {
+        for (size_t j = 0; j < matrix.get_num_cols() - 1; ++j) {
+            if (matrix.m_matrix[i][j] != Complex{0.0, 0.0}) {
+                solution[j] = matrix.m_matrix[i][matrix.get_num_cols() - 1];
                 break;
             }
         }

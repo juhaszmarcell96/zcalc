@@ -257,11 +257,11 @@ TEST(MatrixTest, SimpleCircuitTest) {
     matrix[3][1] = zcalc::Complex{-1};
     matrix[3][2] = zcalc::Complex{-1};
     matrix[4][1] = zcalc::Complex{1};
-    matrix[4][4] = zcalc::Complex{-10};
+    matrix[4][4] = zcalc::Complex{-10};  /* -R1 */
     matrix[5][2] = zcalc::Complex{1};
-    matrix[5][5] = zcalc::Complex{-10};
+    matrix[5][5] = zcalc::Complex{-10};  /* -R2 */
     matrix[6][0] = zcalc::Complex{1};
-    matrix[6][6] = zcalc::Complex{5};
+    matrix[6][6] = zcalc::Complex{5};    /* Us */
 
     success = matrix.solve_system_of_linear_equations(result);
 
@@ -273,4 +273,18 @@ TEST(MatrixTest, SimpleCircuitTest) {
     ASSERT_EQ(result[3], zcalc::Complex(-1.0/4.0, 0.0));
     ASSERT_EQ(result[4], zcalc::Complex(1.0/4.0, 0.0));
     ASSERT_EQ(result[5], zcalc::Complex(1.0/4.0, 0.0));
+
+    matrix[4][4] = zcalc::Complex{-10};  /* -R1 -> 10/3V (1/3A) */
+    matrix[5][5] = zcalc::Complex{-5};  /* -R2 -> 5/3V (1/3A) */
+
+    success = matrix.solve_system_of_linear_equations(result);
+
+    ASSERT_EQ(true, success);
+    
+    ASSERT_EQ(result[0], zcalc::Complex(5.0, 0.0));
+    ASSERT_EQ(result[1], zcalc::Complex(10.0/3.0, 0.0));
+    ASSERT_EQ(result[2], zcalc::Complex(5.0/3.0, 0.0));
+    ASSERT_EQ(result[3], zcalc::Complex(-1.0/3.0, 0.0));
+    ASSERT_EQ(result[4], zcalc::Complex(1.0/3.0, 0.0));
+    ASSERT_EQ(result[5], zcalc::Complex(1.0/3.0, 0.0));
 }

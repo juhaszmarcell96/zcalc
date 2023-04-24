@@ -55,7 +55,7 @@ public:
     /* A_nxm * B_mxr = C_nxr */
     Matrix operator*(const Matrix& matrix) const;
     
-    bool solve_system_of_linear_equations(std::vector<Complex>& solution);
+    bool solve_system_of_linear_equations(std::vector<Complex>& solution) const;
 
     void print ();
 

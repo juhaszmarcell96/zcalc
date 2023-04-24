@@ -177,7 +177,7 @@ Matrix Matrix::operator*(const Matrix& matrix) const {
     Matrix ret_matrix {get_num_rows(), matrix.get_num_cols()};
     for (std::size_t i = 0; i < ret_matrix.get_num_rows(); ++i) {
         for (std::size_t j = 0; j < ret_matrix.get_num_cols(); ++j) {
-            ret_matrix.m_matrix[i][j] = Expression { std::complex<double> { 0.0, 0.0 } };
+            ret_matrix.m_matrix[i][j] = Expression { Complex { 0.0, 0.0 } };
             for (std::size_t k = 0; k < get_num_cols(); ++k) {
                 ret_matrix.m_matrix[i][j] += m_matrix[i][k] * matrix.m_matrix[k][j];
             }
@@ -209,7 +209,7 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution)
         /* STEP : use elementary row operations to put a 1 in the topmost position of this column */
         //std::cout << "STEP : use elementary row operations to put a 1 in the topmost position of this column" << std::endl;
         Expression divisor = m_matrix[row_index][leftmost_nonzero_col_index];
-        m_matrix[row_index][leftmost_nonzero_col_index] = Expression { std::complex<double> { 1.0, 0.0 } };
+        m_matrix[row_index][leftmost_nonzero_col_index] = Expression { Complex { 1.0, 0.0 } };
         for (std::size_t col_index = leftmost_nonzero_col_index + 1; col_index < get_num_cols(); ++col_index) {
             if (!m_matrix[row_index][col_index].is_zero()) m_matrix[row_index][col_index] = m_matrix[row_index][col_index] / divisor;
         }

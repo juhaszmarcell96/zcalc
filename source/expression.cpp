@@ -3,11 +3,11 @@
 
 namespace zcalc {
 
-Constant::Constant (std::complex<double> value) : m_value(value) {}
+Constant::Constant (Complex value) : m_value(value) {}
 bool Constant::is_numeric () {
     return true;
 }
-std::complex<double> Constant::get () {
+Complex Constant::get () {
     return m_value;
 }
 std::string Constant::to_string() const {
@@ -25,12 +25,12 @@ Variable::Variable (const std::string& id) : m_id(id) {}
 bool Variable::is_numeric () {
     return m_value_known;
 }
-std::complex<double> Variable::get () {
+Complex Variable::get () {
     if (!m_value_known) throw std::domain_error("ERROR : variable value is unknown");
     return m_value;
 }
 std::string Variable::to_string() const { return m_id; }
-void Variable::set_value (std::complex<double> value) {
+void Variable::set_value (Complex value) {
     m_value = value;
     m_value_known = true;
 }
@@ -45,7 +45,7 @@ bool Operation::is_numeric () {
     if (!m_right_operand->is_numeric()) return false;
     return true;
 }
-std::complex<double> Operation::get () {
+Complex Operation::get () {
     if (m_left_operand == nullptr) throw std::domain_error("ERROR : operand cannot be null");
     if (m_right_operand == nullptr) throw std::domain_error("ERROR : operand cannot be null");
     switch(m_type) {
@@ -106,11 +106,11 @@ std::string Operation::to_string() const {
 
 
 Expression::Expression (std::shared_ptr<ExpUnit> exp_root) : m_exp_root(exp_root) {}
-Expression::Expression (std::complex<double> constant_value) {
+Expression::Expression (Complex constant_value) {
     m_exp_root = std::make_shared<Constant>(constant_value);
 }
 Expression::Expression () {
-    m_exp_root = std::make_shared<Constant>(std::complex<double>{ 0.0, 0.0 });
+    m_exp_root = std::make_shared<Constant>(Complex{ 0.0, 0.0 });
 }
 void Expression::print () {
     if (m_exp_root == nullptr) throw std::domain_error("ERROR : root cannot be null");
@@ -129,10 +129,10 @@ bool Expression::has_value () const {
 
 bool Expression::is_zero () const {
     if (!has_value()) return false;
-    return evaluate() == std::complex<double> { 0.0, 0.0 };
+    return evaluate() == Complex { 0.0, 0.0 };
 }
 
-std::complex<double> Expression::evaluate () const {
+Complex Expression::evaluate () const {
     if (m_exp_root == nullptr) throw std::domain_error("ERROR : root cannot be null");
     return m_exp_root->get();
 }
@@ -144,7 +144,7 @@ Expression Expression::operator+(const Expression& exp) const {
     Expression new_exp {add_op};
     return std::move(new_exp);
 }
-Expression Expression::operator+(std::complex<double> constant_value) const {
+Expression Expression::operator+(Complex constant_value) const {
     std::shared_ptr<Operation> add_op = std::make_shared<Operation>(operation_type::add);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     add_op->set_left_operand(m_exp_root);
@@ -167,7 +167,7 @@ Expression& Expression::operator+=(const Expression& rhs) {
     m_exp_root = add_op;
     return *this;
 }
-Expression& Expression::operator+=(std::complex<double> constant_value) {
+Expression& Expression::operator+=(Complex constant_value) {
     std::shared_ptr<Operation> add_op = std::make_shared<Operation>(operation_type::add);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     add_op->set_left_operand(m_exp_root);
@@ -190,7 +190,7 @@ Expression Expression::operator-(const Expression& rhs) const {
     Expression new_exp {sub_op};
     return std::move(new_exp);
 }
-Expression Expression::operator-(std::complex<double> constant_value) const {
+Expression Expression::operator-(Complex constant_value) const {
     std::shared_ptr<Operation> sub_op = std::make_shared<Operation>(operation_type::sub);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     sub_op->set_left_operand(m_exp_root);
@@ -213,7 +213,7 @@ Expression& Expression::operator-=(const Expression& rhs) {
     m_exp_root = sub_op;
     return *this;
 }
-Expression& Expression::operator-=(std::complex<double> constant_value) {
+Expression& Expression::operator-=(Complex constant_value) {
     std::shared_ptr<Operation> sub_op = std::make_shared<Operation>(operation_type::sub);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     sub_op->set_left_operand(m_exp_root);
@@ -236,7 +236,7 @@ Expression Expression::operator*(const Expression& rhs) const {
     Expression new_exp {mul_op};
     return std::move(new_exp);
 }
-Expression Expression::operator*(std::complex<double> constant_value) const {
+Expression Expression::operator*(Complex constant_value) const {
     std::shared_ptr<Operation> mul_op = std::make_shared<Operation>(operation_type::mul);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     mul_op->set_left_operand(m_exp_root);
@@ -259,7 +259,7 @@ Expression& Expression::operator*=(const Expression& rhs) {
     m_exp_root = mul_op;
     return *this;
 }
-Expression& Expression::operator*=(std::complex<double> constant_value) {
+Expression& Expression::operator*=(Complex constant_value) {
     std::shared_ptr<Operation> mul_op = std::make_shared<Operation>(operation_type::mul);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     mul_op->set_left_operand(m_exp_root);
@@ -282,7 +282,7 @@ Expression Expression::operator/(const Expression& rhs) const {
     Expression new_exp {div_op};
     return std::move(new_exp);
 }
-Expression Expression::operator/(std::complex<double> constant_value) const {
+Expression Expression::operator/(Complex constant_value) const {
     std::shared_ptr<Operation> div_op = std::make_shared<Operation>(operation_type::div);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     div_op->set_left_operand(m_exp_root);
@@ -305,7 +305,7 @@ Expression& Expression::operator/=(const Expression& rhs) {
     m_exp_root = div_op;
     return *this;
 }
-Expression& Expression::operator/=(std::complex<double> constant_value) {
+Expression& Expression::operator/=(Complex constant_value) {
     std::shared_ptr<Operation> div_op = std::make_shared<Operation>(operation_type::div);
     std::shared_ptr<Constant> const_val = std::make_shared<Constant>(constant_value);
     div_op->set_left_operand(m_exp_root);

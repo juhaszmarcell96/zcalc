@@ -13,6 +13,7 @@ add_library(
     source.cpp
     expression.cpp
     matrix.cpp
+    complex.cpp
 )
 
 target_include_directories(
@@ -35,6 +36,7 @@ set(
     include/network.hpp
     include/matrix.hpp
     include/expression.hpp
+    include/complex.hpp
 )
 
 set_target_properties(

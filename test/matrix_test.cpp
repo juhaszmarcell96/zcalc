@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <include/complex.hpp>
+#include <include/expression.hpp>
 #include <include/matrix.hpp>
 
-#include <complex>
-
 TEST(MatrixTest, MatrixAdditionTest) {
-    std::complex<double> zero_value { 0.0, 0.0 };
+    zcalc::Complex zero_value { 0.0, 0.0 };
     zcalc::Expression zero_exp {zero_value};
 
     zcalc::Matrix matrix_0 {3, 3, zero_exp};
@@ -20,14 +20,14 @@ TEST(MatrixTest, MatrixAdditionTest) {
     ASSERT_EQ(result[0][2].evaluate(), zero_value);
     ASSERT_EQ(result[1][0].evaluate(), zero_value);
     ASSERT_EQ(result[1][1].evaluate(), zero_value);
-    ASSERT_EQ(result[1][2].evaluate(), std::complex<double>(2.0, 2.0));
+    ASSERT_EQ(result[1][2].evaluate(), zcalc::Complex(2.0, 2.0));
     ASSERT_EQ(result[2][0].evaluate(), zero_value);
     ASSERT_EQ(result[2][1].evaluate(), zero_value);
     ASSERT_EQ(result[2][2].evaluate(), zero_value);
 }
 
 TEST(MatrixTest, MatrixMultiplicationTest) {
-    std::complex<double> zero_value { 0.0, 0.0 };
+    zcalc::Complex zero_value { 0.0, 0.0 };
     zcalc::Expression zero_exp {zero_value};
 
     zcalc::Matrix matrix_0 {2, 3, zero_exp};
@@ -48,12 +48,12 @@ TEST(MatrixTest, MatrixMultiplicationTest) {
     ASSERT_EQ(result.get_num_rows(), 2);
     ASSERT_EQ(result.get_num_cols(), 1);
     
-    ASSERT_EQ(result[0][0].evaluate(), std::complex<double>(14.0, 0.0));
-    ASSERT_EQ(result[1][0].evaluate(), std::complex<double>(32.0, 0.0));
+    ASSERT_EQ(result[0][0].evaluate(), zcalc::Complex(14.0, 0.0));
+    ASSERT_EQ(result[1][0].evaluate(), zcalc::Complex(32.0, 0.0));
 }
 
 TEST(MatrixTest, MatrixEliminationTest) {
-    std::complex<double> zero_value { 0.0, 0.0 };
+    zcalc::Complex zero_value { 0.0, 0.0 };
     zcalc::Expression zero_exp {zero_value};
 
     std::vector<zcalc::Expression> result;
@@ -108,9 +108,9 @@ TEST(MatrixTest, MatrixEliminationTest) {
     success = matrix_1.solve_system_of_linear_equations(result);
 
     ASSERT_EQ(true, success);
-    ASSERT_EQ(result[0].evaluate(), std::complex<double>(1.0, 0.0));
-    ASSERT_EQ(result[1].evaluate(), std::complex<double>(-1.0, 0.0));
-    ASSERT_EQ(result[2].evaluate(), std::complex<double>(1.0, 0.0));
+    ASSERT_EQ(result[0].evaluate(), zcalc::Complex(1.0, 0.0));
+    ASSERT_EQ(result[1].evaluate(), zcalc::Complex(-1.0, 0.0));
+    ASSERT_EQ(result[2].evaluate(), zcalc::Complex(1.0, 0.0));
 
     /* no solution */
     /*  1x + 1y +   2z =  3 */
@@ -180,14 +180,14 @@ TEST(MatrixTest, MatrixEliminationTest) {
     success = matrix_4.solve_system_of_linear_equations(result);
 
     ASSERT_EQ(true, success);
-    ASSERT_EQ(result[0].evaluate(), std::complex<double>(3.0/10.0, 0.0));
-    ASSERT_EQ(result[1].evaluate(), std::complex<double>(2.0/5.0, 0.0));
-    ASSERT_EQ(result[2].evaluate(), std::complex<double>(0.0, 0.0));
+    ASSERT_EQ(result[0].evaluate(), zcalc::Complex(3.0/10.0, 0.0));
+    ASSERT_EQ(result[1].evaluate(), zcalc::Complex(2.0/5.0, 0.0));
+    ASSERT_EQ(result[2].evaluate(), zcalc::Complex(0.0, 0.0));
 
 }
 
 TEST(MatrixTest, MatrixWithVariable) {
-    std::complex<double> zero_value { 0.0, 0.0 };
+    zcalc::Complex zero_value { 0.0, 0.0 };
     zcalc::Expression zero_exp {zero_value};
 
     std::vector<zcalc::Expression> result;
@@ -217,23 +217,14 @@ TEST(MatrixTest, MatrixWithVariable) {
 
     ASSERT_EQ(true, success);
 
-    //std::cout << matrix << std::endl << std::endl;
-
     /* a != 3, b = R ==> 1 solution -> true */
     /* a = 3, b = 16 ==> infinite solutions -> false */
     /* a = 3, b != 16 ==> 0 solution -> false */
 
     a->set_value(2);
     b->set_value(3);
-
-    constexpr double epsilon = 1e-10;
-
-    /* double comparison problems occurred (-0.6666667 != -0.6666667) */
-    if (result[0].evaluate().real() < -2.0/3.0 - epsilon) ASSERT_EQ(true, false);
-    if (result[0].evaluate().real() > -2.0/3.0 + epsilon) ASSERT_EQ(true, false);
-    if (result[1].evaluate().real() < 61.0/9.0 - epsilon) ASSERT_EQ(true, false);
-    if (result[1].evaluate().real() > 61.0/9.0 + epsilon) ASSERT_EQ(true, false);
-    if (result[2].evaluate().real() < 13.0 - epsilon) ASSERT_EQ(true, false);
-    if (result[2].evaluate().real() > 13.0 + epsilon) ASSERT_EQ(true, false);
-    ASSERT_EQ(true, true);
+    
+    ASSERT_EQ(result[0].evaluate(), zcalc::Complex(-2.0/3.0, 0.0));
+    ASSERT_EQ(result[1].evaluate(), zcalc::Complex(61.0/9.0, 0.0));
+    ASSERT_EQ(result[2].evaluate(), zcalc::Complex(13.0, 0.0));
 }

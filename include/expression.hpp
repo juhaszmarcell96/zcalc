@@ -6,9 +6,9 @@
 #include <string>
 #include <algorithm>
 #include <memory>
-#include <complex>
-#include <numbers>
 #include <exception>
+
+#include <include/complex.hpp>
 
 namespace zcalc {
 
@@ -17,18 +17,18 @@ public:
     virtual ~ExpUnit() {};
 
     virtual bool is_numeric () = 0;
-    virtual std::complex<double> get () = 0;
+    virtual Complex get () = 0;
     virtual std::string to_string() const = 0;
 };
 
 class Constant : public ExpUnit {
 private:
-    std::complex<double> m_value;
+    Complex m_value;
 public:
     ~Constant() = default;
-    Constant (std::complex<double> value);
+    Constant (Complex value);
     bool is_numeric () override;
-    std::complex<double> get () override;
+    Complex get () override;
     std::string to_string() const override;
 };
 
@@ -36,14 +36,14 @@ class Variable : public ExpUnit {
 private:
     std::string m_id;
     bool m_value_known = false;
-    std::complex<double> m_value;
+    Complex m_value;
 public:
     ~Variable() = default;
     Variable (const std::string& id);
     bool is_numeric () override;
-    std::complex<double> get () override;
+    Complex get () override;
     std::string to_string() const override;
-    void set_value (std::complex<double> value);
+    void set_value (Complex value);
 };
 
 enum class operation_type {
@@ -64,7 +64,7 @@ public:
     Operation (operation_type type);
     ~Operation () = default;
     bool is_numeric () override;
-    std::complex<double> get () override;
+    Complex get () override;
     void set_left_operand (std::shared_ptr<ExpUnit> operand);
     void set_right_operand (std::shared_ptr<ExpUnit> operand);
     std::string to_string() const override;
@@ -75,44 +75,44 @@ private:
     std::shared_ptr<ExpUnit> m_exp_root = nullptr;
 public:
     Expression (std::shared_ptr<ExpUnit> exp_root);
-    Expression (std::complex<double> constant_value);
+    Expression (Complex constant_value);
     Expression ();
     ~Expression () = default;
     void print ();
     bool has_value () const;
     bool is_zero () const;
-    std::complex<double> evaluate () const;
+    Complex evaluate () const;
 
     Expression operator+(const Expression& exp) const;
-    Expression operator+(std::complex<double> constant_value) const;
+    Expression operator+(Complex constant_value) const;
     Expression operator+(std::shared_ptr<Variable> var) const;
 
     Expression& operator+=(const Expression& rhs);
-    Expression& operator+=(std::complex<double> constant_value);
+    Expression& operator+=(Complex constant_value);
     Expression& operator+=(std::shared_ptr<Variable> var);
 
     Expression operator-(const Expression& rhs) const;
-    Expression operator-(std::complex<double> constant_value) const;
+    Expression operator-(Complex constant_value) const;
     Expression operator-(std::shared_ptr<Variable> var) const;
 
     Expression& operator-=(const Expression& rhs);
-    Expression& operator-=(std::complex<double> constant_value);
+    Expression& operator-=(Complex constant_value);
     Expression& operator-=(std::shared_ptr<Variable> var);
 
     Expression operator*(const Expression& rhs) const;
-    Expression operator*(std::complex<double> constant_value) const;
+    Expression operator*(Complex constant_value) const;
     Expression operator*(std::shared_ptr<Variable> var) const;
 
     Expression& operator*=(const Expression& rhs);
-    Expression& operator*=(std::complex<double> constant_value);
+    Expression& operator*=(Complex constant_value);
     Expression& operator*=(std::shared_ptr<Variable> var);
 
     Expression operator/(const Expression& rhs) const;
-    Expression operator/(std::complex<double> constant_value) const;
+    Expression operator/(Complex constant_value) const;
     Expression operator/(std::shared_ptr<Variable> var) const;
 
     Expression& operator/=(const Expression& rhs);
-    Expression& operator/=(std::complex<double> constant_value);
+    Expression& operator/=(Complex constant_value);
     Expression& operator/=(std::shared_ptr<Variable> var);
 
     friend bool operator!=(const Expression& exp_0, const Expression& exp_1);

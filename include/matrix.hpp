@@ -7,7 +7,7 @@
 #include <numbers>
 #include <stdexcept>
 
-#include <include/expression.hpp>
+#include <include/complex.hpp>
 
 namespace zcalc {
 
@@ -19,7 +19,7 @@ nxm = 2x3
 
 class Matrix {
 private:
-    std::vector<std::vector<Expression>> m_matrix;
+    std::vector<std::vector<Complex>> m_matrix;
 
     std::size_t count_nonzero_rows (std::size_t start_row, std::size_t end_row, std::size_t start_col, std::size_t end_col);
     bool get_leftmost_nonzero_indexes(std::size_t start_row, std::size_t* ret_row_index, std::size_t* ret_col_index);
@@ -28,7 +28,7 @@ private:
     bool is_row_zero (std::size_t row_index);
     bool are_values_zero (std::size_t row_index, std::size_t col_start, std::size_t col_end);
 public:
-    Matrix (std::size_t num_rows, std::size_t num_cols, const Expression& fill_value);
+    Matrix (std::size_t num_rows, std::size_t num_cols, const Complex& fill_value);
     Matrix (std::size_t num_rows, std::size_t num_cols);
     Matrix () = delete;
     ~Matrix () = default;
@@ -36,18 +36,18 @@ public:
     std::size_t get_num_rows () const;
     std::size_t get_num_cols () const;
 
-    std::vector<Expression> operator[](const std::size_t i) const;
-    std::vector<Expression>& operator[](const std::size_t i);
-    Expression operator()(const std::size_t i, const std::size_t j) const;
-    Expression& operator()(const std::size_t i, const std::size_t j);
-    std::vector<Expression> operator()(const std::size_t i) const;
-    std::vector<Expression>& operator()(const std::size_t i);
+    std::vector<Complex> operator[](const std::size_t i) const;
+    std::vector<Complex>& operator[](const std::size_t i);
+    Complex operator()(const std::size_t i, const std::size_t j) const;
+    Complex& operator()(const std::size_t i, const std::size_t j);
+    std::vector<Complex> operator()(const std::size_t i) const;
+    std::vector<Complex>& operator()(const std::size_t i);
     Matrix operator+(const Matrix& matrix) const;
     Matrix operator-(const Matrix& matrix) const;
-    Matrix operator*(const Expression& scalar) const;
-    friend Matrix operator*(const Expression& scalar, const Matrix& matrix);
-    Matrix operator/(const Expression& scalar) const;
-    friend Matrix operator/(const Expression& scalar, const Matrix& matrix);
+    Matrix operator*(const Complex& scalar) const;
+    friend Matrix operator*(const Complex& scalar, const Matrix& matrix);
+    Matrix operator/(const Complex& scalar) const;
+    friend Matrix operator/(const Complex& scalar, const Matrix& matrix);
     Matrix& operator=(const Matrix& matrix);
     friend bool operator==(const Matrix& matrix_1, const Matrix& matrix_2);
     friend bool operator!=(const Matrix& matrix_1, const Matrix& matrix_2);
@@ -55,7 +55,7 @@ public:
     /* A_nxm * B_mxr = C_nxr */
     Matrix operator*(const Matrix& matrix) const;
     
-    bool solve_system_of_linear_equations(std::vector<Expression>& solution);
+    bool solve_system_of_linear_equations(std::vector<Complex>& solution);
 
     void print ();
 

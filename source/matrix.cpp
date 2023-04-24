@@ -7,7 +7,7 @@ std::size_t Matrix::count_nonzero_rows (std::size_t start_row, std::size_t end_r
     for (std::size_t row_index = start_row; row_index <= end_row; ++row_index) {
         bool is_row_all_zero = true;
         for (std::size_t col_index = start_col; col_index <= end_col; ++col_index) {
-            if (!m_matrix[row_index][col_index].is_zero()) {
+            if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) {
                 is_row_all_zero = false;
             }
         }
@@ -19,7 +19,7 @@ std::size_t Matrix::count_nonzero_rows (std::size_t start_row, std::size_t end_r
 bool Matrix::get_leftmost_nonzero_indexes(std::size_t start_row, std::size_t* ret_row_index, std::size_t* ret_col_index) {
     for (std::size_t col_index = 0; col_index < get_num_cols(); ++col_index) {
         for (std::size_t row_index = start_row; row_index < get_num_rows(); ++row_index) {
-            if (!m_matrix[row_index][col_index].is_zero()) {
+            if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) {
                 *ret_row_index = row_index;
                 *ret_col_index = col_index;
                 return true;
@@ -32,14 +32,14 @@ bool Matrix::get_leftmost_nonzero_indexes(std::size_t start_row, std::size_t* re
 
 void Matrix::switch_rows (const std::size_t i, const std::size_t j) {
     if (i == j) return;
-    std::vector<Expression> tmp = m_matrix[i];
+    std::vector<Complex> tmp = m_matrix[i];
     m_matrix[i] = m_matrix[j];
     m_matrix[j] = tmp;
 }
 
 bool Matrix::move_nonzero_row (std::size_t starting_row_index, std::size_t column_index) {
     for (std::size_t i = starting_row_index; i < get_num_rows(); ++i) {
-        if (!m_matrix[i][column_index].is_zero()) {
+        if (m_matrix[i][column_index] != Complex{0.0, 0.0}) {
             switch_rows(starting_row_index, i);
             return true;
         }
@@ -49,7 +49,7 @@ bool Matrix::move_nonzero_row (std::size_t starting_row_index, std::size_t colum
 
 bool Matrix::is_row_zero (std::size_t row_index) {
     for (std::size_t col_index = 0; col_index < get_num_cols(); ++col_index) {
-        if (!m_matrix[row_index][col_index].is_zero()) {
+        if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) {
             return false;
         }
     }
@@ -58,33 +58,33 @@ bool Matrix::is_row_zero (std::size_t row_index) {
 
 bool Matrix::are_values_zero (std::size_t row_index, std::size_t col_start, std::size_t col_end) {
     for (std::size_t col_index = col_start; col_index < col_end; ++col_index) {
-        if (!m_matrix[row_index][col_index].is_zero()) {
+        if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) {
             return false;
         }
     }
     return true;
 }
 
-Matrix::Matrix (std::size_t num_rows, std::size_t num_cols, const Expression& fill_value) {
+Matrix::Matrix (std::size_t num_rows, std::size_t num_cols, const Complex& fill_value) {
     if (num_rows == 0) throw std::invalid_argument("number of rows cannot be 0");
     if (num_cols == 0) throw std::invalid_argument("number of columns cannot be 0");
-    m_matrix = std::vector<std::vector<Expression>>(num_rows, std::vector<Expression>(num_cols, fill_value));
+    m_matrix = std::vector<std::vector<Complex>>(num_rows, std::vector<Complex>(num_cols, fill_value));
 }
 Matrix::Matrix (std::size_t num_rows, std::size_t num_cols) {
     if (num_rows == 0) throw std::invalid_argument("number of rows cannot be 0");
     if (num_cols == 0) throw std::invalid_argument("number of columns cannot be 0");
-    m_matrix = std::vector<std::vector<Expression>>(num_rows, std::vector<Expression>(num_cols));
+    m_matrix = std::vector<std::vector<Complex>>(num_rows, std::vector<Complex>(num_cols));
 }
 
 std::size_t Matrix::get_num_rows () const { return m_matrix.size(); }
 std::size_t Matrix::get_num_cols () const { return m_matrix[0].size(); }
 
-std::vector<Expression> Matrix::operator[](const std::size_t i) const { return m_matrix[i]; }
-std::vector<Expression>& Matrix::operator[](const std::size_t i) { return m_matrix[i]; }
-Expression Matrix::operator()(const std::size_t i, const std::size_t j) const { return m_matrix[i][j]; }
-Expression& Matrix::operator()(const std::size_t i, const std::size_t j) { return m_matrix[i][j]; }
-std::vector<Expression> Matrix::operator()(const std::size_t i) const { return m_matrix[i]; }
-std::vector<Expression>& Matrix::operator()(const std::size_t i) { return m_matrix[i]; }
+std::vector<Complex> Matrix::operator[](const std::size_t i) const { return m_matrix[i]; }
+std::vector<Complex>& Matrix::operator[](const std::size_t i) { return m_matrix[i]; }
+Complex Matrix::operator()(const std::size_t i, const std::size_t j) const { return m_matrix[i][j]; }
+Complex& Matrix::operator()(const std::size_t i, const std::size_t j) { return m_matrix[i][j]; }
+std::vector<Complex> Matrix::operator()(const std::size_t i) const { return m_matrix[i]; }
+std::vector<Complex>& Matrix::operator()(const std::size_t i) { return m_matrix[i]; }
 Matrix Matrix::operator+(const Matrix& matrix) const {
     if (matrix.get_num_rows() != get_num_rows()) throw std::invalid_argument("matrixes must be of the same dimension");
     if (matrix.get_num_cols() != get_num_cols()) throw std::invalid_argument("matrixes must be of the same dimension");
@@ -107,7 +107,7 @@ Matrix Matrix::operator-(const Matrix& matrix) const {
     }
     return std::move(ret_matrix);
 }
-Matrix Matrix::operator*(const Expression& scalar) const {
+Matrix Matrix::operator*(const Complex& scalar) const {
     Matrix ret_matrix {get_num_rows(), get_num_cols()};
     for (std::size_t i = 0; i < get_num_rows(); ++i) {
         for (std::size_t j = 0; j < get_num_cols(); ++j) {
@@ -116,7 +116,7 @@ Matrix Matrix::operator*(const Expression& scalar) const {
     }
     return std::move(ret_matrix);
 }
-Matrix operator*(const Expression& scalar, const Matrix& matrix) {
+Matrix operator*(const Complex& scalar, const Matrix& matrix) {
     Matrix ret_matrix {matrix.get_num_rows(), matrix.get_num_cols()};
     for (std::size_t i = 0; i < matrix.get_num_rows(); ++i) {
         for (std::size_t j = 0; j < matrix.get_num_cols(); ++j) {
@@ -125,7 +125,7 @@ Matrix operator*(const Expression& scalar, const Matrix& matrix) {
     }
     return std::move(ret_matrix);
 }
-Matrix Matrix::operator/(const Expression& scalar) const {
+Matrix Matrix::operator/(const Complex& scalar) const {
     Matrix ret_matrix {get_num_rows(), get_num_cols()};
     for (std::size_t i = 0; i < get_num_rows(); ++i) {
         for (std::size_t j = 0; j < get_num_cols(); ++j) {
@@ -134,7 +134,7 @@ Matrix Matrix::operator/(const Expression& scalar) const {
     }
     return std::move(ret_matrix);
 }
-Matrix operator/(const Expression& scalar, const Matrix& matrix) {
+Matrix operator/(const Complex& scalar, const Matrix& matrix) {
     Matrix ret_matrix {matrix.get_num_rows(), matrix.get_num_cols()};
     for (std::size_t i = 0; i < matrix.get_num_rows(); ++i) {
         for (std::size_t j = 0; j < matrix.get_num_cols(); ++j) {
@@ -177,7 +177,7 @@ Matrix Matrix::operator*(const Matrix& matrix) const {
     Matrix ret_matrix {get_num_rows(), matrix.get_num_cols()};
     for (std::size_t i = 0; i < ret_matrix.get_num_rows(); ++i) {
         for (std::size_t j = 0; j < ret_matrix.get_num_cols(); ++j) {
-            ret_matrix.m_matrix[i][j] = Expression { Complex { 0.0, 0.0 } };
+            ret_matrix.m_matrix[i][j] = Complex { 0.0, 0.0 };
             for (std::size_t k = 0; k < get_num_cols(); ++k) {
                 ret_matrix.m_matrix[i][j] += m_matrix[i][k] * matrix.m_matrix[k][j];
             }
@@ -186,9 +186,9 @@ Matrix Matrix::operator*(const Matrix& matrix) const {
     return std::move(ret_matrix);
 }
 
-bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution) {
+bool Matrix::solve_system_of_linear_equations(std::vector<Complex>& solution) {
     //std::cout << "###################### elimination ######################" << std::endl;
-    print();
+    //print();
     /* there must be more equations than variables -> equal or more more rows than columns */
     if (get_num_cols() > get_num_rows() + 1) return false;
     /* algorithm for reducing the matrix to row echelon form */
@@ -208,22 +208,22 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution)
         //print();
         /* STEP : use elementary row operations to put a 1 in the topmost position of this column */
         //std::cout << "STEP : use elementary row operations to put a 1 in the topmost position of this column" << std::endl;
-        Expression divisor = m_matrix[row_index][leftmost_nonzero_col_index];
-        m_matrix[row_index][leftmost_nonzero_col_index] = Expression { Complex { 1.0, 0.0 } };
+        Complex divisor = m_matrix[row_index][leftmost_nonzero_col_index];
+        m_matrix[row_index][leftmost_nonzero_col_index] = Complex { 1.0, 0.0 };
         for (std::size_t col_index = leftmost_nonzero_col_index + 1; col_index < get_num_cols(); ++col_index) {
-            if (!m_matrix[row_index][col_index].is_zero()) m_matrix[row_index][col_index] = m_matrix[row_index][col_index] / divisor;
+            if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) m_matrix[row_index][col_index] = m_matrix[row_index][col_index] / divisor;
         }
         //print();
         /* STEP : use elementary row operations to put zeros below the pivot position */
         /*        -> subtract the scalar multiplication of this row from every row below it so that the values of the same column become 0 */
         //std::cout << "STEP : use elementary row operations to put zeros below the pivot position" << std::endl;
         for (std::size_t i = row_index + 1; i < get_num_rows(); ++i) {
-            Expression multiplier = m_matrix[i][leftmost_nonzero_col_index] / m_matrix[row_index][leftmost_nonzero_col_index];
+            Complex multiplier = m_matrix[i][leftmost_nonzero_col_index] / m_matrix[row_index][leftmost_nonzero_col_index];
             for (std::size_t j = 0; j < get_num_cols(); ++j) {
                 m_matrix[i][j] = m_matrix[i][j] - multiplier * m_matrix[row_index][j];
             }
         }
-        print();
+        //print();
     }
     //print();
     /* at this point we have a row echelon form -> check maybe? */
@@ -239,10 +239,10 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution)
         if (are_values_zero(row_index, 0, get_num_cols() - 1)) continue;
         std::size_t leading_one_index;
         for (size_t col_index = 0; col_index < get_num_cols() - 1; ++col_index) {
-            if (!m_matrix[row_index][col_index].is_zero()) leading_one_index = col_index;
+            if (m_matrix[row_index][col_index] != Complex{0.0, 0.0}) leading_one_index = col_index;
         }
         for (int backsub_row_index = row_index - 1; backsub_row_index >= 0; --backsub_row_index) {
-            Expression multiplier = m_matrix[backsub_row_index][leading_one_index] / m_matrix[row_index][leading_one_index];
+            Complex multiplier = m_matrix[backsub_row_index][leading_one_index] / m_matrix[row_index][leading_one_index];
             m_matrix[backsub_row_index][leading_one_index] = m_matrix[backsub_row_index][leading_one_index] - (multiplier * m_matrix[row_index][leading_one_index]);
             m_matrix[backsub_row_index][last_col_index] = m_matrix[backsub_row_index][last_col_index] - (multiplier * m_matrix[row_index][last_col_index]);
         }
@@ -266,10 +266,10 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution)
     }
     //std::cout << "#########################################################" << std::endl;
     /* solution */
-    solution = std::vector<Expression>(get_num_cols() - 1);
+    solution = std::vector<Complex>(get_num_cols() - 1);
     for (size_t i = 0; i < get_num_rows(); ++i) {
         for (size_t j = 0; j < get_num_cols() - 1; ++j) {
-            if (!m_matrix[i][j].is_zero()) {
+            if (m_matrix[i][j] != Complex{0.0, 0.0}) {
                 solution[j] = m_matrix[i][get_num_cols() - 1];
                 break;
             }
@@ -280,9 +280,9 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution)
 
 void Matrix::print () {
     std::cout << "dimensions : " << get_num_rows() << "x" << get_num_cols() << std::endl;
-    for (const std::vector<Expression>& row : m_matrix) {
+    for (const std::vector<Complex>& row : m_matrix) {
         std::cout << "[ ";
-        for (const Expression& val : row) {
+        for (const Complex& val : row) {
             std::cout << val << " ";
         }
         std::cout << "]" << std::endl;
@@ -291,9 +291,9 @@ void Matrix::print () {
 
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
     os << "dimensions : " << matrix.get_num_rows() << "x" << matrix.get_num_cols() << std::endl;
-    for (const std::vector<Expression>& row : matrix.m_matrix) {
+    for (const std::vector<Complex>& row : matrix.m_matrix) {
         os << "[ ";
-        for (const Expression& val : row) {
+        for (const Complex& val : row) {
             os << val << " ";
         }
         os << "]" << std::endl;

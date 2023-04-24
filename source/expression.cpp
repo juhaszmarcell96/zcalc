@@ -7,6 +7,9 @@ Constant::Constant (Complex value) : m_value(value) {}
 bool Constant::is_numeric () {
     return true;
 }
+void Constant::reduce () {
+    return;
+}
 Complex Constant::get () {
     return m_value;
 }
@@ -24,6 +27,9 @@ std::string Constant::to_string() const {
 Variable::Variable (const std::string& id) : m_id(id) {}
 bool Variable::is_numeric () {
     return m_value_known;
+}
+void Variable::reduce () {
+    return;
 }
 Complex Variable::get () {
     if (!m_value_known) throw std::domain_error("ERROR : variable value is unknown");
@@ -44,6 +50,21 @@ bool Operation::is_numeric () {
     if (!m_left_operand->is_numeric()) return false;
     if (!m_right_operand->is_numeric()) return false;
     return true;
+}
+void Operation::reduce () {
+    if (m_left_operand->is_numeric()) {
+        m_left_operand = std::make_shared<Constant>(m_left_operand->get());
+    }
+    else {
+        m_left_operand->reduce();
+    }
+    if (m_right_operand->is_numeric()) {
+        m_right_operand = std::make_shared<Constant>(m_right_operand->get());
+    }
+    else {
+        m_right_operand->reduce();
+    }
+    return;
 }
 Complex Operation::get () {
     if (m_left_operand == nullptr) throw std::domain_error("ERROR : operand cannot be null");
@@ -130,6 +151,10 @@ bool Expression::has_value () const {
 bool Expression::is_zero () const {
     if (!has_value()) return false;
     return evaluate() == Complex { 0.0, 0.0 };
+}
+void Expression::reduce () {
+    m_exp_root->reduce();
+    return;
 }
 
 Complex Expression::evaluate () const {

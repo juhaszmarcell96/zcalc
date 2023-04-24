@@ -188,7 +188,7 @@ Matrix Matrix::operator*(const Matrix& matrix) const {
 
 bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution) {
     //std::cout << "###################### elimination ######################" << std::endl;
-    //print();
+    print();
     /* there must be more equations than variables -> equal or more more rows than columns */
     if (get_num_cols() > get_num_rows() + 1) return false;
     /* algorithm for reducing the matrix to row echelon form */
@@ -223,7 +223,7 @@ bool Matrix::solve_system_of_linear_equations(std::vector<Expression>& solution)
                 m_matrix[i][j] = m_matrix[i][j] - multiplier * m_matrix[row_index][j];
             }
         }
-        //print();
+        print();
     }
     //print();
     /* at this point we have a row echelon form -> check maybe? */

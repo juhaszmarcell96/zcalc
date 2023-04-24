@@ -228,3 +228,71 @@ TEST(MatrixTest, MatrixWithVariable) {
     ASSERT_EQ(result[1].evaluate(), zcalc::Complex(61.0/9.0, 0.0));
     ASSERT_EQ(result[2].evaluate(), zcalc::Complex(13.0, 0.0));
 }
+
+TEST(MatrixTest, SimpleCircuitTest) {
+    /**
+     * Simple circuit consisting of a voltage source and 2 resistors in series.
+     * -> the linear equation system is as follows
+     *    - is - i1 = 0
+     *    is + i2 = 0
+     *    i1 - i2 = 0
+     *    us - u2 - u1 = 0
+     *    u1 - R1*i1 = 0
+     *    u2 - R2*i2 = 0
+     *    us = Us
+     * 
+     *  ->  us   u1   u2   is   i1   i2    b
+     *      0     0    0   -1   -1    0    0
+     *      0     0    0    1    0    1    0
+     *      0     0    0    0    1   -1    0
+     *      1    -1   -1    0    0    0    0
+     *      0     1    0    0   -R1   0    0
+     *      0     0    1    0    0   -R2   0
+     *      1     0    0    0    0    0    Us
+     * 
+     *  Solution for Us=5V and R1=10ohm R2=10ohm -> is=i1=i2=5V/20ohm=0.25A (is has opposite direction, so it is negative), u1=u2=2.5V
+    **/
+    zcalc::Complex zero_value { 0.0, 0.0 };
+    zcalc::Expression zero_exp {zero_value};
+
+    std::vector<zcalc::Expression> result;
+    bool success = false;
+    
+    std::shared_ptr<zcalc::Variable> Us = std::make_shared<zcalc::Variable>("Us");
+    std::shared_ptr<zcalc::Variable> R1 = std::make_shared<zcalc::Variable>("R1");
+    std::shared_ptr<zcalc::Variable> R2 = std::make_shared<zcalc::Variable>("R2");
+
+    zcalc::Matrix matrix {7, 7, zero_value};
+    matrix[0][3] = zcalc::Expression{-1};
+    matrix[0][4] = zcalc::Expression{-1};
+    matrix[1][3] = zcalc::Expression{1};
+    matrix[1][5] = zcalc::Expression{1};
+    matrix[2][4] = zcalc::Expression{1};
+    matrix[2][5] = zcalc::Expression{-1};
+    matrix[3][0] = zcalc::Expression{1};
+    matrix[3][1] = zcalc::Expression{-1};
+    matrix[3][2] = zcalc::Expression{-1};
+    matrix[4][1] = zcalc::Expression{1};
+    matrix[4][4] = zcalc::Expression{R1} * -1;
+    matrix[5][2] = zcalc::Expression{1};
+    matrix[5][5] = zcalc::Expression{R2} * -1;
+    matrix[6][0] = zcalc::Expression{1};
+    matrix[6][6] = zcalc::Expression{Us};
+
+    matrix.print();
+
+    success = matrix.solve_system_of_linear_equations(result);
+
+    ASSERT_EQ(true, success);
+
+    Us->set_value(5);
+    R1->set_value(10);
+    R2->set_value(10);
+    
+    ASSERT_EQ(result[0].evaluate(), zcalc::Complex(5.0, 0.0));
+    ASSERT_EQ(result[1].evaluate(), zcalc::Complex(5.0/2.0, 0.0));
+    ASSERT_EQ(result[2].evaluate(), zcalc::Complex(5.0/2.0, 0.0));
+    ASSERT_EQ(result[3].evaluate(), zcalc::Complex(-1.0/4.0, 0.0));
+    ASSERT_EQ(result[4].evaluate(), zcalc::Complex(1.0/4.0, 0.0));
+    ASSERT_EQ(result[5].evaluate(), zcalc::Complex(1.0/4.0, 0.0));
+}

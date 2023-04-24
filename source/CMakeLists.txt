@@ -12,6 +12,7 @@ add_library(
     network.cpp
     source.cpp
     expression.cpp
+    matrix.cpp
 )
 
 target_include_directories(

@@ -16,8 +16,9 @@ class ExpUnit {
 public:
     virtual ~ExpUnit() {};
 
+    virtual bool is_numeric () = 0;
     virtual std::complex<double> get () = 0;
-    virtual void print() const = 0;
+    virtual std::string to_string() const = 0;
 };
 
 class Constant : public ExpUnit {
@@ -26,8 +27,9 @@ private:
 public:
     ~Constant() = default;
     Constant (std::complex<double> value);
+    bool is_numeric () override;
     std::complex<double> get () override;
-    void print() const override;
+    std::string to_string() const override;
 };
 
 class Variable : public ExpUnit {
@@ -38,8 +40,9 @@ private:
 public:
     ~Variable() = default;
     Variable (const std::string& id);
+    bool is_numeric () override;
     std::complex<double> get () override;
-    void print() const override;
+    std::string to_string() const override;
     void set_value (std::complex<double> value);
 };
 
@@ -60,21 +63,25 @@ public:
     Operation () = delete;
     Operation (operation_type type);
     ~Operation () = default;
+    bool is_numeric () override;
     std::complex<double> get () override;
     void set_left_operand (std::shared_ptr<ExpUnit> operand);
     void set_right_operand (std::shared_ptr<ExpUnit> operand);
-    void print() const override;
+    std::string to_string() const override;
 };
 
 class Expression {
 private:
     std::shared_ptr<ExpUnit> m_exp_root = nullptr;
 public:
-    Expression () = delete;
     Expression (std::shared_ptr<ExpUnit> exp_root);
     Expression (std::complex<double> constant_value);
+    Expression ();
+    ~Expression () = default;
     void print ();
-    std::complex<double> evaluate ();
+    bool has_value () const;
+    bool is_zero () const;
+    std::complex<double> evaluate () const;
 
     Expression operator+(const Expression& exp) const;
     Expression operator+(std::complex<double> constant_value) const;
@@ -84,29 +91,34 @@ public:
     Expression& operator+=(std::complex<double> constant_value);
     Expression& operator+=(std::shared_ptr<Variable> var);
 
-    Expression operator-(const Expression& rhs);
-    Expression operator-(std::complex<double> constant_value);
-    Expression operator-(std::shared_ptr<Variable> var);
+    Expression operator-(const Expression& rhs) const;
+    Expression operator-(std::complex<double> constant_value) const;
+    Expression operator-(std::shared_ptr<Variable> var) const;
 
     Expression& operator-=(const Expression& rhs);
     Expression& operator-=(std::complex<double> constant_value);
     Expression& operator-=(std::shared_ptr<Variable> var);
 
-    Expression operator*(const Expression& rhs);
-    Expression operator*(std::complex<double> constant_value);
-    Expression operator*(std::shared_ptr<Variable> var);
+    Expression operator*(const Expression& rhs) const;
+    Expression operator*(std::complex<double> constant_value) const;
+    Expression operator*(std::shared_ptr<Variable> var) const;
 
     Expression& operator*=(const Expression& rhs);
     Expression& operator*=(std::complex<double> constant_value);
     Expression& operator*=(std::shared_ptr<Variable> var);
 
-    Expression operator/(const Expression& rhs);
-    Expression operator/(std::complex<double> constant_value);
-    Expression operator/(std::shared_ptr<Variable> var);
+    Expression operator/(const Expression& rhs) const;
+    Expression operator/(std::complex<double> constant_value) const;
+    Expression operator/(std::shared_ptr<Variable> var) const;
 
     Expression& operator/=(const Expression& rhs);
     Expression& operator/=(std::complex<double> constant_value);
     Expression& operator/=(std::shared_ptr<Variable> var);
+
+    friend bool operator!=(const Expression& exp_0, const Expression& exp_1);
+    friend bool operator==(const Expression& exp_0, const Expression& exp_1);
+
+    friend std::ostream& operator<<(std::ostream& os, const Expression& exp);
 };
 
 class Equation {

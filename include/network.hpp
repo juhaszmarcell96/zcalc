@@ -10,7 +10,7 @@
 namespace zcalc {
 
 
-struct Node {
+struct GraphNode {
     std::string name;
     bool visited = false;
     bool start = false;
@@ -22,7 +22,7 @@ enum class edge_type {
     impedance
 };
 
-struct Edge {
+struct GraphEdge {
     std::string designator;
     std::size_t node_0_index;
     std::size_t node_1_index;
@@ -42,8 +42,8 @@ enum class cycle_unit_type {
 struct CycleUnit {
     cycle_unit_type type;
     union {
-        Node* node_ptr;
-        Edge* edge_ptr;
+        GraphNode* node_ptr;
+        GraphEdge* edge_ptr;
     };
     std::string name;
 };
@@ -52,8 +52,8 @@ typedef std::vector<CycleUnit> Cycle;
 
 class Network {
 private:
-    std::vector<Node> m_nodes;
-    std::vector<Edge> m_edges;
+    std::vector<GraphNode> m_nodes;
+    std::vector<GraphEdge> m_edges;
 
     std::vector<Cycle> m_cycles;
     std::vector<std::vector<std::complex<double>>> m_matrix;

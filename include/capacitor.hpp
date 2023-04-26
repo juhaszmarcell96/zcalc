@@ -7,6 +7,7 @@ namespace zcalc {
 class Capacitor : public Impedance {
 public:
     Capacitor(double capacitance, double frequency);
+    ~Capacitor() = default;
 };
 
 } /* namespace zcalc */

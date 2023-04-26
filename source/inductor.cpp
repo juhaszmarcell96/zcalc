@@ -1,3 +1,5 @@
+#include <numbers>
+
 #include <include/inductor.hpp>
 #include <include/common.hpp>
 

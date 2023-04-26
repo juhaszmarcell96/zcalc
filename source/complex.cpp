@@ -12,6 +12,8 @@ Complex::Complex(int real, int imag) : m_value(real, imag) {}
 
 Complex::Complex(std::complex<double> value) : m_value(value) {}
 
+std::complex<double> Complex::get () const { return m_value; }
+
 double Complex::real () const { return m_value.real(); }
 double Complex::imag () const { return m_value.imag(); }
 

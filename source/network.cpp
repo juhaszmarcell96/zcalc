@@ -20,16 +20,16 @@ void Network::node_cycle (std::size_t node_index, Cycle cycle) {
     if (!m_nodes[node_index].visited) {
         m_nodes[node_index].visited = true;                                     /* set the node to visited */
         CycleUnit node_unit { .type = cycle_unit_type::node,
-                                .node_ptr = &m_nodes[node_index],
-                                .name = m_nodes[node_index].name };
+                              .node_ptr = &m_nodes[node_index],
+                              .name = m_nodes[node_index].name };
         cycle.push_back(std::move(node_unit));                                  /* put the node into the path */
-        for (Edge& edge : m_edges) {                                            /* go through every unvisited edge */
+        for (GraphEdge& edge : m_edges) {                                       /* go through every unvisited edge */
             if (edge.visited == false) {
                 Cycle own_cycle = cycle;                                        /* clone the path */
                 edge.visited = true;                                            /* set the edge to visited */
                 CycleUnit edge_unit { .type = cycle_unit_type::edge, 
-                                        .edge_ptr = &edge,
-                                        .name = edge.designator };
+                                      .edge_ptr = &edge,
+                                      .name = edge.designator };
                 own_cycle.push_back(std::move(edge_unit));                      /* add the edge to the path */
                 if (edge.node_0_index == node_index) {                          /* if one end of the edge is connected to this node */
                     node_cycle(edge.node_1_index, own_cycle);                   /* call the node cycle */
@@ -62,13 +62,13 @@ bool Network::are_cycles_same (Cycle cycle_0, Cycle cycle_1) {
 }
 
 void Network::add_node (const std::string& node_name) {
-    for (const Node& node : m_nodes) {
+    for (const GraphNode& node : m_nodes) {
         if (node_name.compare(node.name) == 0) {
             std::cout << "ERROR : node already exists" << std::endl;
             return;
         }
     }
-    Node n;
+    GraphNode n;
     n.name = node_name;
     n.visited = false;
     n.start = false;
@@ -76,13 +76,13 @@ void Network::add_node (const std::string& node_name) {
 }
 
 void Network::add_resistor (const std::string& designator, double resistance, const std::string& node_0_name, const std::string& node_1_name) {
-    for (const Edge& edge : m_edges) {
+    for (const GraphEdge& edge : m_edges) {
         if (designator.compare(edge.designator) == 0) {
             std::cout << "ERROR : edge already exists" << std::endl;
             return;
         }
     }
-    Edge e;
+    GraphEdge e;
     e.designator = designator;
     e.type = edge_type::impedance;
     e.impedance_ptr = std::make_shared<Resistor>(resistance);
@@ -106,13 +106,13 @@ void Network::add_resistor (const std::string& designator, double resistance, co
 }
 
 void Network::add_inductor (const std::string& designator, double inductance, const std::string& node_0_name, const std::string& node_1_name) {
-    for (const Edge& edge : m_edges) {
+    for (const GraphEdge& edge : m_edges) {
         if (designator.compare(edge.designator) == 0) {
             std::cout << "ERROR : edge already exists" << std::endl;
             return;
         }
     }
-    Edge e;
+    GraphEdge e;
     e.designator = designator;
     e.type = edge_type::impedance;
     e.impedance_ptr = std::make_shared<Inductor>(inductance, m_frequency);
@@ -136,13 +136,13 @@ void Network::add_inductor (const std::string& designator, double inductance, co
 }
 
 void Network::add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_name, const std::string& node_1_name) {
-    for (const Edge& edge : m_edges) {
+    for (const GraphEdge& edge : m_edges) {
         if (designator.compare(edge.designator) == 0) {
             std::cout << "ERROR : edge already exists" << std::endl;
             return;
         }
     }
-    Edge e;
+    GraphEdge e;
     e.designator = designator;
     e.type = edge_type::impedance;
     e.impedance_ptr = std::make_shared<Capacitor>(capacitance, m_frequency);
@@ -166,7 +166,7 @@ void Network::add_capacitor (const std::string& designator, double capacitance, 
 }
 
 void Network::add_source (const std::string& designator, double voltage, const std::string& node_0_name, const std::string& node_1_name) {
-    for (const Edge& edge : m_edges) {
+    for (const GraphEdge& edge : m_edges) {
         if (designator.compare(edge.designator) == 0) {
             std::cout << "ERROR : edge already exists" << std::endl;
             return;
@@ -176,7 +176,7 @@ void Network::add_source (const std::string& designator, double voltage, const s
             return;
         }
     }
-    Edge e;
+    GraphEdge e;
     e.designator = designator;
     e.type = edge_type::source;
     e.source_ptr = std::make_shared<Source>(voltage);
@@ -201,7 +201,7 @@ void Network::add_source (const std::string& designator, double voltage, const s
 
 void Network::compute () {
     bool source_found = false;
-    for (const Edge& edge : m_edges) {
+    for (const GraphEdge& edge : m_edges) {
         if (edge.type == edge_type::source) {
             source_found = true;
             break;
@@ -214,7 +214,7 @@ void Network::compute () {
     /* assign the matrix indexes and allocate the matrix */
     /* source voltage has the last index */
     std::size_t index = 0;
-    for (Edge& edge : m_edges) {
+    for (GraphEdge& edge : m_edges) {
         if (edge.type == edge_type::impedance) {
             edge.current_index = index;
             edge.voltage_index = index + m_edges.size();
@@ -246,11 +246,11 @@ void Network::compute () {
 void Network::print () {
     std::cout << "frequency : " << m_frequency << std::endl;
     std::cout << "nodes" << std::endl;
-    for (const Node& node : m_nodes) {
+    for (const GraphNode& node : m_nodes) {
         std::cout << "    " << node.name << std::endl;
     }
     std::cout << "edges" << std::endl;
-    for (const Edge& edge : m_edges) {
+    for (const GraphEdge& edge : m_edges) {
         std::cout << "    " << m_nodes[edge.node_0_index].name << " - " << edge.designator << " - " << m_nodes[edge.node_1_index].name << std::endl;
     }
 }
@@ -259,11 +259,11 @@ void Network::compute_cycles () {
     m_cycles.clear();
     for (std::size_t i = 0; i < m_nodes.size(); ++i) {
         Cycle cycle;
-        for (Node& node_tmp : m_nodes) {
+        for (GraphNode& node_tmp : m_nodes) {
             node_tmp.start = false;
             node_tmp.visited = false;
         }
-        for (Edge& edge_tmp : m_edges) {
+        for (GraphEdge& edge_tmp : m_edges) {
             edge_tmp.visited = false;
         }
         m_nodes[i].start = true;
@@ -289,7 +289,7 @@ void Network::compute_equations () {
     std::size_t row_index = 0;
     /* Kirchhoff's current law */
     for (std::size_t i = 0; i < m_nodes.size(); ++i) {
-        for (const Edge& edge : m_edges) {
+        for (const GraphEdge& edge : m_edges) {
             if (edge.node_0_index == i) {
                 /* outgoing current */
                 m_matrix[row_index][edge.current_index] = std::complex<double>{-1.0, 0.0};
@@ -309,9 +309,9 @@ void Network::compute_equations () {
     }
 
     /* equation for every impedance */
-    for (const Edge& edge : m_edges) {
+    for (const GraphEdge& edge : m_edges) {
         if (edge.type == edge_type::impedance) {
-            m_matrix[row_index][edge.current_index] = -edge.impedance_ptr->get_impedance();;
+            m_matrix[row_index][edge.current_index] = edge.impedance_ptr->get_impedance().get() * std::complex<double>{-1.0, 0.0};
             m_matrix[row_index][edge.voltage_index] = std::complex<double>{1.0, 0.0};
         }
         else {
@@ -333,7 +333,7 @@ void Network::compute_equations () {
                 }
             }
             else {
-                Edge* edge_ptr = unit.edge_ptr;
+                GraphEdge* edge_ptr = unit.edge_ptr;
                 if (edge_ptr->type == edge_type::impedance) {
                     if (edge_ptr->node_0_index == from_node_id) m_matrix[row_index][edge_ptr->voltage_index] = std::complex<double>{1.0, 0.0};
                     else m_matrix[row_index][edge_ptr->voltage_index] = std::complex<double>{-1.0, 0.0};

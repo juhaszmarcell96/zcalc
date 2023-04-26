@@ -16,6 +16,8 @@ public:
     Complex(std::complex<double> value);
     ~Complex() = default;
 
+    std::complex<double> get () const;
+
     double real () const;
     double imag () const;
 

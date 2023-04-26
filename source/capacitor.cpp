@@ -1,3 +1,5 @@
+#include <numbers>
+
 #include <include/capacitor.hpp>
 #include <include/common.hpp>
 

@@ -5,6 +5,7 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(
     zcalc_obj OBJECT
+    component.cpp
     impedance.cpp
     resistor.cpp
     capacitor.cpp
@@ -29,6 +30,8 @@ target_include_directories(
 
 set(
     ZCALC_INCLUDE_FILES
+    include/node.hpp
+    include/component.hpp
     include/common.hpp
     include/reistor.hpp
     include/capacitor.hpp

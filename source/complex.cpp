@@ -17,6 +17,9 @@ std::complex<double> Complex::get () const { return m_value; }
 double Complex::real () const { return m_value.real(); }
 double Complex::imag () const { return m_value.imag(); }
 
+Complex Complex::operator-() { return std::move(Complex{-m_value}); }
+Complex Complex::operator+() { return std::move(Complex{+m_value}); }
+
 Complex& Complex::operator+=(const Complex& other) { m_value += other.m_value; return *this; }
 Complex& Complex::operator-=(const Complex& other) { m_value -= other.m_value; return *this; }
 Complex& Complex::operator*=(const Complex& other) { m_value *= other.m_value; return *this; }

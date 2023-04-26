@@ -21,6 +21,9 @@ public:
     double real () const;
     double imag () const;
 
+    Complex operator-();
+    Complex operator+();
+
     Complex& operator+=(const Complex& other);
     Complex& operator-=(const Complex& other);
     Complex& operator*=(const Complex& other);

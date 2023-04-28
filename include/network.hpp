@@ -3,6 +3,7 @@
 #include <include/impedance.hpp>
 #include <include/source.hpp>
 #include <include/complex.hpp>
+#include <include/matrix.hpp>
 
 #include <vector>
 #include <string>
@@ -57,7 +58,7 @@ private:
     std::vector<GraphEdge> m_edges;
 
     std::vector<Cycle> m_cycles;
-    std::vector<std::vector<Complex>> m_matrix;
+    std::unique_ptr<Matrix> m_matrix;
 
     void compute_cycles ();
     void compute_equations ();

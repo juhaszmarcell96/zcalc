@@ -40,7 +40,10 @@ bool operator==(const Complex& c0, const Complex& c1) {
 bool operator!=(const Complex& c0, const Complex& c1) { return !(c0 == c1); }
 
 std::ostream& operator<<(std::ostream& os, const Complex& c) {
-    if (c.m_value.imag() >= 0.0) {
+    if (c.m_value.imag() == 0.0) {
+        os << "(" << c.real() << "+j" << 0.0 << ")";
+    }
+    else if (c.m_value.imag() > 0.0) {
         os << "(" << c.real() << "+j" << c.imag() << ")";
     }
     else {

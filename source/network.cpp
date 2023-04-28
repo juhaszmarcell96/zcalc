@@ -227,7 +227,7 @@ void Network::compute () {
         }
     }
     compute_cycles();
-    std::vector<std::complex<double>> row (m_edges.size() * 2, std::complex<double>{0.0, 0.0});
+    std::vector<Complex> row (m_edges.size() * 2, Complex{0.0, 0.0});
     /* one equation for every node */
     for (size_t i = 0; i < m_nodes.size(); ++i) {
         m_matrix.push_back(row);
@@ -292,18 +292,18 @@ void Network::compute_equations () {
         for (const GraphEdge& edge : m_edges) {
             if (edge.node_0_index == i) {
                 /* outgoing current */
-                m_matrix[row_index][edge.current_index] = std::complex<double>{-1.0, 0.0};
+                m_matrix[row_index][edge.current_index] = Complex{-1.0, 0.0};
             }
             else if (edge.node_1_index == i) {
                 /* incoming current */
-                m_matrix[row_index][edge.current_index] = std::complex<double>{1.0, 0.0};
+                m_matrix[row_index][edge.current_index] = Complex{1.0, 0.0};
             }
             else {
                 /* is not connected to the node */
-                m_matrix[row_index][edge.current_index] = std::complex<double>{0.0, 0.0};
+                m_matrix[row_index][edge.current_index] = Complex{0.0, 0.0};
             }
             /* voltage coefficients are 0 when writing the equations for the current law */
-            m_matrix[row_index][edge.voltage_index] = std::complex<double>{0.0, 0.0};
+            m_matrix[row_index][edge.voltage_index] = Complex{0.0, 0.0};
         }
         ++row_index;
     }
@@ -311,8 +311,8 @@ void Network::compute_equations () {
     /* equation for every impedance */
     for (const GraphEdge& edge : m_edges) {
         if (edge.type == edge_type::impedance) {
-            m_matrix[row_index][edge.current_index] = edge.impedance_ptr->get_impedance().get() * std::complex<double>{-1.0, 0.0};
-            m_matrix[row_index][edge.voltage_index] = std::complex<double>{1.0, 0.0};
+            m_matrix[row_index][edge.current_index] = edge.impedance_ptr->get_impedance() * Complex{-1.0, 0.0};
+            m_matrix[row_index][edge.voltage_index] = Complex{1.0, 0.0};
         }
         else {
             continue;
@@ -335,8 +335,8 @@ void Network::compute_equations () {
             else {
                 GraphEdge* edge_ptr = unit.edge_ptr;
                 if (edge_ptr->type == edge_type::impedance) {
-                    if (edge_ptr->node_0_index == from_node_id) m_matrix[row_index][edge_ptr->voltage_index] = std::complex<double>{1.0, 0.0};
-                    else m_matrix[row_index][edge_ptr->voltage_index] = std::complex<double>{-1.0, 0.0};
+                    if (edge_ptr->node_0_index == from_node_id) m_matrix[row_index][edge_ptr->voltage_index] = Complex{1.0, 0.0};
+                    else m_matrix[row_index][edge_ptr->voltage_index] = Complex{-1.0, 0.0};
                 }
                 else {
                     if (edge_ptr->node_0_index == from_node_id) m_matrix[row_index][edge_ptr->voltage_index] = edge_ptr->source_ptr->get_voltage();
@@ -349,8 +349,8 @@ void Network::compute_equations () {
 }
 void Network::print_equations () {
     std::cout << std::fixed << std::setprecision(2);
-    for (const std::vector<std::complex<double>>& row : m_matrix) {
-        for (const std::complex<double>& val : row) {
+    for (const std::vector<Complex>& row : m_matrix) {
+        for (const Complex& val : row) {
             std::cout << val << "\t";
         }
         std::cout << std::endl;

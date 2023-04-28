@@ -13,6 +13,7 @@ add_library(
     network.cpp
     source.cpp
     expression.cpp
+    cycle.cpp
     matrix.cpp
     complex.cpp
 )
@@ -37,8 +38,9 @@ set(
     include/capacitor.hpp
     include/inductor.hpp
     include/network.hpp
-    include/matrix.hpp
     include/expression.hpp
+    include/cycle.hpp
+    include/matrix.hpp
     include/complex.hpp
 )
 

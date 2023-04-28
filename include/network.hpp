@@ -4,19 +4,13 @@
 #include <include/source.hpp>
 #include <include/complex.hpp>
 #include <include/matrix.hpp>
+#include <include/node.hpp>
 
 #include <vector>
 #include <string>
 #include <memory>
 
 namespace zcalc {
-
-
-struct GraphNode {
-    std::string name;
-    bool visited = false;
-    bool start = false;
-};
 
 /* TODO : some better solution than an enum with pointers... */
 enum class edge_type {
@@ -44,7 +38,7 @@ enum class cycle_unit_type {
 struct CycleUnit {
     cycle_unit_type type;
     union {
-        GraphNode* node_ptr;
+        Node* node_ptr;
         GraphEdge* edge_ptr;
     };
     std::string name;
@@ -54,7 +48,7 @@ typedef std::vector<CycleUnit> Cycle;
 
 class Network {
 private:
-    std::vector<GraphNode> m_nodes;
+    std::vector<Node> m_nodes;
     std::vector<GraphEdge> m_edges;
 
     std::vector<Cycle> m_cycles;

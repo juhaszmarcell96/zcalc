@@ -62,13 +62,13 @@ bool Network::are_cycles_same (Cycle cycle_0, Cycle cycle_1) {
 }
 
 void Network::add_node (const std::string& node_name) {
-    for (const GraphNode& node : m_nodes) {
+    for (const Node& node : m_nodes) {
         if (node_name.compare(node.name) == 0) {
             std::cout << "ERROR : node already exists" << std::endl;
             return;
         }
     }
-    GraphNode n;
+    Node n;
     n.name = node_name;
     n.visited = false;
     n.start = false;
@@ -240,7 +240,7 @@ void Network::compute () {
 void Network::print () {
     std::cout << "frequency : " << m_frequency << std::endl;
     std::cout << "nodes" << std::endl;
-    for (const GraphNode& node : m_nodes) {
+    for (const Node& node : m_nodes) {
         std::cout << "    " << node.name << std::endl;
     }
     std::cout << "edges" << std::endl;
@@ -253,7 +253,7 @@ void Network::compute_cycles () {
     m_cycles.clear();
     for (std::size_t i = 0; i < m_nodes.size(); ++i) {
         Cycle cycle;
-        for (GraphNode& node_tmp : m_nodes) {
+        for (Node& node_tmp : m_nodes) {
             node_tmp.start = false;
             node_tmp.visited = false;
         }

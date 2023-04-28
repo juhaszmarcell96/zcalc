@@ -7,8 +7,6 @@
 
 namespace zcalc {
 
-typedef std::shared_ptr<Node> node_ptr_t;
-
 class Component {
 protected:
     node_ptr_t m_node_0;

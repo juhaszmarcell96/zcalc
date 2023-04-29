@@ -13,6 +13,7 @@ add_library(
     network.cpp
     source.cpp
     expression.cpp
+    linear_equation_system.cpp
     cycle.cpp
     matrix.cpp
     complex.cpp
@@ -41,6 +42,7 @@ set(
     include/expression.hpp
     include/cycle.hpp
     include/linear_equation.hpp
+    include/linear_equation_system.hpp
     include/matrix.hpp
     include/complex.hpp
 )

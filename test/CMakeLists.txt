@@ -11,5 +11,6 @@ add_executable(
     expression_test.cpp
     cycle_test.cpp
     linear_equation_test.cpp
+    linear_equation_system_test.cpp
 )
 target_link_libraries(tests ${GTEST_LIBRARIES} pthread zcalc_static)

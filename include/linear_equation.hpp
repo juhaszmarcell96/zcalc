@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 #include <cstddef>
 #include <iostream>
@@ -28,6 +30,34 @@ public:
     }
     T get_result () const {
         return m_b;
+    }
+
+    bool is_zero () const {
+        for (std::size_t i = 0; i < m_a.size(); ++i) {
+            if (m_a[i] != T{}) return false;
+        }
+        return true;
+    }
+    bool is_full_zero () const {
+        if (m_b != T{}) return false;
+        for (std::size_t i = 0; i < m_a.size(); ++i) {
+            if (m_a[i] != T{}) return false;
+        }
+        return true;
+    }
+
+    std::size_t get_first_nonzero_coeff_index () const {
+        for (std::size_t i = 0; i < m_a.size(); ++i) {
+            if (m_a[i] != T{}) return i;
+        }
+        return -1;
+    }
+
+    T operator[](const std::size_t variable_index) const { return m_a[variable_index]; }
+    T& operator[](const std::size_t variable_index) { return m_a[variable_index]; }
+
+    std::size_t get_num_variables () const {
+        return m_a.size();
     }
 
     LinearEquation<T>& operator+=(const LinearEquation<T>& other) {

@@ -40,6 +40,7 @@ set(
     include/network.hpp
     include/expression.hpp
     include/cycle.hpp
+    include/linear_equation.hpp
     include/matrix.hpp
     include/complex.hpp
 )

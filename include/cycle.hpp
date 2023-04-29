@@ -4,6 +4,8 @@
 #include <include/component.hpp>
 
 #include <memory>
+#include <vector>
+#include <cstdint>
 
 namespace zcalc {
 
@@ -24,6 +26,8 @@ struct CycleComponent {
 class Cycle {
 private:
     std::shared_ptr<CycleNode> m_root = nullptr;
+
+    std::vector<std::uintptr_t> to_ptr_vec () const;
 public:
     Cycle() = default;
     ~Cycle() = default;
@@ -33,6 +37,8 @@ public:
 
     friend bool operator==(const Cycle& cycle_1, const Cycle& cycle_2);
     friend bool operator!=(const Cycle& cycle_1, const Cycle& cycle_2);
+
+    std::shared_ptr<CycleNode> get_root ();
 };
 
 } /* namespace zcalc */

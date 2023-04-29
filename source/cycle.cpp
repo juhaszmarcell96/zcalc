@@ -1,6 +1,24 @@
 #include <include/cycle.hpp>
 
+#include <algorithm>
+
 namespace zcalc {
+
+std::vector<std::uintptr_t> Cycle::to_ptr_vec () const {
+    std::vector<std::uintptr_t> vec;
+    if (m_root == nullptr) return std::move(vec);
+    CycleNode* current_node = m_root.get();
+    CycleComponent* current_component = nullptr;
+    while (true) {
+        if (current_node == nullptr) return std::move(vec);
+        vec.push_back(reinterpret_cast<std::uintptr_t>(current_node->node_ptr));
+        current_component = current_node->next_ptr.get();
+        if (current_component == nullptr) return std::move(vec);
+        vec.push_back(reinterpret_cast<std::uintptr_t>(current_component->component_ptr));
+        current_node = current_component->next_ptr.get();
+    }
+    return std::move(vec);
+}
 
 bool Cycle::add_node (Node* node_ptr) {
     if (node_ptr == nullptr) return false;
@@ -46,10 +64,21 @@ bool Cycle::add_component (Component* component_ptr) {
 
 bool operator==(const Cycle& cycle_1, const Cycle& cycle_2) {
     /* make a vector of strings out of them, sort them and compare them */
+    std::vector<std::uintptr_t> vec_1 = cycle_1.to_ptr_vec();
+    std::vector<std::uintptr_t> vec_2 = cycle_2.to_ptr_vec();
+    if (vec_1.size() != vec_2.size()) return false;
+    std::sort(vec_1.begin(), vec_1.end());
+    std::sort(vec_2.begin(), vec_2.end());
+    for (std::size_t i = 0; i < vec_1.size(); ++i) {
+        if (vec_1[i] != vec_2[i]) return false;
+    }
+    return true;
 }
 
 bool operator!=(const Cycle& cycle_1, const Cycle& cycle_2) {
-
+    return !(cycle_1 == cycle_2);
 }
+
+std::shared_ptr<CycleNode> Cycle::get_root () { return m_root; }
 
 } /* namespace zcalc */

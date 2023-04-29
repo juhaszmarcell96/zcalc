@@ -64,3 +64,44 @@ TEST(CycleTest, AppendTest) {
     success = cycle.add_component(&resistor_1);
     ASSERT_EQ(success, true);
 }
+
+TEST(CycleTest, ComparisonTest) {
+    bool success = false;
+
+    zcalc::Cycle cycle_0;
+    zcalc::Cycle cycle_1;
+    zcalc::Cycle cycle_2;
+
+    zcalc::Node node_0;
+    zcalc::Node node_1;
+    zcalc::Resistor resistor_0 { 5.0 };
+    zcalc::Resistor resistor_1 { 5.0 };
+    zcalc::Resistor resistor_2 { 5.0 };
+
+    success  = cycle_0.add_node(&node_0);
+    success &= cycle_0.add_component(&resistor_0);
+    success &= cycle_0.add_node(&node_1);
+    success &= cycle_0.add_component(&resistor_1);
+    ASSERT_EQ(success, true);
+
+    success  = cycle_1.add_node(&node_0);
+    success &= cycle_1.add_component(&resistor_1);
+    success &= cycle_1.add_node(&node_1);
+    success &= cycle_1.add_component(&resistor_0);
+    ASSERT_EQ(success, true);
+
+    success  = cycle_2.add_node(&node_0);
+    success &= cycle_2.add_component(&resistor_0);
+    success &= cycle_2.add_node(&node_1);
+    success &= cycle_2.add_component(&resistor_2);
+    ASSERT_EQ(success, true);
+
+
+
+    ASSERT_EQ(cycle_0 == cycle_1, true);
+    ASSERT_EQ(cycle_0 == cycle_2, false);
+    ASSERT_EQ(cycle_1 == cycle_2, false);
+    ASSERT_EQ(cycle_0 != cycle_1, false);
+    ASSERT_EQ(cycle_0 != cycle_2, true);
+    ASSERT_EQ(cycle_1 != cycle_2, true);
+}

@@ -229,11 +229,11 @@ void Network::compute () {
     compute_cycles();
     
     /* one equation for every node, two variables for every component */
-    std::size_t num_equations = 0;
-    num_equations += m_nodes.size();
-    num_equations += m_cycles.size();
-    num_equations += m_edges.size() - 1;
-    m_matrix = std::make_unique<Matrix>(num_equations, m_edges.size() * 2, Complex{0.0, 0.0});
+    //std::size_t num_equations = 0;
+    //num_equations += m_nodes.size();
+    //num_equations += m_cycles.size();
+    //num_equations += m_edges.size() - 1;
+    m_lin_equ_system = std::make_unique<LinearEquationSystem>(m_edges.size() * 2);
     compute_equations();
 }
 
@@ -283,39 +283,42 @@ void Network::compute_equations () {
     std::size_t row_index = 0;
     /* Kirchhoff's current law */
     for (std::size_t i = 0; i < m_nodes.size(); ++i) {
+        LinearEquation<Complex> equ {m_edges.size() * 2};
         for (const GraphEdge& edge : m_edges) {
             if (edge.node_0_index == i) {
                 /* outgoing current */
-                (*m_matrix)[row_index][edge.current_index] = Complex{-1.0, 0.0};
+                equ[edge.current_index] = Complex{-1.0, 0.0};
             }
             else if (edge.node_1_index == i) {
                 /* incoming current */
-                (*m_matrix)[row_index][edge.current_index] = Complex{1.0, 0.0};
+                equ[edge.current_index] = Complex{1.0, 0.0};
             }
             else {
                 /* is not connected to the node */
-                (*m_matrix)[row_index][edge.current_index] = Complex{0.0, 0.0};
+                equ[edge.current_index] = Complex{0.0, 0.0};
             }
             /* voltage coefficients are 0 when writing the equations for the current law */
-            (*m_matrix)[row_index][edge.voltage_index] = Complex{0.0, 0.0};
+            equ[edge.voltage_index] = Complex{0.0, 0.0};
         }
-        ++row_index;
+        m_lin_equ_system->append_equation(equ);
     }
 
     /* equation for every impedance */
     for (const GraphEdge& edge : m_edges) {
+        LinearEquation<Complex> equ {m_edges.size() * 2};
         if (edge.type == edge_type::impedance) {
-            (*m_matrix)[row_index][edge.current_index] = edge.impedance_ptr->get_impedance() * Complex{-1.0, 0.0};
-            (*m_matrix)[row_index][edge.voltage_index] = Complex{1.0, 0.0};
+            equ[edge.current_index] = edge.impedance_ptr->get_impedance() * Complex{-1.0, 0.0};
+            equ[edge.voltage_index] = Complex{1.0, 0.0};
         }
         else {
             continue;
         }
-        ++row_index;
+        m_lin_equ_system->append_equation(equ);
     }
 
     /* Kirchhoff's voltage law */
     for (const Cycle& cycle : m_cycles) {
+        LinearEquation<Complex> equ {m_edges.size() * 2};
         /* every cycle starts with a node */
         int from_node_id = 0;
         for (const CycleUnit& unit : cycle) {
@@ -329,26 +332,21 @@ void Network::compute_equations () {
             else {
                 GraphEdge* edge_ptr = unit.edge_ptr;
                 if (edge_ptr->type == edge_type::impedance) {
-                    if (edge_ptr->node_0_index == from_node_id) (*m_matrix)[row_index][edge_ptr->voltage_index] = Complex{1.0, 0.0};
-                    else (*m_matrix)[row_index][edge_ptr->voltage_index] = Complex{-1.0, 0.0};
+                    if (edge_ptr->node_0_index == from_node_id) equ[edge_ptr->voltage_index] = Complex{1.0, 0.0};
+                    else equ[edge_ptr->voltage_index] = Complex{-1.0, 0.0};
                 }
                 else {
-                    if (edge_ptr->node_0_index == from_node_id) (*m_matrix)[row_index][edge_ptr->voltage_index] = edge_ptr->source_ptr->get_voltage();
-                    else (*m_matrix)[row_index][edge_ptr->voltage_index] = -edge_ptr->source_ptr->get_voltage();
+                    if (edge_ptr->node_0_index == from_node_id) equ.set_result(edge_ptr->source_ptr->get_voltage());
+                    else equ.set_result(-edge_ptr->source_ptr->get_voltage());
                 }
             }
         }
-        ++row_index;
+        m_lin_equ_system->append_equation(equ);
     }
 }
 void Network::print_equations () {
     std::cout << std::fixed << std::setprecision(2);
-    for (std::size_t i = 0; i < m_matrix->get_num_rows(); ++i) {
-        for (std::size_t e = 0; e < m_matrix->get_num_cols(); ++e) {
-            std::cout << (*m_matrix)[i][e] << "\t";
-        }
-        std::cout << std::endl;
-    }
+    std::cout << (*m_lin_equ_system) << std::endl;
 }
 
 } /* namespace zcalc */

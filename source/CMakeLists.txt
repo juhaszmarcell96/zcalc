@@ -15,7 +15,6 @@ add_library(
     expression.cpp
     linear_equation_system.cpp
     cycle.cpp
-    matrix.cpp
     complex.cpp
 )
 

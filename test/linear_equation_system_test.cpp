@@ -203,3 +203,123 @@ TEST(LinearEquationSystemTest, EliminationTest5) {
     ASSERT_EQ(solution[2], zcalc::Complex(0.0, 0.0));
     
 }
+
+TEST(LinearEquationSystemTest, SimpleCircuitTest1) {
+    /**
+     * Simple circuit consisting of a voltage source and 2 resistors in series.
+     * -> the linear equation system is as follows
+     *    - is - i1 = 0
+     *    is + i2 = 0
+     *    i1 - i2 = 0
+     *    us - u2 - u1 = 0
+     *    u1 - R1*i1 = 0
+     *    u2 - R2*i2 = 0
+     *    us = Us
+     * 
+     *  ->  us   u1   u2   is   i1   i2    b
+     *      0     0    0   -1   -1    0    0
+     *      0     0    0    1    0    1    0
+     *      0     0    0    0    1   -1    0
+     *      1    -1   -1    0    0    0    0
+     *      0     1    0    0   -R1   0    0
+     *      0     0    1    0    0   -R2   0
+     *      1     0    0    0    0    0    Us
+     * 
+     *  Solution for Us=5V and R1=10ohm R2=10ohm -> is=i1=i2=5V/20ohm=0.25A (is has opposite direction, so it is negative), u1=u2=2.5V
+    **/
+
+    std::vector<zcalc::Complex> result;
+    bool success = false;
+
+    zcalc::LinearEquation<zcalc::Complex> eq_0 {6};
+    eq_0[3] = zcalc::Complex{-1.0, 0.0};
+    eq_0[4] = zcalc::Complex{-1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_1 {6};
+    eq_1[3] = zcalc::Complex{1.0, 0.0};
+    eq_1[5] = zcalc::Complex{1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_2 {6};
+    eq_2[4] = zcalc::Complex{1.0, 0.0};
+    eq_2[5] = zcalc::Complex{-1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_3 {6};
+    eq_3[0] = zcalc::Complex{1.0, 0.0};
+    eq_3[1] = zcalc::Complex{-1.0, 0.0};
+    eq_3[2] = zcalc::Complex{-1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_4 {6};
+    eq_4[1] = zcalc::Complex{1.0, 0.0};
+    eq_4[4] = zcalc::Complex{-10.0, 0.0};        /* -R1 */
+    zcalc::LinearEquation<zcalc::Complex> eq_5 {6};
+    eq_5[2] = zcalc::Complex{1.0, 0.0};
+    eq_5[5] = zcalc::Complex{-10.0, 0.0};        /* -R2 */
+    zcalc::LinearEquation<zcalc::Complex> eq_6 {6};
+    eq_6[0] = zcalc::Complex{1.0, 0.0};
+    eq_6.set_result(zcalc::Complex{5.0, 0.0});   /* Us */
+
+    zcalc::LinearEquationSystem lin_equ_sys {6};
+    lin_equ_sys.append_equation(eq_0);
+    lin_equ_sys.append_equation(eq_1);
+    lin_equ_sys.append_equation(eq_2);
+    lin_equ_sys.append_equation(eq_3);
+    lin_equ_sys.append_equation(eq_4);
+    lin_equ_sys.append_equation(eq_5);
+    lin_equ_sys.append_equation(eq_6);
+
+    success = lin_equ_sys.solve(result);
+
+    ASSERT_EQ(true, success);
+    
+    ASSERT_EQ(result[0], zcalc::Complex(5.0, 0.0));
+    ASSERT_EQ(result[1], zcalc::Complex(5.0/2.0, 0.0));
+    ASSERT_EQ(result[2], zcalc::Complex(5.0/2.0, 0.0));
+    ASSERT_EQ(result[3], zcalc::Complex(-1.0/4.0, 0.0));
+    ASSERT_EQ(result[4], zcalc::Complex(1.0/4.0, 0.0));
+    ASSERT_EQ(result[5], zcalc::Complex(1.0/4.0, 0.0));
+}
+
+TEST(LinearEquationSystemTest, SimpleCircuitTest2) {
+
+    std::vector<zcalc::Complex> result;
+    bool success = false;
+
+    zcalc::LinearEquation<zcalc::Complex> eq_0 {6};
+    eq_0[3] = zcalc::Complex{-1.0, 0.0};
+    eq_0[4] = zcalc::Complex{-1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_1 {6};
+    eq_1[3] = zcalc::Complex{1.0, 0.0};
+    eq_1[5] = zcalc::Complex{1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_2 {6};
+    eq_2[4] = zcalc::Complex{1.0, 0.0};
+    eq_2[5] = zcalc::Complex{-1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_3 {6};
+    eq_3[0] = zcalc::Complex{1.0, 0.0};
+    eq_3[1] = zcalc::Complex{-1.0, 0.0};
+    eq_3[2] = zcalc::Complex{-1.0, 0.0};
+    zcalc::LinearEquation<zcalc::Complex> eq_4 {6};
+    eq_4[1] = zcalc::Complex{1.0, 0.0};
+    eq_4[4] = zcalc::Complex{-10.0, 0.0};        /* -R1 -> 10/3V (1/3A) */
+    zcalc::LinearEquation<zcalc::Complex> eq_5 {6};
+    eq_5[2] = zcalc::Complex{1.0, 0.0};
+    eq_5[5] = zcalc::Complex{-5.0, 0.0};         /* -R2 -> 5/3V (1/3A)  */
+    zcalc::LinearEquation<zcalc::Complex> eq_6 {6};
+    eq_6[0] = zcalc::Complex{1.0, 0.0};
+    eq_6.set_result(zcalc::Complex{5.0, 0.0});   /* Us */
+
+    zcalc::LinearEquationSystem lin_equ_sys {6};
+    lin_equ_sys.append_equation(eq_0);
+    lin_equ_sys.append_equation(eq_1);
+    lin_equ_sys.append_equation(eq_2);
+    lin_equ_sys.append_equation(eq_3);
+    lin_equ_sys.append_equation(eq_4);
+    lin_equ_sys.append_equation(eq_5);
+    lin_equ_sys.append_equation(eq_6);
+
+    success = lin_equ_sys.solve(result);
+
+    ASSERT_EQ(true, success);
+    
+    ASSERT_EQ(result[0], zcalc::Complex(5.0, 0.0));
+    ASSERT_EQ(result[1], zcalc::Complex(10.0/3.0, 0.0));
+    ASSERT_EQ(result[2], zcalc::Complex(5.0/3.0, 0.0));
+    ASSERT_EQ(result[3], zcalc::Complex(-1.0/3.0, 0.0));
+    ASSERT_EQ(result[4], zcalc::Complex(1.0/3.0, 0.0));
+    ASSERT_EQ(result[5], zcalc::Complex(1.0/3.0, 0.0));
+}

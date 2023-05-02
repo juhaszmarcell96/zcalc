@@ -2,7 +2,7 @@
 
 namespace zcalc {
 
-Resistor::Resistor(double resistance) {
+Resistor::Resistor(const std::string& designator, double resistance) : Impedance(designator, Complex{0.0, 0.0}) {
     m_value = std::complex<double> {resistance, 0};
 }
 

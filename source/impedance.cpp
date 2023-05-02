@@ -6,7 +6,9 @@
 
 namespace zcalc {
 
-Impedance::Impedance(Complex value) : m_value(value) {}
+Impedance::Impedance (const std::string& designator, Complex value) : Component(designator), m_value(value) {}
+
+Impedance::Impedance (Complex value) : m_value(value) {}
 
 void Impedance::set_rectangular (double resistance, double reactance) {
     m_value = Complex {resistance, reactance};
@@ -36,17 +38,29 @@ std::ostream& operator<<(std::ostream& os, const Impedance& z) {
     return os;
 }
 
-Complex Impedance::get_i_coeff(const node_ptr_t node) const {
+Complex Impedance::get_i_coeff(const Node* node) const {
     /* current direction is assumed to be from node_0 to node_1 */
-    if (m_node_0 == node) return Complex { -1.0, 0.0 };
-    else if (m_node_1 == node) return Complex { 1.0, 0.0 };
+    if (m_node_0.get() == node) return Complex { -1.0, 0.0 };
+    else if (m_node_1.get() == node) return Complex { 1.0, 0.0 };
     else return Complex { 0.0, 0.0 };
 }
 
-Complex Impedance::get_u_coeff(const node_ptr_t node_0, const node_ptr_t node_1) const {
-    if ((m_node_0 == node_0) && (m_node_1 == node_1)) return m_value;
-    else if ((m_node_0 == node_1) && (m_node_1 == node_0)) return m_value * -1;
+Complex Impedance::get_u_coeff(const Node* node_0, const Node* node_1) const {
+    if ((m_node_0.get() == node_0) && (m_node_1.get() == node_1)) return m_value;
+    else if ((m_node_0.get() == node_1) && (m_node_1.get() == node_0)) return m_value * Complex{-1.0, 0.0};
     else return Complex { 0.0, 0.0 };
+}
+
+Complex Impedance::get_own_i_coeff() const {
+    return m_value * Complex{-1.0, 0.0};
+}
+
+Complex Impedance::get_own_u_coeff() const {
+    return Complex { 1.0, 0.0 };
+}
+
+Complex Impedance::get_own_result() const {
+    return Complex { 0.0, 0.0 };
 }
 
 } /* namespace zcalc */

@@ -6,7 +6,7 @@ namespace zcalc {
 
 class Capacitor : public Impedance {
 public:
-    Capacitor(double capacitance, double frequency);
+    Capacitor(const std::string& designator, double capacitance, double frequency);
     ~Capacitor() = default;
 };
 

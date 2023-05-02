@@ -6,7 +6,7 @@ namespace zcalc {
 
 class Inductor : public Impedance {
 public:
-    Inductor(double inductance, double frequency);
+    Inductor(const std::string& designator, double inductance, double frequency);
     ~Inductor() = default;
 };
 

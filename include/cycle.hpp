@@ -23,6 +23,11 @@ struct CycleComponent {
     std::shared_ptr<CycleNode> next_ptr = nullptr;
 };
 
+struct NodeNeighbors {
+    Node* node_ptr_0 = nullptr;
+    Node* node_ptr_1 = nullptr;
+};
+
 class Cycle {
 private:
     std::shared_ptr<CycleNode> m_root = nullptr;
@@ -35,10 +40,14 @@ public:
     bool add_node (Node* node_ptr);
     bool add_component (Component* component_ptr);
 
+    void print() const;
+
     friend bool operator==(const Cycle& cycle_1, const Cycle& cycle_2);
     friend bool operator!=(const Cycle& cycle_1, const Cycle& cycle_2);
 
     std::shared_ptr<CycleNode> get_root ();
+
+    std::vector<NodeNeighbors> get_neighboring_nodes () const;
 };
 
 } /* namespace zcalc */

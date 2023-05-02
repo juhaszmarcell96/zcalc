@@ -9,6 +9,7 @@ protected:
     Complex m_value;
 public:
     Impedance () = default;
+    Impedance (const std::string& designator, Complex value);
     Impedance(Complex value);
     ~Impedance() = default;
 
@@ -26,8 +27,11 @@ public:
     static Impedance series (const Impedance& z1, const Impedance& z2);
     static Impedance parallel (const Impedance& z1, const Impedance& z2);
 
-    Complex get_i_coeff(const node_ptr_t node) const override;
-    Complex get_u_coeff(const node_ptr_t node_0, const node_ptr_t node_1) const override;
+    Complex get_i_coeff(const Node* node) const override;
+    Complex get_u_coeff(const Node* node_0, const Node* node_1) const override;
+    Complex get_own_i_coeff() const override;
+    Complex get_own_u_coeff() const override;
+    Complex get_own_result() const override;
 };
 
 } /* namespace zcalc */

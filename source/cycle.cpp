@@ -1,8 +1,47 @@
 #include <include/cycle.hpp>
 
 #include <algorithm>
+#include <iostream>
 
 namespace zcalc {
+
+std::vector<NodeNeighbors> Cycle::get_neighboring_nodes () const {
+    std::vector<NodeNeighbors> vec;
+    if (m_root == nullptr) return std::move(vec);
+    CycleNode* current_node = m_root.get();
+    CycleComponent* current_component = nullptr;
+    while (true) {
+        NodeNeighbors neighbors;
+        if (current_node == nullptr) break;
+        neighbors.node_ptr_0 = current_node->node_ptr;
+        current_component = current_node->next_ptr.get();
+        if (current_component == nullptr) break;
+        current_node = current_component->next_ptr.get();
+        if (current_node == nullptr) break;
+        neighbors.node_ptr_1 = current_node->node_ptr;
+        vec.push_back(neighbors);
+    }
+    if (current_node != m_root.get()) {
+        NodeNeighbors neighbors;
+        neighbors.node_ptr_0 = current_node->node_ptr;
+        neighbors.node_ptr_1 = m_root->node_ptr;
+    }
+    return std::move(vec);
+}
+
+void Cycle::print() const {
+    if (m_root == nullptr) return;
+    CycleNode* current_node = m_root.get();
+    CycleComponent* current_component = nullptr;
+    while (true) {
+        if (current_node == nullptr) return;
+        std::cout << " -> " << current_node->node_ptr->name;
+        current_component = current_node->next_ptr.get();
+        if (current_component == nullptr) return;
+        std::cout << " -> " << current_component->component_ptr->get_designator();
+        current_node = current_component->next_ptr.get();
+    }
+}
 
 std::vector<std::uintptr_t> Cycle::to_ptr_vec () const {
     std::vector<std::uintptr_t> vec;
@@ -10,10 +49,10 @@ std::vector<std::uintptr_t> Cycle::to_ptr_vec () const {
     CycleNode* current_node = m_root.get();
     CycleComponent* current_component = nullptr;
     while (true) {
-        if (current_node == nullptr) return std::move(vec);
+        if (current_node == nullptr) break;
         vec.push_back(reinterpret_cast<std::uintptr_t>(current_node->node_ptr));
         current_component = current_node->next_ptr.get();
-        if (current_component == nullptr) return std::move(vec);
+        if (current_component == nullptr) break;
         vec.push_back(reinterpret_cast<std::uintptr_t>(current_component->component_ptr));
         current_node = current_component->next_ptr.get();
     }

@@ -25,7 +25,7 @@ TEST(CycleTest, AppendTest) {
     bool success = false;
 
     /* cycle cannot start with a component */
-    zcalc::Resistor resistor_0 { 5.0 };
+    zcalc::Resistor resistor_0 { "R0", 5.0 };
     success = cycle.add_component(&resistor_0);
     ASSERT_EQ(success, false);
 
@@ -44,7 +44,7 @@ TEST(CycleTest, AppendTest) {
     ASSERT_EQ(success, true);
 
     /* component cannot be appended to a cycle ending in a component */
-    zcalc::Resistor resistor_1 { 5.0 };
+    zcalc::Resistor resistor_1 { "R1", 5.0 };
     success = cycle.add_component(&resistor_1);
     ASSERT_EQ(success, false);
 
@@ -74,9 +74,9 @@ TEST(CycleTest, ComparisonTest) {
 
     zcalc::Node node_0;
     zcalc::Node node_1;
-    zcalc::Resistor resistor_0 { 5.0 };
-    zcalc::Resistor resistor_1 { 5.0 };
-    zcalc::Resistor resistor_2 { 5.0 };
+    zcalc::Resistor resistor_0 { "R0", 5.0 };
+    zcalc::Resistor resistor_1 { "R1", 5.0 };
+    zcalc::Resistor resistor_2 { "R2", 5.0 };
 
     success  = cycle_0.add_node(&node_0);
     success &= cycle_0.add_component(&resistor_0);

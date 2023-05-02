@@ -1,20 +1,26 @@
 #pragma once
 
+#include <include/component.hpp>
+#include <include/complex.hpp>
+
 #include <string>
 #include <iostream>
-#include <complex>
 
 namespace zcalc {
 
-class Source {
+class Source : public Component {
 protected:
-    std::complex<double> m_voltage;
+    Complex m_voltage;
 public:
     Source () = default;
-    Source(std::complex<double> voltage);
+    Source(const std::string& designator, Complex voltage);
     ~Source() = default;
 
-    std::complex<double> get_voltage () const;
+    Complex get_i_coeff(const Node* node) const override;
+    Complex get_u_coeff(const Node* node_0, const Node* node_1) const override;
+    Complex get_own_i_coeff() const override;
+    Complex get_own_u_coeff() const override;
+    Complex get_own_result() const override;
 };
 
 } /* namespace zcalc */

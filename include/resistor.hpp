@@ -6,7 +6,7 @@ namespace zcalc {
 
 class Resistor : public Impedance {
 public:
-    Resistor(double resistance);
+    Resistor(const std::string& designator, double resistance);
     ~Resistor() = default;
 };
 

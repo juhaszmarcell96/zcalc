@@ -5,6 +5,8 @@
 #include <include/complex.hpp>
 #include <include/linear_equation_system.hpp>
 #include <include/node.hpp>
+#include <include/component.hpp>
+#include <include/cycle.hpp>
 
 #include <vector>
 #include <string>
@@ -12,52 +14,31 @@
 
 namespace zcalc {
 
-/* TODO : some better solution than an enum with pointers... */
-enum class edge_type {
-    source,
-    impedance
-};
-
-struct GraphEdge {
-    std::string designator;
-    std::size_t node_0_index;
-    std::size_t node_1_index;
-    bool visited = false;
-    edge_type type;
-    std::shared_ptr<Impedance> impedance_ptr = nullptr;
-    std::shared_ptr<Source> source_ptr = nullptr;
-    std::size_t voltage_index = 0; /* index of its voltage variable in the matrix's row */
-    std::size_t current_index = 0; /* index of its current variable in the matrix's row */
-};
-
-enum class cycle_unit_type {
-    node,
-    edge
-};
-
-struct CycleUnit {
-    cycle_unit_type type;
-    union {
-        Node* node_ptr;
-        GraphEdge* edge_ptr;
-    };
-    std::string name;
-};
-
-typedef std::vector<CycleUnit> Cycle;
+//struct GraphEdge {
+//    std::string designator;
+//    std::size_t node_0_index;
+//    std::size_t node_1_index;
+//    bool visited = false;
+//    edge_type type;
+//    std::shared_ptr<Impedance> impedance_ptr = nullptr;
+//    std::shared_ptr<Source> source_ptr = nullptr;
+//    std::size_t voltage_index = 0; /* index of its voltage variable in the matrix's row */
+//    std::size_t current_index = 0; /* index of its current variable in the matrix's row */
+//};
 
 class Network {
 private:
-    std::vector<Node> m_nodes;
-    std::vector<GraphEdge> m_edges;
+    std::vector<node_ptr_t> m_nodes;
+    std::vector<component_ptr_t> m_edges;
 
     std::vector<Cycle> m_cycles;
     std::unique_ptr<LinearEquationSystem> m_lin_equ_system;
 
     void compute_cycles ();
     void compute_equations ();
-    void node_cycle (std::size_t node_index, Cycle cycle);
-    bool are_cycles_same (Cycle cycle_0, Cycle cycle_1);
+    void node_cycle (node_ptr_t node, Cycle cycle);
+
+    bool edge_exists (const std::string& designator) const;
 
     double m_frequency;
 public:

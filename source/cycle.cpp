@@ -16,8 +16,9 @@ std::vector<NodeNeighbors> Cycle::get_neighboring_nodes () const {
         neighbors.node_ptr_0 = current_node->node_ptr;
         current_component = current_node->next_ptr.get();
         if (current_component == nullptr) break;
-        current_node = current_component->next_ptr.get();
-        if (current_node == nullptr) break;
+        CycleNode* next_current_node = current_component->next_ptr.get();
+        if (next_current_node == nullptr) break;
+        current_node = next_current_node;
         neighbors.node_ptr_1 = current_node->node_ptr;
         vec.push_back(neighbors);
     }

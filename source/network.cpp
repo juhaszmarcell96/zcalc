@@ -77,10 +77,12 @@ void Network::add_resistor (const std::string& designator, double resistance, co
         if (node_0_name.compare(node->name) == 0) {
             node_0_exists = true;
             new_component->set_node_0(node);
+            node->components.push_back(new_component);
         }
         if (node_1_name.compare(node->name) == 0) {
             node_1_exists = true;
             new_component->set_node_1(node);
+            node->components.push_back(new_component);
         }
     }
     if (!node_0_exists || !node_1_exists) {
@@ -99,10 +101,12 @@ void Network::add_inductor (const std::string& designator, double inductance, co
         if (node_0_name.compare(node->name) == 0) {
             node_0_exists = true;
             new_component->set_node_0(node);
+            node->components.push_back(new_component);
         }
         if (node_1_name.compare(node->name) == 0) {
             node_1_exists = true;
             new_component->set_node_1(node);
+            node->components.push_back(new_component);
         }
     }
     if (!node_0_exists || !node_1_exists) {
@@ -121,10 +125,12 @@ void Network::add_capacitor (const std::string& designator, double capacitance, 
         if (node_0_name.compare(node->name) == 0) {
             node_0_exists = true;
             new_component->set_node_0(node);
+            node->components.push_back(new_component);
         }
         if (node_1_name.compare(node->name) == 0) {
             node_1_exists = true;
             new_component->set_node_1(node);
+            node->components.push_back(new_component);
         }
     }
     if (!node_0_exists || !node_1_exists) {
@@ -144,10 +150,12 @@ void Network::add_source (const std::string& designator, double voltage, const s
         if (node_0_name.compare(node->name) == 0) {
             node_0_exists = true;
             new_component->set_node_0(node);
+            node->components.push_back(new_component);
         }
         if (node_1_name.compare(node->name) == 0) {
             node_1_exists = true;
             new_component->set_node_1(node);
+            node->components.push_back(new_component);
         }
     }
     if (!node_0_exists || !node_1_exists) {

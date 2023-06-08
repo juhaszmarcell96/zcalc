@@ -1,17 +1,18 @@
 #pragma once
 
-#include <zcalc/impedance.hpp>
+#include <zcalc/internal/node.hpp>
 
-#include <numbers>
+#include <zcalc/impedance.hpp>
 
 namespace zcalc {
 
 class Inductor : public Impedance {
 public:
-    Inductor(const std::string& designator, double inductance, double frequency) : Impedance(designator, Complex{0.0, 0.0}) {
-        m_value = std::polar(2.0 * std::numbers::pi * frequency * inductance, std::numbers::pi / 2.0);
+    Inductor () = delete;
+    Inductor (const std::string& designator, double inductance, double frequency, Node* node_0, Node* node_1, std::size_t id) : Impedance(designator, Complex{0.0, 0.0}, node_0, node_1, id) {
+        m_value = std::polar(2.0 * pi * frequency * inductance, pi / 2.0);
     }
-    ~Inductor() = default;
+    ~Inductor () = default;
 };
 
 } /* namespace zcalc */

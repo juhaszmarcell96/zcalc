@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include <zcalc/complex.hpp>
+#include <zcalc/internal/complex.hpp>
 
 namespace zcalc {
 

@@ -1,10 +1,11 @@
 #pragma once
 
-#include <zcalc/component.hpp>
-#include <zcalc/complex.hpp>
+#include <zcalc/internal/node.hpp>
+#include <zcalc/internal/component.hpp>
+#include <zcalc/internal/complex.hpp>
 
 #include <string>
-#include <iostream>
+#include <memory>
 
 namespace zcalc {
 
@@ -12,24 +13,44 @@ class Source : public Component {
 protected:
     Complex m_voltage;
 public:
-    Source () = default;
-    Source(const std::string& designator, Complex voltage) : Component(designator), m_voltage(voltage) {}
-    ~Source() = default;
+    Source () = delete;
+    Source (const std::string& designator, Complex voltage, Node* node_0, Node* node_1, std::size_t id) : Component(designator, id), m_voltage(voltage) {
+        std::unique_ptr<Gate> gate_0 = std::make_unique<Gate>();
+        gate_0->designator = "0";
+        gate_0->node = node_0;
+        m_gates.push_back(std::move(gate_0));
 
-    Complex get_i_coeff(const Node* node) const override {
+        std::unique_ptr<Gate> gate_1 = std::make_unique<Gate>();
+        gate_1->designator = "1";
+        gate_1->node = node_1;
+        m_gates.push_back(std::move(gate_1));
+    }
+    ~Source () = default;
+
+    std::size_t get_num_variables () const override {
+        return 2;
+    }
+
+    void kcl(const Node* node, LinearEquation<Complex>& equ) const override {
         /* current direction is assumed to be from node_0 to node_1 */
-        if (m_node_0.get() == node) return Complex { -1.0, 0.0 };
-        else if (m_node_1.get() == node) return Complex { 1.0, 0.0 };
-        else return Complex { 0.0, 0.0 };
+        Complex coeff { 0.0, 0.0 };
+        if (m_gates[0]->node == node) coeff = Complex { -1.0, 0.0 };
+        else if (m_gates[1]->node == node) coeff = Complex { 1.0, 0.0 };
+
+        equ[2 * get_id() + equ_current_offset] = coeff;
+        equ[2 * get_id() + equ_voltage_offset] = Complex{0.0, 0.0};
     }
-    Complex get_u_coeff(const Node* node_0, const Node* node_1) const override {
-        if ((m_node_0.get() == node_0) && (m_node_1.get() == node_1)) return m_voltage;
-        else if ((m_node_0.get() == node_1) && (m_node_1.get() == node_0)) return m_voltage * Complex { -1.0, 0.0 };
-        else return Complex { 0.0, 0.0 };
+
+/*
+    void kvl(const Node* node, LinearEquation<Complex>& equ) const override {
+        Complex coeff { 0.0, 0.0 };
+        if (m_gates[0]->node == node) coeff = m_voltage;
+        else if (m_gates[0]->node == node) coeff = m_voltage * Complex { -1.0, 0.0 };
+
+        equ[2 * get_id() + equ_current_offset] = coeff;
+        equ[2 * get_id() + equ_voltage_offset] = Complex{0.0, 0.0};
     }
-    Complex get_own_i_coeff() const override { return Complex {0.0, 0.0}; }
-    Complex get_own_u_coeff() const override { return Complex { 1.0, 0.0 }; }
-    Complex get_own_result() const override { return m_voltage; }
+*/
 };
 
 } /* namespace zcalc */

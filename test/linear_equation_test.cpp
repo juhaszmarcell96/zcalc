@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <zcalc/complex.hpp>
+#include <zcalc/internal/complex.hpp>
 #include <zcalc/linear_equation.hpp>
 
 TEST(LinearEquationTest, SingleEquationTest) {

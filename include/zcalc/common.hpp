@@ -1,8 +1,14 @@
 #pragma once
 
+#include <cstddef>
+
 namespace zcalc {
 
 static constexpr bool log_enabled = false;
+static constexpr double pi = 3.14159265358979323846;
+
+static constexpr std::size_t equ_current_offset = 0;
+static constexpr std::size_t equ_voltage_offset = 1;
 
 enum class unit_prefix {
     peta,

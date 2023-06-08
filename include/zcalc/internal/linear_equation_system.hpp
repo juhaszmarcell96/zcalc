@@ -8,7 +8,7 @@
 #include <numbers>
 #include <stdexcept>
 
-#include <zcalc/linear_equation.hpp>
+#include <zcalc/internal/linear_equation.hpp>
 
 namespace zcalc {
 

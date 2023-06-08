@@ -19,7 +19,7 @@ int main () {
     test_network.add_resistor("R2", 10, "out", "gnd");
     test_network.compute();
     test_network.print();
-    test_network.print_cycles();
+    //test_network.print_cycles();
     test_network.print_equations();
 
 /*

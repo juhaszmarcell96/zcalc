@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include <include/cycle.hpp>
-#include <include/node.hpp>
-#include <include/component.hpp>
-#include <include/resistor.hpp>
+#include <zcalc/cycle.hpp>
+#include <zcalc/node.hpp>
+#include <zcalc/component.hpp>
+#include <zcalc/resistor.hpp>
 
 TEST(CycleTest, NullptrTest) {
     zcalc::Cycle cycle;

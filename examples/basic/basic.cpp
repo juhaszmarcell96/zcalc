@@ -1,8 +1,8 @@
-#include <include/common.hpp>
-#include <include/network.hpp>
-#include <include/resistor.hpp>
-#include <include/capacitor.hpp>
-#include <include/inductor.hpp>
+#include <zcalc/common.hpp>
+#include <zcalc/network.hpp>
+#include <zcalc/resistor.hpp>
+#include <zcalc/capacitor.hpp>
+#include <zcalc/inductor.hpp>
 
 #include <cmath>
 #include <fstream>

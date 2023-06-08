@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <include/complex.hpp>
+#include <zcalc/complex.hpp>
 
 TEST(ComplexTest, SimpleTest) {
     zcalc::Complex c0 {5.0, 3.0};

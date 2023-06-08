@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <include/complex.hpp>
-#include <include/linear_equation.hpp>
-#include <include/linear_equation_system.hpp>
+#include <zcalc/complex.hpp>
+#include <zcalc/linear_equation.hpp>
+#include <zcalc/linear_equation_system.hpp>
 
 TEST(LinearEquationSystemTest, EliminationTest1) {
 

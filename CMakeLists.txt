@@ -4,20 +4,15 @@ set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_BUILD_TYPE debug)
 
-project(
-    CircuitSimulator
+project (
+    zcalc
     VERSION 00.00.01
     LANGUAGES CXX
 )
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# add source as subdirectory and name it bin in the build directory
-add_subdirectory(source bin)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/bin)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_subdirectory(test)
-
-add_executable(cppsim main.cpp)
-
-target_link_libraries(cppsim zcalc_static)
+add_subdirectory (test)
+add_subdirectory (examples)

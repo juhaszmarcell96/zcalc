@@ -72,18 +72,6 @@ private:
             message.equ.set_result(Complex{0.0, 0.0});
             m_lin_equ_system->append_equation(message.equ);
         }
-
-        /*for (const Cycle& cycle : m_cycles) {
-            LinearEquation<Complex> equ {m_edges.size() * 2};
-            for (const auto& neighbor : cycle.get_neighboring_nodes()) {
-                for (std::size_t i = 0; i < m_edges.size(); ++i) {
-                    equ[2 * i + 0] = Complex{0.0, 0.0};
-                    equ[2 * i + 1] = m_edges[i]->get_u_coeff(neighbor.node_ptr_0, neighbor.node_ptr_1);
-                    equ.set_result(Complex{0.0, 0.0});
-                }
-            }
-            m_lin_equ_system->append_equation(equ);
-        }*/
     }
 
 public:
@@ -148,6 +136,12 @@ public:
         }
         m_lin_equ_system = std::make_unique<LinearEquationSystem>(m_num_variables);
         compute_equations();
+        std::vector<Complex> solution;
+        bool success = m_lin_equ_system->solve(solution);
+        for (const auto& c : solution) {
+            std::cout << c << " ";
+        }
+        std::cout << std::endl;
     }
 
     void print () {

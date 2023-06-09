@@ -1,7 +1,6 @@
 #pragma once
 
 #include <zcalc/internal/component.hpp>
-#include <zcalc/internal/node.hpp>
 #include <zcalc/internal/complex.hpp>
 #include <zcalc/internal/linear_equation_system.hpp>
 
@@ -69,7 +68,10 @@ private:
 
         /* Kirchhoff's voltage law */
         LoopMessage::find_loops(m_nodes[0].get(), m_num_variables);
-        
+        for (LoopMessage& message : LoopMessage::get_loops()) {
+            message.equ.set_result(Complex{0.0, 0.0});
+            m_lin_equ_system->append_equation(message.equ);
+        }
 
         /*for (const Cycle& cycle : m_cycles) {
             LinearEquation<Complex> equ {m_edges.size() * 2};

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <zcalc/internal/node.hpp>
-
 #include <zcalc/impedance.hpp>
 
 namespace zcalc {

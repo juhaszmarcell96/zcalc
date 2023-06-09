@@ -1,6 +1,5 @@
 #pragma once
 
-#include <zcalc/internal/node.hpp>
 #include <zcalc/internal/component.hpp>
 #include <zcalc/internal/complex.hpp>
 
@@ -18,12 +17,14 @@ public:
         std::unique_ptr<Gate> gate_0 = std::make_unique<Gate>();
         gate_0->designator = "0";
         gate_0->node = node_0;
+        node_0->gates.push_back(gate_0.get());
         gate_0->component = this;
         m_gates.push_back(std::move(gate_0));
 
         std::unique_ptr<Gate> gate_1 = std::make_unique<Gate>();
         gate_1->designator = "1";
         gate_1->node = node_1;
+        node_1->gates.push_back(gate_1.get());
         gate_1->component = this;
         m_gates.push_back(std::move(gate_1));
     }
@@ -67,13 +68,13 @@ public:
             /* loop points in the same direction */
             message.equ[2 * get_id() + equ_current_offset] = Complex{ 0.0, 0.0 };
             message.equ[2 * get_id() + equ_voltage_offset] = Complex { 1.0, 0.0 };
-            m_gates[1]->node->propagate(message, source_gate);
+            m_gates[1]->node->propagate(message, m_gates[1].get());
         }
         else if (m_gates[1].get() == source_gate) {
             /* loop points in the opposite direction */
             message.equ[2 * get_id() + equ_current_offset] = Complex{ 0.0, 0.0 };
             message.equ[2 * get_id() + equ_voltage_offset] = Complex { -1.0, 0.0 };
-            m_gates[0]->node->propagate(message, source_gate);
+            m_gates[0]->node->propagate(message, m_gates[0].get());
         }
         else {
             throw std::invalid_argument("gate does not belong to component");

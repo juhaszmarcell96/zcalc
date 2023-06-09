@@ -61,6 +61,13 @@ public:
         equ[2 * get_id() + equ_current_offset] = coeff;
         equ[2 * get_id() + equ_voltage_offset] = Complex{0.0, 0.0};
     }
+
+    void own_equ(LinearEquation<Complex>& equ) const override {
+        /* U = Z * I -> U - ZI = 0 */
+        equ[2 * get_id() + equ_current_offset] = m_value * Complex{-1.0, 0.0};
+        equ[2 * get_id() + equ_voltage_offset] = Complex { 1.0, 0.0 };
+        equ.set_result(Complex { 0.0, 0.0 });
+    }
 };
 
 } /* namespace zcalc */

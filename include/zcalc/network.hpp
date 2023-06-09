@@ -58,13 +58,11 @@ private:
         }
  
         /* equation for every impedance */
-        /*for (std::size_t i = 0; i < m_edges.size(); ++i) {
-            LinearEquation<Complex> equ {m_edges.size() * 2};
-            equ[2 * i + 0] = m_edges[i]->get_own_i_coeff();
-            equ[2 * i + 1] = m_edges[i]->get_own_u_coeff();
-            equ.set_result(m_edges[i]->get_own_result());
+        for (const auto& component : m_components) {
+            LinearEquation<Complex> equ { m_num_variables };
+            component->own_equ(equ);
             m_lin_equ_system->append_equation(equ);
-        }*/
+        }
  
         /* Kirchhoff's voltage law */
         /*for (const Cycle& cycle : m_cycles) {

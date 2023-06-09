@@ -25,6 +25,7 @@ public:
 
     virtual std::size_t get_num_variables () const = 0;
     virtual void kcl(const Node* node, LinearEquation<Complex>& equ) const = 0;
+    virtual void own_equ(LinearEquation<Complex>& equ) const = 0;
 };
 
 } /* namespace zcalc */

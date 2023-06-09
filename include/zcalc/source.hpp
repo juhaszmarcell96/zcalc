@@ -41,6 +41,13 @@ public:
         equ[2 * get_id() + equ_voltage_offset] = Complex{0.0, 0.0};
     }
 
+    void own_equ(LinearEquation<Complex>& equ) const override {
+        /* U = m_voltage */
+        equ[2 * get_id() + equ_current_offset] = Complex { 0.0, 0.0 };
+        equ[2 * get_id() + equ_voltage_offset] = Complex { 1.0, 0.0 };
+        equ.set_result(m_voltage);
+    }
+
 /*
     void kvl(const Node* node, LinearEquation<Complex>& equ) const override {
         Complex coeff { 0.0, 0.0 };

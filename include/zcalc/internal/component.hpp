@@ -6,6 +6,7 @@
 
 #include <zcalc/internal/gate.hpp>
 #include <zcalc/internal/linear_equation.hpp>
+#include <zcalc/internal/loop_message.hpp>
 
 namespace zcalc {
 
@@ -26,6 +27,8 @@ public:
     virtual std::size_t get_num_variables () const = 0;
     virtual void kcl(const Node* node, LinearEquation<Complex>& equ) const = 0;
     virtual void own_equ(LinearEquation<Complex>& equ) const = 0;
+
+    virtual void propagate (LoopMessage message, const Gate* gate) const = 0;
 };
 
 } /* namespace zcalc */

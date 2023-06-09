@@ -46,6 +46,9 @@ private:
     }
 
     void compute_equations () {
+        if (m_nodes.size() == 0) return;
+        if (m_components.size() == 0) return;
+
         std::size_t row_index = 0;
         /* Kirchhoff's current law */
         for (const auto& node : m_nodes) {
@@ -63,8 +66,11 @@ private:
             component->own_equ(equ);
             m_lin_equ_system->append_equation(equ);
         }
- 
+
         /* Kirchhoff's voltage law */
+        LoopMessage::find_loops(m_nodes[0].get(), m_num_variables);
+        
+
         /*for (const Cycle& cycle : m_cycles) {
             LinearEquation<Complex> equ {m_edges.size() * 2};
             for (const auto& neighbor : cycle.get_neighboring_nodes()) {

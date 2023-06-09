@@ -18,11 +18,13 @@ public:
         std::unique_ptr<Gate> gate_0 = std::make_unique<Gate>();
         gate_0->designator = "0";
         gate_0->node = node_0;
+        gate_0->component = this;
         m_gates.push_back(std::move(gate_0));
 
         std::unique_ptr<Gate> gate_1 = std::make_unique<Gate>();
         gate_1->designator = "1";
         gate_1->node = node_1;
+        gate_1->component = this;
         m_gates.push_back(std::move(gate_1));
     }
     ~Source () = default;
@@ -58,6 +60,25 @@ public:
         equ[2 * get_id() + equ_voltage_offset] = Complex{0.0, 0.0};
     }
 */
+
+    void propagate (LoopMessage message, const Gate* source_gate) const override {
+        /* voltage direction points from gate 0 to gate 1 */
+        if (m_gates[0].get() == source_gate) {
+            /* loop points in the same direction */
+            message.equ[2 * get_id() + equ_current_offset] = Complex{ 0.0, 0.0 };
+            message.equ[2 * get_id() + equ_voltage_offset] = Complex { 1.0, 0.0 };
+            m_gates[1]->node->propagate(message, source_gate);
+        }
+        else if (m_gates[1].get() == source_gate) {
+            /* loop points in the opposite direction */
+            message.equ[2 * get_id() + equ_current_offset] = Complex{ 0.0, 0.0 };
+            message.equ[2 * get_id() + equ_voltage_offset] = Complex { -1.0, 0.0 };
+            m_gates[0]->node->propagate(message, source_gate);
+        }
+        else {
+            throw std::invalid_argument("gate does not belong to component");
+        }
+    }
 };
 
 } /* namespace zcalc */

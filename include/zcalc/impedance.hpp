@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zcalc/common.hpp>
 #include <zcalc/internal/component.hpp>
 #include <zcalc/internal/complex.hpp>
 

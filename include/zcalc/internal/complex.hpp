@@ -21,6 +21,8 @@ public:
 
     double real () const { return m_value.real(); }
     double imag () const { return m_value.imag(); }
+    double abs () const { return std::abs(m_value); }
+    double arg () const { return std::arg(m_value); }
 
     Complex operator-() { return std::move(Complex{-m_value}); }
     Complex operator+() { return std::move(Complex{+m_value}); }

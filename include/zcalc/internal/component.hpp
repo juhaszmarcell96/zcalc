@@ -114,7 +114,7 @@ inline void Node::propagate (LoopMessage message, const Gate* source_gate) {
     if (message.contains(this)) {
         if (message.is_starting_node(this)) {
             /* this is a valid loop -> push it to the stack */
-            message.print();
+            //message.print();
             LoopFinder::append_loop(std::move(message));
             return;
         }

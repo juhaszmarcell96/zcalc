@@ -7,6 +7,8 @@ set (CMAKE_BUILD_TYPE debug)
 set (
     EXAMPLES
     basic
+    filter
+    rc_element
 )
 
 include_directories("../include/")

@@ -129,7 +129,7 @@ public:
         m_components.push_back(std::move(new_component));
     }
 
-    void compute () {
+    std::vector<Complex> compute () {
         m_num_variables = 0;
         for (const auto& component : m_components) {
             m_num_variables += component->get_num_variables();
@@ -138,10 +138,11 @@ public:
         compute_equations();
         std::vector<Complex> solution;
         bool success = m_lin_equ_system->solve(solution);
-        for (const auto& c : solution) {
-            std::cout << c << " ";
-        }
-        std::cout << std::endl;
+        //for (const auto& c : solution) {
+        //    std::cout << c << " ";
+        //}
+        //std::cout << std::endl;
+        return std::move(solution);
     }
 
     void print () {

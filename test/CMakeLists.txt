@@ -8,7 +8,6 @@ add_executable (
     main.cpp
     complex_test.cpp
     matrix_test.cpp
-    cycle_test.cpp
     linear_equation_test.cpp
     linear_equation_system_test.cpp
 )

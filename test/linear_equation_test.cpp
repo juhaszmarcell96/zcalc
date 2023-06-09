@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <zcalc/internal/complex.hpp>
-#include <zcalc/linear_equation.hpp>
+#include <zcalc/internal/linear_equation.hpp>
 
 TEST(LinearEquationTest, SingleEquationTest) {
     /* 2x + y = 3 */

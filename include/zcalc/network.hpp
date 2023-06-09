@@ -67,8 +67,8 @@ private:
         }
 
         /* Kirchhoff's voltage law */
-        LoopMessage::find_loops(m_nodes[0].get(), m_num_variables);
-        for (LoopMessage& message : LoopMessage::get_loops()) {
+        LoopFinder::find_loops(m_nodes[0].get(), m_num_variables);
+        for (LoopMessage& message : LoopFinder::get_loops()) {
             message.equ.set_result(Complex{0.0, 0.0});
             m_lin_equ_system->append_equation(message.equ);
         }

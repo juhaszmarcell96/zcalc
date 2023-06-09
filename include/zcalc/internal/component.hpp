@@ -8,18 +8,22 @@
 
 namespace zcalc {
 
+/* forward declarations */
 class Node;
 class Component;
 class LoopMessage;
 
+/* gate class, used in components */
+/* one gate can connect to one node */
+/* each gate has a reference to the component that contains it */
 struct Gate {
     std::string designator;
     Node* node;
     Component* component;
 };
 
-
-
+/* node class, equivalent to a node in an electrical circuit */
+/* each node has an array of gates that are connected to it */
 struct Node {
     std::string designator;
     std::vector<Gate*> gates;
@@ -31,29 +35,22 @@ struct Node {
 
 class LoopMessage {
 private:
-    static inline std::vector<LoopMessage> m_loops;
     std::vector<Node*> m_nodes;
-    LoopMessage (Node* starting_node, std::size_t num_variables) : equ(num_variables) {
-        //m_nodes.push_back(starting_node);
-    }
 public:
     LoopMessage () = delete;
+    LoopMessage (Node* starting_node, std::size_t num_variables) : equ(num_variables) {}
     ~LoopMessage() = default;
 
     LinearEquation<Complex> equ;
 
     bool contains (const Node* node) const {
-        for (const Node* n : m_nodes) {
-            if (n == node) return true;
-        }
+        for (const Node* n : m_nodes) { if (n == node) return true; }
         return false;
     }
 
     void add_node (Node* node) { m_nodes.push_back(node); }
 
-    bool is_starting_node (const Node* node) const {
-        return node == m_nodes[0];
-    }
+    bool is_starting_node (const Node* node) const { return node == m_nodes[0]; }
 
     bool get_num_nodes () const { return m_nodes.size(); }
 
@@ -64,6 +61,15 @@ public:
         }
         std::cout << std::endl;
     }
+};
+
+
+class LoopFinder {
+private:
+    static inline std::vector<LoopMessage> m_loops;
+public:
+    LoopFinder () = default;
+    ~LoopFinder() = default;
 
     static inline void find_loops (Node* starting_node, std::size_t num_variables) {
         m_loops.clear();
@@ -77,6 +83,9 @@ public:
 
     static inline std::vector<LoopMessage>& get_loops () { return m_loops; }
 };
+
+
+
 
 class Component {
 private:
@@ -106,7 +115,7 @@ inline void Node::propagate (LoopMessage message, const Gate* source_gate) {
         if (message.is_starting_node(this)) {
             /* this is a valid loop -> push it to the stack */
             message.print();
-            LoopMessage::append_loop(std::move(message));
+            LoopFinder::append_loop(std::move(message));
             return;
         }
         else {

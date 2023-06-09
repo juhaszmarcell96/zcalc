@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <zcalc/matrix.hpp>
+#include <zcalc/internal/matrix.hpp>
 
 TEST(MatrixTest, MatrixAdditionTest) {
     zcalc::Matrix<std::complex<double>> matrix_0 {3, 3};

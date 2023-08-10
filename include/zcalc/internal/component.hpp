@@ -98,6 +98,8 @@ public:
     Component (const std::string& designator, std::size_t id) : m_designator(designator), m_id(id) {}
     virtual ~Component() = default;
 
+    virtual void set_frequency (double frequency) = 0;
+
     const std::string& get_designator () const { return m_designator; }
     std::size_t get_id () const { return m_id; }
 

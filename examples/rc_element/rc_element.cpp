@@ -4,7 +4,7 @@
 #include <zcalc/capacitor.hpp>
 #include <zcalc/inductor.hpp>
 
-#include <zcalc/plotter.hpp>
+#include <zcalc/plot/plotter.hpp>
 
 #include <cmath>
 #include <fstream>
@@ -12,54 +12,17 @@
 
 
 int main () {
-    /*std::vector<zcalc::Complex> bode;
-    for (double freq = 1.0; freq < 1.0e3; freq += 2.0) {
-        zcalc::Network rc_net { freq };
-        rc_net.add_node("gnd");
-        rc_net.add_node("in");
-        rc_net.add_node("out");
-        rc_net.add_source("U1", 1, "in", "gnd");
-        rc_net.add_resistor("R", 50.0, "in", "out");
-        rc_net.add_capacitor("C", 100.0e-6, "out", "gnd");
-        std::vector<zcalc::Complex> result = rc_net.compute();
-        bode.push_back(result[5]);
-    }*/
-    //double freq = 1.0;
-    //for (const zcalc::Complex& comp : bode) {
-    //    std::cout << std::fixed << "(" << freq << "," << 20 * std::log(comp.abs()) << ")" << std::endl;
-    //    freq += 2.0;
-    //}
 
-    zcalc::Plotter plotter (1000, 1000);
+    zcalc::Network rc_net { };
+    //rc_net.add_node("gnd");
+    //rc_net.add_node("in");
+    //rc_net.add_node("out");
+    //rc_net.add_source("U1", 1, "in", "gnd");
+    rc_net.add_resistor("R", 50.0, "in", "out");
+    rc_net.add_capacitor("C", 100.0e-6, "out", "gnd");
 
-    double freq_limit = 10.0;
-    double freq_increment = 0.1;
-    double x_offset = 30.0;
-    double frequency = 1.0;
-
-    while (frequency < 1e10) {
-
-        zcalc::Network rc_net { frequency };
-        rc_net.add_node("gnd");
-        rc_net.add_node("in");
-        rc_net.add_node("out");
-        rc_net.add_source("U1", 1, "in", "gnd");
-        rc_net.add_resistor("R", 50.0, "in", "out");
-        rc_net.add_capacitor("C", 100.0e-6, "out", "gnd");
-        std::vector<zcalc::Complex> result = rc_net.compute();
-
-        double curr_y_f = 500 + 180.0 + result[5].arg() * 180.0 / zcalc::pi;
-
-        plotter.draw_hjw(result[5].abs(), frequency);
-
-        frequency += freq_increment;
-        if (frequency >= freq_limit) {
-            freq_increment *= 10.0;
-            freq_limit *= 10.0;
-        }
-    }
-
-    plotter.plot();
+    zcalc::Plotter plotter {};
+    plotter.plot("tmp", rc_net);
 
     return 0;
 }

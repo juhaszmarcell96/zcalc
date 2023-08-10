@@ -10,11 +10,12 @@
 
 
 int main () {
-    zcalc::Network lora_filter { 868.0e6 };
-    lora_filter.add_node("gnd");
-    lora_filter.add_node("in");
-    lora_filter.add_node("out");
-    lora_filter.add_source("U1", 1, "in", "gnd");
+    zcalc::Network lora_filter { };
+    lora_filter.set_frequency(868.0e6);
+    //lora_filter.add_node("gnd");
+    //lora_filter.add_node("in");
+    //lora_filter.add_node("out");
+    //lora_filter.add_source("U1", 1, "in", "gnd");
     lora_filter.add_capacitor("C1", 4.7e-12, "in", "gnd");
     lora_filter.add_capacitor("C2", 1.2e-12, "in", "out");
     lora_filter.add_inductor("L1", 6.2e-9, "in", "out");

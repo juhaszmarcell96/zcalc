@@ -11,6 +11,8 @@ public:
         m_value = std::complex<double> {resistance, 0};
     }
     ~Resistor () = default;
+
+    void set_frequency (double frequency) override { /* nothing to do */ }
 };
 
 } /* namespace zcalc */

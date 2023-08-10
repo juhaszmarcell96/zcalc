@@ -26,7 +26,7 @@ private:
 
     std::unique_ptr<LinearEquationSystem> m_lin_equ_system;
 
-    double m_frequency;
+    double m_frequency { 1.0 };
     std::size_t m_num_variables;
 
 
@@ -74,9 +74,24 @@ private:
         }
     }
 
+    /* add a source to the network */
+    void add_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
+        /* TODO : only one source can be added? */
+        if (component_exists(designator)) throw std::invalid_argument("component " + designator + " already exists");
+        Node* node_0 = get_node(node_0_des);
+        Node* node_1 = get_node(node_1_des);
+        /* TODO : the source should send out signals of such frequencies and calculate impedance on the go */
+        std::unique_ptr<Source> new_component = std::make_unique<Source>(designator, voltage, node_0, node_1, m_components.size());
+        m_components.push_back(std::move(new_component));
+    }
+
 public:
-    Network (double frequency) : m_frequency(frequency) {}
-    Network () = delete;
+    Network () {
+        add_node ("in");
+        add_node ("out");
+        add_node ("gnd");
+        add_source ("U", 1.0, "in", "gnd");
+    }
     ~Network () = default;
     
     /* add a node to the graph */
@@ -118,17 +133,6 @@ public:
         m_components.push_back(std::move(new_component));
     }
 
-    /* add a source to the network */
-    void add_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
-        /* TODO : only one source can be added? */
-        if (component_exists(designator)) throw std::invalid_argument("component " + designator + " already exists");
-        Node* node_0 = get_node(node_0_des);
-        Node* node_1 = get_node(node_1_des);
-        /* TODO : the source should send out signals of such frequencies and calculate impedance on the go */
-        std::unique_ptr<Source> new_component = std::make_unique<Source>(designator, voltage, node_0, node_1, m_components.size());
-        m_components.push_back(std::move(new_component));
-    }
-
     std::vector<Complex> compute () {
         m_num_variables = 0;
         for (const auto& component : m_components) {
@@ -160,6 +164,13 @@ public:
     void print_equations () {
         std::cout << std::fixed << std::setprecision(2);
         std::cout << (*m_lin_equ_system) << std::endl;
+    }
+
+    void set_frequency (double frequency) {
+        m_frequency = frequency;
+        for (const auto& component : m_components) {
+            component->set_frequency(frequency);
+        }
     }
 };
 

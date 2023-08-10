@@ -47,11 +47,11 @@ public:
         return os;
     }
 
-    static Impedance series (const Impedance& z1, const Impedance& z2) { return z1.m_value + z2.m_value; }
-    static Impedance parallel (const Impedance& z1, const Impedance& z2) {
-        /* Z1 || Z2 = (Z1*Z2) / (Z1+Z2) */
-        return (z1.m_value * z2.m_value) / (z1.m_value + z2.m_value);
-    }
+    //static Impedance series (const Impedance& z1, const Impedance& z2) { return z1.m_value + z2.m_value; }
+    //static Impedance parallel (const Impedance& z1, const Impedance& z2) {
+    //    /* Z1 || Z2 = (Z1*Z2) / (Z1+Z2) */
+    //    return (z1.m_value * z2.m_value) / (z1.m_value + z2.m_value);
+    //}
 
     std::size_t get_num_variables () const override {
         return 2;

@@ -81,6 +81,8 @@ public:
             throw std::invalid_argument("gate does not belong to component");
         }
     }
+
+    void set_frequency (double frequency) override { /* nothing to do */ }
 };
 
 } /* namespace zcalc */

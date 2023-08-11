@@ -2,9 +2,9 @@
 
 #include <complex>
 
-namespace zcalc {
+#include "zcalc/common.hpp"
 
-static constexpr double epsilon = 1e-12;
+namespace zcalc {
 
 class Complex {
 protected:
@@ -38,6 +38,7 @@ public:
     Complex operator/(const Complex& rhs) const { return std::move(Complex{m_value / rhs.m_value}); }
 
     friend bool operator==(const Complex& c0, const Complex& c1) {
+        //return c0.m_value == c1.m_value;
         if (c0.m_value.real() < (c1.m_value.real() - epsilon)) return false;
         if (c0.m_value.real() > (c1.m_value.real() + epsilon)) return false;
         if (c0.m_value.imag() < (c1.m_value.imag() - epsilon)) return false;

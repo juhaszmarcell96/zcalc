@@ -76,19 +76,25 @@ private:
         /* rank(A) == rank(A|b) <  n -> infinite solution */
         /* rank(A) != rank(A|b)      -> no solution       */
         std::size_t rank_A = 0;
+        std::size_t rank_Ab = 0;
         for (const LinearEquation<Complex>& equ : m_linear_equation_system) {
             if (!equ.is_zero()) {
                 ++rank_A;
             }
-        }
-        std::size_t rank_Ab = 0;
-        for (const LinearEquation<Complex>& equ : m_linear_equation_system) {
             if (!equ.is_full_zero()) {
                 ++rank_Ab;
             }
         }
-        if (rank_A != rank_Ab) { return false; }
-        else if (rank_A < get_num_variables()) { return false; }
+        if (rank_A != rank_Ab) {
+            std::cerr << "rank(A) = " << std::to_string(rank_A) << std::endl;
+            std::cerr << "rank(A|b) = " << std::to_string(rank_Ab) << std::endl;
+            std::cerr << "rank(A) != rank(A|b) -> no solution" << std::endl;
+            return false;
+        }
+        else if (rank_A < get_num_variables()) {
+            std::cerr << "rank(A) == rank(A|b) <  number of variables -> infinite solution" << std::endl;
+            return false;
+        }
         else { return true; }
     }
     void exchange_equations (const std::size_t i, const std::size_t j) {
@@ -126,11 +132,18 @@ public:
     
     bool solve(std::vector<Complex>& solution) const {
         /* there must be at least as many equations as independent variables */
-        if (get_num_variables() > get_num_equations()) return false;
+        if (get_num_variables() > get_num_equations()) {
+            std::cerr << "more variables than equations -> unable to solve" << std::endl;
+            return false;
+        }
         LinearEquationSystem equation_system = *this;
         equation_system.forward_elimination();
         equation_system.back_substitution();
-        if (!equation_system.is_solvable()) return false;
+        if (!equation_system.is_solvable()) {
+            std::cerr << "equation system is not solvable" << std::endl;
+            std::cout << equation_system << std::endl;
+            return false;
+        }
         solution = std::vector<Complex>(get_num_variables());
         for (size_t i = 0; i < equation_system.get_num_equations(); ++i) {
             for (size_t j = 0; j < equation_system.get_num_variables(); ++j) {

@@ -90,6 +90,9 @@ public:
         add_node ("in");
         add_node ("out");
         add_node ("gnd");
+        /* important that RL_pseudo must have index 0 */
+        /* the pseudo load resistor serves as a measurement resistor that insignificantly influences the measurement accuracy (like a multimeter) */
+        add_resistor("RL_pseudo", 10e9, "out", "gnd");
         add_source ("U", 1.0, "in", "gnd");
     }
     ~Network () = default;
@@ -142,11 +145,18 @@ public:
         compute_equations();
         std::vector<Complex> solution;
         bool success = m_lin_equ_system->solve(solution);
+        if (!success) {
+            throw std::runtime_error("could not solve equation system");
+        }
         //for (const auto& c : solution) {
         //    std::cout << c << " ";
         //}
         //std::cout << std::endl;
         return std::move(solution);
+    }
+
+    Complex compute_response () {
+        return compute()[0 + equ_voltage_offset];
     }
 
     void print () {

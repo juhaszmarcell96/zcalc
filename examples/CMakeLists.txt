@@ -9,6 +9,7 @@ set (
     basic
     filter
     rc_element
+    bandpass
 )
 
 include_directories("../include/")

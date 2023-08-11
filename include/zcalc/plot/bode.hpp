@@ -35,12 +35,6 @@ public:
             m_magnitude_plot.add_point(std::log10(frequency), 20.0 * std::log10(result[5].abs()));
             frequency *= 1.05;
         }
-        /*
-        for (std::size_t i = 1; i < get_num_decades(); ++i) {
-            fig_magnitude->draw_line((fig_magnitude->get_w() / get_num_decades()) * i, 0, (fig_magnitude->get_w() / get_num_decades()) * i, fig_magnitude->get_h(), colors::black, 1);
-            fig_magnitude->draw_text((fig_magnitude->get_w() / get_num_decades()) * i, fig_magnitude->get_h() / 2, "10^" + std::to_string(i) + "Hz");
-        }
-        */
 
         double min_x, min_y, max_x, max_y;
         m_magnitude_plot.get_min_max(min_x, min_y, max_x, max_y);
@@ -80,7 +74,7 @@ public:
                 double x_dist = y_dist / slope;
                 m_magnitude_plot.add_point(curr.x + x_dist, -3.0, 2.0, 1.0, colors::blue, colors::blue);
                 m_magnitude_plot.add_line(curr.x + x_dist, min_y, curr.x + x_dist, max_y, 1.0, colors::blue);
-                m_magnitude_plot.add_text("10^" + std::to_string(curr.x + x_dist) + "Hz", curr.x + x_dist, min_y + 2.0, 12, colors::blue);
+                m_magnitude_plot.add_text(std::to_string((int)std::pow(10.0, curr.x + x_dist)) + "Hz", curr.x + x_dist, min_y + 2.0, 12, colors::blue);
             }
         }
 

@@ -16,8 +16,8 @@ class Plotter {
 public:
     void plot (const std::string& filename, Network& network) {
         Canvas canvas { filename, 10, 10, 1000, 800 };
-        Figure* fig_magnitude = canvas.figure(0, 0, 1000, 400);
-        Figure* fig_phase = canvas.figure(0, 400, 1000, 400);
+        Figure* fig_magnitude = canvas.figure(5, 5, 990, 390);
+        Figure* fig_phase = canvas.figure(5, 405, 990, 390);
 
         Bode bode { network };
         bode.plot(fig_magnitude, fig_phase);

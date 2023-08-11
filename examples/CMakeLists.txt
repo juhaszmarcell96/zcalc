@@ -10,6 +10,7 @@ set (
     filter
     rc_element
     bandpass
+    lc_filter
 )
 
 include_directories("../include/")

@@ -16,13 +16,14 @@ private:
 
     Network& m_network;
 
-    static constexpr double m_min_freq { 1.0 };
-    static constexpr double m_max_freq { 1e10 };
+    double m_min_freq { 1.0 };
+    double m_max_freq { 1e10 };
 public:
-    Bode (Network& network) : m_network(network) {}
+    Bode () = delete;
+    Bode (Network& network, double min_freq = 1.0, double max_freq = 1e10) : m_network(network), m_min_freq(min_freq), m_max_freq(max_freq) {}
     ~Bode () = default;
 
-    constexpr std::size_t get_num_decades () const {
+    std::size_t get_num_decades () const {
         return std::log10(m_max_freq) - std::log10(m_min_freq);
     }
 

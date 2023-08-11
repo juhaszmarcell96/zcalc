@@ -139,11 +139,11 @@ public:
         LinearEquationSystem equation_system = *this;
         equation_system.forward_elimination();
         equation_system.back_substitution();
-        if (!equation_system.is_solvable()) {
-            std::cerr << "equation system is not solvable" << std::endl;
-            std::cout << equation_system << std::endl;
-            return false;
-        }
+        //if (!equation_system.is_solvable()) {
+        //    std::cerr << "equation system is not solvable" << std::endl;
+        //    std::cout << equation_system << std::endl;
+        //    return false;
+        //}
         solution = std::vector<Complex>(get_num_variables());
         for (size_t i = 0; i < equation_system.get_num_equations(); ++i) {
             for (size_t j = 0; j < equation_system.get_num_variables(); ++j) {

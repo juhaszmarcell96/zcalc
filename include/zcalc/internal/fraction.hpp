@@ -5,8 +5,6 @@
 #include <stdexcept>
 #include <cmath>
 
-#include "zcalc/common.hpp"
-
 namespace zcalc {
 
 class Fraction {
@@ -67,11 +65,11 @@ private:
         m_denominator = denominator;
     }
 public:
-    Fraction () = delete;
+    Fraction () = default;
     Fraction (std::int64_t numerator, std::int64_t denominator) {
         set (numerator, denominator);
     }
-    Fraction (std::int64_t value) {
+    Fraction (int value) {
         set (value, 1);
     }
     Fraction (double value) {

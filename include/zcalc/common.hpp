@@ -1,10 +1,14 @@
 #pragma once
 
 #include <cstddef>
+#include <complex>
 
 namespace zcalc {
 
-static constexpr double epsilon = 1e-4;
+typedef std::complex<double> complex_t;
+typedef std::complex<double> impedance_t;
+
+static constexpr double epsilon = 1e-10;
 
 static constexpr bool log_enabled = false;
 static constexpr double pi = 3.14159265358979323846;

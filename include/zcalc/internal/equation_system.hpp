@@ -10,27 +10,25 @@
 #include <string>
 #include <algorithm>
 
-namespace zcalc {
+#include "zcalc/common.hpp"
 
-typedef std::complex<double> complex;
+namespace zcalc {
 
 class EquationSystem {
 private:
     std::vector<std::string> m_variables;
 
-    typedef std::vector<complex> row_t;
+    typedef std::vector<complex_t> row_t;
     std::vector<row_t> m_mat;
-
-    static constexpr double epsilon = 1e-10;
 
     std::size_t get_num_variables () const { return m_variables.size(); }
     std::size_t get_num_equations () const { return m_mat.size(); }
 
-    static bool is_zero (complex val) {
+    static bool is_zero (complex_t val) {
         return std::abs(val) < epsilon;
     }
 
-    static bool is_one (complex val) {
+    static bool is_one (complex_t val) {
         return (std::abs(val.real() - 1.0) < epsilon) && (std::abs(val.imag()) < epsilon);
     }
 
@@ -94,24 +92,24 @@ public:
         for (std::size_t i = 0; i < num_rows; ++i) {
             m_mat[i] = row_t(m_variables.size() + 1);
             for (std::size_t e = 0; e < m_variables.size() + 1; ++e) {
-                m_mat[i][e] = complex{0.0, 0.0};
+                m_mat[i][e] = complex_t{0.0, 0.0};
             }
         }
     }
 
-    void set_coefficient (const std::string& variable_name, std::size_t row, complex value) {
+    void set_coefficient (const std::string& variable_name, std::size_t row, complex_t value) {
         m_mat[row][get_variable_index(variable_name)] = value;
     }
 
-    complex get_coefficient (const std::string& variable_name, std::size_t row) {
+    complex_t get_coefficient (const std::string& variable_name, std::size_t row) {
         return m_mat[row][get_variable_index(variable_name)];
     }
 
-    void set_result (std::size_t row, complex value) {
+    void set_result (std::size_t row, complex_t value) {
         m_mat[row].back() = value;
     }
 
-    complex get_result (std::size_t row) {
+    complex_t get_result (std::size_t row) {
         return m_mat[row].back();
     }
 
@@ -139,14 +137,14 @@ public:
             }
             swap_equations(i, pivot_i);
             /* STEP : use elementary row operations to put a 1 in the topmost position of this column */
-            complex divisor = m_mat[i][pivot_e];
-            m_mat[i][pivot_e] = complex { 1.0, 0.0 };
+            complex_t divisor = m_mat[i][pivot_e];
+            m_mat[i][pivot_e] = complex_t { 1.0, 0.0 };
             for (std::size_t e = pivot_e + 1; e < m_mat[i].size(); ++e) m_mat[i][e] /= divisor;
             /* STEP : use elementary row operations to put zeros below the pivot position */
             /*        -> subtract the scalar multiplication of this row from every row below it so that the values of the same column become 0 */
             for (std::size_t j = i + 1; j < get_num_equations(); ++j) {
-                complex multiplier = m_mat[j][pivot_e] / m_mat[i][pivot_e];
-                m_mat[j][pivot_e] = complex { 0.0, 0.0 };
+                complex_t multiplier = m_mat[j][pivot_e] / m_mat[i][pivot_e];
+                m_mat[j][pivot_e] = complex_t { 0.0, 0.0 };
                 for (std::size_t e = pivot_e + 1; e < m_mat[j].size(); ++e) m_mat[j][e] -= m_mat[i][e] * multiplier;
             }
         }
@@ -164,7 +162,7 @@ public:
             std::size_t e;
             for (e = 0; e < get_num_variables(); ++e) if (!is_zero(m_mat[i][e])) break;
             for (int j = i - 1; j >= 0; --j) {
-                complex multiplier = m_mat[j][e] / m_mat[i][e];
+                complex_t multiplier = m_mat[j][e] / m_mat[i][e];
                 m_mat[j][e] -= multiplier * m_mat[i][e];
                 m_mat[j].back() -= multiplier * m_mat[i].back();
             }
@@ -181,6 +179,9 @@ public:
         for (std::size_t i = 0; i < get_num_equations(); ++i) {
             if (!are_coefficients_zero(i)) {
                 ++rank_A;
+                ++rank_Ab;
+            }
+            else {
                 if (!is_result_zero(i)) {
                     ++rank_Ab;
                 }
@@ -194,7 +195,7 @@ public:
         }
     }
     
-    complex solve_for(const std::string& variable_name) const {
+    complex_t solve_for(const std::string& variable_name) const {
         if (get_num_equations() == 0) {
             throw std::runtime_error("no equation in the system");
         }

@@ -9,8 +9,6 @@
 
 namespace zcalc {
 
-typedef std::complex<double> impedance_t;
-
 struct Gate {
     std::string component_id;
     std::size_t gate_id { 0 };

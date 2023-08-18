@@ -6,10 +6,11 @@ include_directories (${GTEST_INCLUDE_DIRS})
 add_executable (
     tests
     main.cpp
-    fraction_test.cpp
-    complex_test.cpp
-    matrix_test.cpp
-    linear_equation_test.cpp
-    linear_equation_system_test.cpp
+    equ_sys_test.cpp
+#    fraction_test.cpp
+#    complex_test.cpp
+#    matrix_test.cpp
+#    linear_equation_test.cpp
+#    linear_equation_system_test.cpp
 )
 target_link_libraries (tests ${GTEST_LIBRARIES} pthread)

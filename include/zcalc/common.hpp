@@ -4,7 +4,7 @@
 
 namespace zcalc {
 
-static constexpr double epsilon = 1e-5;
+static constexpr double epsilon = 1e-4;
 
 static constexpr bool log_enabled = false;
 static constexpr double pi = 3.14159265358979323846;

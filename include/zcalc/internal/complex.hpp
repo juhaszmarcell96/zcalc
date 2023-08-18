@@ -39,10 +39,12 @@ public:
 
     friend bool operator==(const Complex& c0, const Complex& c1) {
         //return c0.m_value == c1.m_value;
-        if (c0.m_value.real() < (c1.m_value.real() - epsilon)) return false;
-        if (c0.m_value.real() > (c1.m_value.real() + epsilon)) return false;
-        if (c0.m_value.imag() < (c1.m_value.imag() - epsilon)) return false;
-        if (c0.m_value.imag() > (c1.m_value.imag() + epsilon)) return false;
+        if (c0.abs() < (c1.abs() - epsilon)) return false;
+        if (c0.abs() > (c1.abs() + epsilon)) return false;
+        //if (c0.m_value.real() < (c1.m_value.real() - epsilon)) return false;
+        //if (c0.m_value.real() > (c1.m_value.real() + epsilon)) return false;
+        //if (c0.m_value.imag() < (c1.m_value.imag() - epsilon)) return false;
+        //if (c0.m_value.imag() > (c1.m_value.imag() + epsilon)) return false;
         return true;
     }
     friend bool operator!=(const Complex& c0, const Complex& c1) { return !(c0 == c1); }

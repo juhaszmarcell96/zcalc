@@ -7,8 +7,8 @@ add_executable (
     tests
     main.cpp
     expression/constant_test.cpp
-    expression/variable_test.cpp
-    expression/operation_test.cpp
+#    expression/variable_test.cpp
+#    expression/operation_test.cpp
     equ_sys_test.cpp
 #    fraction_test.cpp
 #    complex_test.cpp

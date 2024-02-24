@@ -1,12 +1,17 @@
 #pragma once
 
+#include "zcalc/complex.hpp"
+
 #include <complex>
 #include <string>
 
 namespace zcalc {
 
-typedef std::complex<double> complex;
-constexpr double epsilon = 1.0e-10;
+enum class term_types {
+    constant,
+    variable,
+    operation
+};
 
 class Term {
 public:

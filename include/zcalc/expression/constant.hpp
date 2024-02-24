@@ -1,5 +1,6 @@
 #pragma once
 
+#include "zcalc/complex.hpp"
 #include "zcalc/expression/term.hpp"
 
 #include <cmath>

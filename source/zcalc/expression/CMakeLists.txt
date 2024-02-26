@@ -6,6 +6,9 @@ add_library(
     constant.cpp
     operation.cpp
     variable.cpp
+    variable_pool.cpp
+    term_factory.cpp
+    expression.cpp
 )
 
 target_include_directories(
@@ -25,6 +28,9 @@ set(
     zcalc/expression/constant.hpp
     zcalc/expression/operation.hpp
     zcalc/expression/variable.hpp
+    zcalc/expression/variable_pool.hpp
+    zcalc/expression/term_factory.hpp
+    zcalc/expression/expression.hpp
 )
 
 set_target_properties(

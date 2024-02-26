@@ -8,6 +8,12 @@ void VariablePool::define_variable (const std::string& var_name) {
     }
 }
 
+void VariablePool::undefine_variable (const std::string& var_name) {
+    if (m_vars.count(var_name) != 0) {
+        m_vars.erase(var_name);
+    }
+}
+
 std::shared_ptr<Variable> VariablePool::get_variable (const std::string& var_name) {
     if (m_vars.count(var_name) == 0) {
         throw std::runtime_error("ERROR : variable does not exist");

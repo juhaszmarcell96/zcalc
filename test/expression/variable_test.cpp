@@ -2,10 +2,14 @@
 
 #include <zcalc/expression/variable.hpp>
 
+#include <sstream>
+
 TEST(VariableTest, Test) {
     zcalc::Variable v { "x" };
 
-    ASSERT_EQ(v.to_string(), "x");
+    std::stringstream ss;
+    v.print(ss);
+    ASSERT_EQ(ss.str(), "x");
 
     ASSERT_FALSE(v.is_numeric());
     EXPECT_THROW(v.get(), std::runtime_error);

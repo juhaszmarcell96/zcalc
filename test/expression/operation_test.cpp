@@ -11,7 +11,6 @@ TEST(OperationTest, EmptyOpTest) {
     EXPECT_THROW(op.is_zero(), std::runtime_error);
     EXPECT_THROW(op.is_one(), std::runtime_error);
     EXPECT_THROW(op.get(), std::runtime_error);
-    EXPECT_THROW(op.to_string(), std::runtime_error);
 }
 
 TEST(OperationTest, ConstantOpTest) {

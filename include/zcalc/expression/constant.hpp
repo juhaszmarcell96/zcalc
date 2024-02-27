@@ -23,6 +23,8 @@ public:
     bool is_constant () const override;
     bool is_variable () const override;
     bool is_operation () const override;
+
+    std::unique_ptr<Term> create_copy () const override;
 };
 
 } // namespace zcalc

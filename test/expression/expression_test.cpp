@@ -6,7 +6,7 @@
 #include <zcalc/expression/term_factory.hpp>
 
 TEST(ExpressionTest, BuildingExpressionTest) {
-    // 8x + 4 + 3 * (2x - 3)
+    // 8x + 3 * (2x - 3)
     zcalc::Expression exp {
         zcalc::Expression(8) *
         zcalc::Expression("x") +

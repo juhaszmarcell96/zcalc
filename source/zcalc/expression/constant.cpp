@@ -27,4 +27,8 @@ bool Constant::is_constant () const { return true; }
 bool Constant::is_variable () const { return false; }
 bool Constant::is_operation () const {return false; }
 
+std::unique_ptr<Term> Constant::create_copy () const {
+    return std::make_unique<Constant>(m_value);
+}
+
 } // namespace zcalc

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <zcalc/expression/variable.hpp>
+#include <zcalc/expression/variable_pool.hpp>
 
 #include <sstream>
 
@@ -39,4 +40,6 @@ TEST(VariableTest, Test) {
     ASSERT_EQ(v.get(), zcalc::complex(-0.6, 1.12));
     ASSERT_FALSE(v.is_zero());
     ASSERT_FALSE(v.is_one());
+
+    zcalc::VariablePool::undefine_variable("x");
 }

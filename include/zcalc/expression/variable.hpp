@@ -9,13 +9,11 @@ namespace zcalc {
 
 class Variable : public Term {
 private:
-    std::string m_id;
-    bool m_known { false };
-    complex m_value { 0.0, 0.0 };
+    std::string m_name;
 public:
     Variable() = delete;
     ~Variable() = default;
-    Variable (const std::string& id) : m_id(id) {}
+    Variable (const std::string& name);
     bool is_numeric () const override;
     void reduce () override;
     bool is_zero () const override;
@@ -28,6 +26,8 @@ public:
     bool is_constant () const override;
     bool is_variable () const override;
     bool is_operation () const override;
+
+    std::unique_ptr<Term> create_copy () const override;
 };
 
 } // namespace zcalc

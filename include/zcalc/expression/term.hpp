@@ -5,6 +5,7 @@
 #include <complex>
 #include <string>
 #include <variant>
+#include <memory>
 
 namespace zcalc {
 
@@ -20,6 +21,8 @@ public:
     virtual bool is_constant () const = 0;
     virtual bool is_variable () const = 0;
     virtual bool is_operation () const = 0;
+
+    virtual std::unique_ptr<Term> create_copy () const = 0;
 };
 
 } // namespace zcalc

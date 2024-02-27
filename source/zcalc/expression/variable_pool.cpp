@@ -4,7 +4,7 @@ namespace zcalc {
 
 void VariablePool::define_variable (const std::string& var_name) {
     if (m_vars.count(var_name) == 0) {
-        m_vars[var_name] = std::make_shared<Variable>(var_name);
+        m_vars[var_name] = Variable {};
     }
 }
 
@@ -14,25 +14,37 @@ void VariablePool::undefine_variable (const std::string& var_name) {
     }
 }
 
-std::shared_ptr<Variable> VariablePool::get_variable (const std::string& var_name) {
+complex VariablePool::get_value (const std::string& var_name) {
     if (m_vars.count(var_name) == 0) {
         throw std::runtime_error("ERROR : variable does not exist");
     }
-    return m_vars[var_name];
+    if (!m_vars[var_name].known) {
+        throw std::runtime_error("ERROR : variable value is not known");
+    }
+    return m_vars[var_name].value;
+}
+
+bool VariablePool::is_known (const std::string& var_name) {
+    if (m_vars.count(var_name) == 0) {
+        throw std::runtime_error("ERROR : variable does not exist");
+    }
+    return m_vars[var_name].known;
 }
 
 void VariablePool::set_variable (const std::string& var_name, complex value) {
     if (m_vars.count(var_name) == 0) {
         throw std::runtime_error("ERROR : variable does not exist");
     }
-    m_vars[var_name]->set_value(value);
+    m_vars[var_name].value = value;
+    m_vars[var_name].known = true;
 }
 
 void VariablePool::unset_variable (const std::string& var_name) {
     if (m_vars.count(var_name) == 0) {
         throw std::runtime_error("ERROR : variable does not exist");
     }
-    m_vars[var_name]->unset_value();
+    m_vars[var_name].value = complex { 0.0, 0.0 };
+    m_vars[var_name].known = false;
 }
 
 } // namespace zcalc

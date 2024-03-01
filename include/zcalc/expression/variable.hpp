@@ -14,6 +14,7 @@ public:
     Variable() = delete;
     ~Variable() = default;
     Variable (const std::string& name);
+    term_types get_type () const override;
     bool is_numeric () const override;
     void reduce () override;
     bool is_zero () const override;

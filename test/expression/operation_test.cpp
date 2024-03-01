@@ -4,7 +4,7 @@
 #include <zcalc/expression/constant.hpp>
 
 TEST(OperationTest, EmptyOpTest) {
-    zcalc::Operation op { zcalc::operation_type::add };
+    zcalc::Operation op { zcalc::operation_types::add };
 
     ASSERT_FALSE(op.is_numeric());
     EXPECT_THROW(op.reduce(), std::runtime_error);
@@ -14,7 +14,7 @@ TEST(OperationTest, EmptyOpTest) {
 }
 
 TEST(OperationTest, ConstantOpTest) {
-    zcalc::Operation op { zcalc::operation_type::add };
+    zcalc::Operation op { zcalc::operation_types::add };
     std::unique_ptr<zcalc::Constant> c1 = std::make_unique<zcalc::Constant>(zcalc::complex { 1.0, 0.0 });
     std::unique_ptr<zcalc::Constant> c2 = std::make_unique<zcalc::Constant>(zcalc::complex { 2.0, 0.0 });
 

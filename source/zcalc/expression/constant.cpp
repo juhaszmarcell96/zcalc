@@ -7,6 +7,8 @@ namespace zcalc {
 
 Constant::Constant (complex value) : m_value(value) {}
 
+term_types Constant::get_type () const { return term_types::constant; }
+
 bool Constant::is_numeric () const { return true; }
 
 complex Constant::get () const { return m_value; }

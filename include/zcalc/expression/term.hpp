@@ -9,8 +9,15 @@
 
 namespace zcalc {
 
+enum class term_types {
+    constant,
+    variable,
+    operation
+};
+
 class Term {
 public:
+    virtual term_types get_type () const = 0;
     virtual bool is_numeric () const = 0;
     virtual complex get () const = 0;
     virtual void reduce () = 0;

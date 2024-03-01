@@ -6,7 +6,7 @@
 
 namespace zcalc {
 
-enum class operation_type {
+enum class operation_types {
     add,
     sub,
     mul,
@@ -18,11 +18,12 @@ private:
     std::unique_ptr<Term> m_left_operand { nullptr };
     std::unique_ptr<Term> m_right_operand { nullptr };
 
-    operation_type m_type;
+    operation_types m_type;
 public:
     Operation () = delete;
-    Operation (operation_type type) : m_type (type) {}
+    Operation (operation_types type) : m_type (type) {}
     ~Operation () = default;
+    term_types get_type () const override;
     bool is_numeric () const override;
     void reduce () override;
     bool is_zero () const override;
@@ -30,12 +31,11 @@ public:
     complex get () const override;
     void print (std::ostream &os) const override;
     void set_left_operand (std::unique_ptr<Term>&& operand);
-    //const std::unique_ptr<const Term> get_left_operand () const;
-    Term* get_left_operand ();
+    const Term* get_left_operand () const;
     void set_right_operand (std::unique_ptr<Term>&& operand);
-    //const std::unique_ptr<const Term> get_right_operand () const;
-    Term* get_right_operand ();
-    operation_type get_type () const;
+    const Term* get_right_operand () const;
+    operation_types get_operation_type () const;
+    void set_operation_type (operation_types type);
 
     bool is_constant () const override;
     bool is_variable () const override;

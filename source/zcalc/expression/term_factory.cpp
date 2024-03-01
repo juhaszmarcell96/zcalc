@@ -16,9 +16,9 @@ std::unique_ptr<Term> TermFactory::create (complex value) {
     return std::make_unique<Constant>(value);
 }
 
-std::unique_ptr<Term> TermFactory::create (operation_type type, std::unique_ptr<Term>&& lhs, std::unique_ptr<Term>&& rhs) {
+std::unique_ptr<Term> TermFactory::create (operation_types type, std::unique_ptr<Term>&& lhs, std::unique_ptr<Term>&& rhs) {
     switch(type) {
-        case operation_type::add : {
+        case operation_types::add : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
                 return std::make_unique<Constant>(lhs->get() + rhs->get());
             }
@@ -32,13 +32,13 @@ std::unique_ptr<Term> TermFactory::create (operation_type type, std::unique_ptr<
                     return std::move(lhs);
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_type::add);
+            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::add);
             new_op->set_left_operand(std::move(lhs));
             new_op->set_right_operand(std::move(rhs));
             new_op->reduce();
             return new_op;
         }
-        case operation_type::sub : {
+        case operation_types::sub : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
                 return std::make_unique<Constant>(lhs->get() - rhs->get());
             }
@@ -52,13 +52,13 @@ std::unique_ptr<Term> TermFactory::create (operation_type type, std::unique_ptr<
                     return std::move(lhs);
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_type::sub);
+            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::sub);
             new_op->set_left_operand(std::move(lhs));
             new_op->set_right_operand(std::move(rhs));
             new_op->reduce();
             return new_op;
         }
-        case operation_type::mul : {
+        case operation_types::mul : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
                 return std::make_unique<Constant>(lhs->get() * rhs->get());
             }
@@ -78,13 +78,13 @@ std::unique_ptr<Term> TermFactory::create (operation_type type, std::unique_ptr<
                     return std::move(lhs);
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_type::mul);
+            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::mul);
             new_op->set_left_operand(std::move(lhs));
             new_op->set_right_operand(std::move(rhs));
             new_op->reduce();
             return new_op;
         }
-        case operation_type::div : {
+        case operation_types::div : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
                 return std::make_unique<Constant>(lhs->get() / rhs->get());
             }
@@ -101,7 +101,7 @@ std::unique_ptr<Term> TermFactory::create (operation_type type, std::unique_ptr<
                     return std::move(lhs);
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_type::div);
+            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::div);
             new_op->set_left_operand(std::move(lhs));
             new_op->set_right_operand(std::move(rhs));
             //new_op->reduce();

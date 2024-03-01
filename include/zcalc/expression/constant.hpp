@@ -13,6 +13,7 @@ public:
     Constant () = default;
     ~Constant () = default;
     Constant (complex value);
+    term_types get_type () const override;
     bool is_numeric () const override;
     complex get () const override;
     void reduce () override;

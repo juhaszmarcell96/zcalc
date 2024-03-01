@@ -6,6 +6,8 @@
 
 namespace zcalc {
 
+term_types Variable::get_type () const { return term_types::variable; }
+
 Variable::Variable (const std::string& name) : m_name(name) {
     VariablePool::define_variable(name);
 }

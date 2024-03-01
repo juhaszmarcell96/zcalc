@@ -5,7 +5,7 @@
 
 namespace zcalc {
 
-Expression::Expression (std::unique_ptr<Term>&& exp_root) : m_exp_root(std::move(exp_root)) {
+Expression::Expression (std::shared_ptr<Term>&& exp_root) : m_exp_root(std::move(exp_root)) {
     reduce();
 }
 Expression::Expression (complex constant_value) { m_exp_root = TermFactory::create(constant_value); }
@@ -34,122 +34,122 @@ void Expression::reduce () {
 }
 
 Expression Expression::operator+(const Expression& rhs) const {
-    return Expression{TermFactory::create(operation_types::add, m_exp_root->create_copy(), rhs.m_exp_root->create_copy())};
+    return Expression{TermFactory::create(operation_types::add, m_exp_root, rhs.m_exp_root)};
 }
 Expression Expression::operator+(complex constant_value) const {
-    return Expression{TermFactory::create(operation_types::add, m_exp_root->create_copy(), TermFactory::create(constant_value))};
+    return Expression{TermFactory::create(operation_types::add, m_exp_root, TermFactory::create(constant_value))};
 }
-Expression Expression::operator+(std::unique_ptr<Variable> var) const {
-    return Expression{TermFactory::create(operation_types::add, m_exp_root->create_copy(), var->create_copy())};
+Expression Expression::operator+(std::shared_ptr<Variable> var) const {
+    return Expression{TermFactory::create(operation_types::add, m_exp_root, var)};
 }
 Expression Expression::operator+(const std::string& var_name) const {
-    return Expression{TermFactory::create(operation_types::add, m_exp_root->create_copy(), TermFactory::create(var_name))};
+    return Expression{TermFactory::create(operation_types::add, m_exp_root, TermFactory::create(var_name))};
 }
 
 Expression& Expression::operator+=(const Expression& rhs) {
-    m_exp_root = TermFactory::create(operation_types::add, std::move(m_exp_root), rhs.m_exp_root->create_copy());
+    m_exp_root = TermFactory::create(operation_types::add, m_exp_root, rhs.m_exp_root);
     return *this;
 }
 Expression& Expression::operator+=(complex constant_value) {
-    m_exp_root = TermFactory::create(operation_types::add, std::move(m_exp_root), TermFactory::create(constant_value));
+    m_exp_root = TermFactory::create(operation_types::add, m_exp_root, TermFactory::create(constant_value));
     return *this;
 }
-Expression& Expression::operator+=(std::unique_ptr<Variable> var) {
-    m_exp_root = TermFactory::create(operation_types::add, std::move(m_exp_root), var->create_copy());
+Expression& Expression::operator+=(std::shared_ptr<Variable> var) {
+    m_exp_root = TermFactory::create(operation_types::add, m_exp_root, var);
     return *this;
 }
 Expression& Expression::operator+=(const std::string& var_name) {
-    m_exp_root = TermFactory::create(operation_types::add, std::move(m_exp_root), TermFactory::create(var_name));
+    m_exp_root = TermFactory::create(operation_types::add, m_exp_root, TermFactory::create(var_name));
     return *this;
 }
 
 Expression Expression::operator-(const Expression& rhs) const {
-    return Expression{TermFactory::create(operation_types::sub, m_exp_root->create_copy(), rhs.m_exp_root->create_copy())};
+    return Expression{TermFactory::create(operation_types::sub, m_exp_root, rhs.m_exp_root)};
 }
 Expression Expression::operator-(complex constant_value) const {
-    return Expression{TermFactory::create(operation_types::sub, m_exp_root->create_copy(), TermFactory::create(constant_value))};
+    return Expression{TermFactory::create(operation_types::sub, m_exp_root, TermFactory::create(constant_value))};
 }
-Expression Expression::operator-(std::unique_ptr<Variable> var) const {
-    return Expression{TermFactory::create(operation_types::sub, m_exp_root->create_copy(), var->create_copy())};
+Expression Expression::operator-(std::shared_ptr<Variable> var) const {
+    return Expression{TermFactory::create(operation_types::sub, m_exp_root, var)};
 }
 Expression Expression::operator-(const std::string& var_name) const {
-    return Expression{TermFactory::create(operation_types::sub, m_exp_root->create_copy(), TermFactory::create(var_name))};
+    return Expression{TermFactory::create(operation_types::sub, m_exp_root, TermFactory::create(var_name))};
 }
 
 Expression& Expression::operator-=(const Expression& rhs) {
-    m_exp_root = TermFactory::create(operation_types::sub, std::move(m_exp_root), rhs.m_exp_root->create_copy());
+    m_exp_root = TermFactory::create(operation_types::sub, m_exp_root, rhs.m_exp_root);
     return *this;
 }
 Expression& Expression::operator-=(complex constant_value) {
-    m_exp_root = TermFactory::create(operation_types::sub, std::move(m_exp_root), TermFactory::create(constant_value));
+    m_exp_root = TermFactory::create(operation_types::sub, m_exp_root, TermFactory::create(constant_value));
     return *this;
 }
-Expression& Expression::operator-=(std::unique_ptr<Variable> var) {
-    m_exp_root = TermFactory::create(operation_types::sub, std::move(m_exp_root), var->create_copy());
+Expression& Expression::operator-=(std::shared_ptr<Variable> var) {
+    m_exp_root = TermFactory::create(operation_types::sub, m_exp_root, var);
     return *this;
 }
 Expression& Expression::operator-=(const std::string& var_name) {
-    m_exp_root = TermFactory::create(operation_types::sub, std::move(m_exp_root), TermFactory::create(var_name));
+    m_exp_root = TermFactory::create(operation_types::sub, m_exp_root, TermFactory::create(var_name));
     return *this;
 }
 
 Expression Expression::operator*(const Expression& rhs) const {
-    return Expression{TermFactory::create(operation_types::mul, m_exp_root->create_copy(), rhs.m_exp_root->create_copy())};
+    return Expression{TermFactory::create(operation_types::mul, m_exp_root, rhs.m_exp_root)};
 }
 Expression Expression::operator*(complex constant_value) const {
-    return Expression{TermFactory::create(operation_types::mul, m_exp_root->create_copy(), TermFactory::create(constant_value))};
+    return Expression{TermFactory::create(operation_types::mul, m_exp_root, TermFactory::create(constant_value))};
 }
-Expression Expression::operator*(std::unique_ptr<Variable> var) const {
-    return Expression{TermFactory::create(operation_types::mul, m_exp_root->create_copy(), var->create_copy())};
+Expression Expression::operator*(std::shared_ptr<Variable> var) const {
+    return Expression{TermFactory::create(operation_types::mul, m_exp_root, var)};
 }
 Expression Expression::operator*(const std::string& var_name) const {
-    return Expression{TermFactory::create(operation_types::mul, m_exp_root->create_copy(), TermFactory::create(var_name))};
+    return Expression{TermFactory::create(operation_types::mul, m_exp_root, TermFactory::create(var_name))};
 }
 
 Expression& Expression::operator*=(const Expression& rhs) {
-    m_exp_root = TermFactory::create(operation_types::mul, std::move(m_exp_root), rhs.m_exp_root->create_copy());
+    m_exp_root = TermFactory::create(operation_types::mul, m_exp_root, rhs.m_exp_root);
     return *this;
 }
 Expression& Expression::operator*=(complex constant_value) {
-    m_exp_root = TermFactory::create(operation_types::mul, std::move(m_exp_root), TermFactory::create(constant_value));
+    m_exp_root = TermFactory::create(operation_types::mul, m_exp_root, TermFactory::create(constant_value));
     return *this;
 }
-Expression& Expression::operator*=(std::unique_ptr<Variable> var) {
-    m_exp_root = TermFactory::create(operation_types::mul, std::move(m_exp_root), var->create_copy());
+Expression& Expression::operator*=(std::shared_ptr<Variable> var) {
+    m_exp_root = TermFactory::create(operation_types::mul, m_exp_root, var);
     return *this;
 }
 Expression& Expression::operator*=(const std::string& var_name) {
-    m_exp_root = TermFactory::create(operation_types::mul, std::move(m_exp_root), TermFactory::create(var_name));
+    m_exp_root = TermFactory::create(operation_types::mul, m_exp_root, TermFactory::create(var_name));
     return *this;
 }
 
 Expression Expression::operator/(const Expression& rhs) const {
-    return Expression{TermFactory::create(operation_types::div, m_exp_root->create_copy(), rhs.m_exp_root->create_copy())};
+    return Expression{TermFactory::create(operation_types::div, m_exp_root, rhs.m_exp_root)};
 }
 Expression Expression::operator/(complex constant_value) const {
-    return Expression{TermFactory::create(operation_types::div, m_exp_root->create_copy(), TermFactory::create(constant_value))};
+    return Expression{TermFactory::create(operation_types::div, m_exp_root, TermFactory::create(constant_value))};
 }
-Expression Expression::operator/(std::unique_ptr<Variable> var) const {
-    return Expression{TermFactory::create(operation_types::div, m_exp_root->create_copy(), var->create_copy())};
+Expression Expression::operator/(std::shared_ptr<Variable> var) const {
+    return Expression{TermFactory::create(operation_types::div, m_exp_root, var)};
 }
 Expression Expression::operator/(const std::string& var_name) const {
-    return Expression{TermFactory::create(operation_types::div, m_exp_root->create_copy(), TermFactory::create(var_name))};
+    return Expression{TermFactory::create(operation_types::div, m_exp_root, TermFactory::create(var_name))};
 }
 
 Expression& Expression::operator/=(const Expression& rhs) {
-    m_exp_root = TermFactory::create(operation_types::div, std::move(m_exp_root), rhs.m_exp_root->create_copy());
+    m_exp_root = TermFactory::create(operation_types::div, m_exp_root, rhs.m_exp_root);
     return *this;
 }
 Expression& Expression::operator/=(complex constant_value) {
-    m_exp_root = TermFactory::create(operation_types::div, std::move(m_exp_root), TermFactory::create(constant_value));
+    m_exp_root = TermFactory::create(operation_types::div, m_exp_root, TermFactory::create(constant_value));
     return *this;
 }
-Expression& Expression::operator/=(std::unique_ptr<Variable> var) {
-    m_exp_root = TermFactory::create(operation_types::div, std::move(m_exp_root), var->create_copy());
+Expression& Expression::operator/=(std::shared_ptr<Variable> var) {
+    m_exp_root = TermFactory::create(operation_types::div, m_exp_root, var);
     return *this;
 }
 Expression& Expression::operator/=(const std::string& var_name) {
-    m_exp_root = TermFactory::create(operation_types::div, std::move(m_exp_root), TermFactory::create(var_name));
+    m_exp_root = TermFactory::create(operation_types::div, m_exp_root, TermFactory::create(var_name));
     return *this;
 }
 

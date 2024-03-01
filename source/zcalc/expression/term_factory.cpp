@@ -7,90 +7,90 @@
 
 namespace zcalc {
 
-std::unique_ptr<Term> TermFactory::create (const std::string& var_name) {
+std::shared_ptr<Term> TermFactory::create (const std::string& var_name) {
     VariablePool::define_variable(var_name);
-    return std::make_unique<Variable>(var_name);
+    return std::make_shared<Variable>(var_name);
 }
 
-std::unique_ptr<Term> TermFactory::create (complex value) {
-    return std::make_unique<Constant>(value);
+std::shared_ptr<Term> TermFactory::create (complex value) {
+    return std::make_shared<Constant>(value);
 }
 
-std::unique_ptr<Term> TermFactory::create (operation_types type, std::unique_ptr<Term>&& lhs, std::unique_ptr<Term>&& rhs) {
+std::shared_ptr<Term> TermFactory::create (operation_types type, std::shared_ptr<Term> lhs, std::shared_ptr<Term> rhs) {
     switch(type) {
         case operation_types::add : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
-                return std::make_unique<Constant>(lhs->get() + rhs->get());
+                return std::make_shared<Constant>(lhs->get() + rhs->get());
             }
             else if (lhs->is_numeric()) {
                 if (lhs->is_zero()) {
-                    return std::move(rhs);
+                    return rhs;
                 }
             }
             else if (rhs->is_numeric()) {
                 if (rhs->is_zero()) {
-                    return std::move(lhs);
+                    return lhs;
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::add);
-            new_op->set_left_operand(std::move(lhs));
-            new_op->set_right_operand(std::move(rhs));
+            std::shared_ptr<Operation> new_op = std::make_shared<Operation>(operation_types::add);
+            new_op->set_left_operand(lhs);
+            new_op->set_right_operand(rhs);
             new_op->reduce();
             return new_op;
         }
         case operation_types::sub : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
-                return std::make_unique<Constant>(lhs->get() - rhs->get());
+                return std::make_shared<Constant>(lhs->get() - rhs->get());
             }
             else if (lhs->is_numeric()) {
                 if (lhs->is_zero()) {
-                    return std::move(rhs);
+                    return rhs;
                 }
             }
             else if (rhs->is_numeric()) {
                 if (rhs->is_zero()) {
-                    return std::move(lhs);
+                    return lhs;
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::sub);
-            new_op->set_left_operand(std::move(lhs));
-            new_op->set_right_operand(std::move(rhs));
+            std::shared_ptr<Operation> new_op = std::make_shared<Operation>(operation_types::sub);
+            new_op->set_left_operand(lhs);
+            new_op->set_right_operand(rhs);
             new_op->reduce();
             return new_op;
         }
         case operation_types::mul : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
-                return std::make_unique<Constant>(lhs->get() * rhs->get());
+                return std::make_shared<Constant>(lhs->get() * rhs->get());
             }
             else if (lhs->is_numeric()) {
                 if (lhs->is_zero()) {
-                    return std::make_unique<Constant>(complex{0.0, 0.0});
+                    return std::make_shared<Constant>(complex{0.0, 0.0});
                 }
                 else if (lhs->is_one()) {
-                    return std::move(rhs);
+                    return rhs;
                 }
             }
             else if (rhs->is_numeric()) {
                 if (rhs->is_zero()) {
-                    return std::make_unique<Constant>(complex{0.0, 0.0});
+                    return std::make_shared<Constant>(complex{0.0, 0.0});
                 }
                 else if (rhs->is_one()) {
-                    return std::move(lhs);
+                    return lhs;
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::mul);
-            new_op->set_left_operand(std::move(lhs));
-            new_op->set_right_operand(std::move(rhs));
+            std::shared_ptr<Operation> new_op = std::make_shared<Operation>(operation_types::mul);
+            new_op->set_left_operand(lhs);
+            new_op->set_right_operand(rhs);
             new_op->reduce();
             return new_op;
         }
         case operation_types::div : {
             if (lhs->is_numeric() && rhs->is_numeric()) {
-                return std::make_unique<Constant>(lhs->get() / rhs->get());
+                return std::make_shared<Constant>(lhs->get() / rhs->get());
             }
             else if (lhs->is_numeric()) {
                 if (lhs->is_zero()) {
-                    return std::make_unique<Constant>(complex{0.0, 0.0});
+                    return std::make_shared<Constant>(complex{0.0, 0.0});
                 }
             }
             else if (rhs->is_numeric()) {
@@ -98,12 +98,12 @@ std::unique_ptr<Term> TermFactory::create (operation_types type, std::unique_ptr
                     throw std::runtime_error("ERROR : cannot divide by 0");
                 }
                 else if (rhs->is_one()) {
-                    return std::move(lhs);
+                    return lhs;
                 }
             }
-            std::unique_ptr<Operation> new_op = std::make_unique<Operation>(operation_types::div);
-            new_op->set_left_operand(std::move(lhs));
-            new_op->set_right_operand(std::move(rhs));
+            std::shared_ptr<Operation> new_op = std::make_shared<Operation>(operation_types::div);
+            new_op->set_left_operand(lhs);
+            new_op->set_right_operand(rhs);
             //new_op->reduce();
             return new_op;
         }

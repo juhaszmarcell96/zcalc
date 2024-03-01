@@ -38,8 +38,8 @@ void Operation::reduce () {
                 if ((op_type == operation_types::add) || (op_type == operation_types::sub)) {
                     operation_types old_type = m_type;
                     m_type = op_type;
-                    auto new_left_operand = TermFactory::create(old_type, m_left_operand->create_copy(), right_op->get_left_operand()->create_copy());
-                    auto new_right_operand = TermFactory::create(old_type, m_left_operand->create_copy(), right_op->get_right_operand()->create_copy());
+                    auto new_left_operand = TermFactory::create(old_type, m_left_operand, right_op->get_left_operand());
+                    auto new_right_operand = TermFactory::create(old_type, m_left_operand, right_op->get_right_operand());
                     m_left_operand = std::move(new_left_operand);
                     m_right_operand = std::move(new_right_operand);
                 }
@@ -78,20 +78,20 @@ complex Operation::get () const {
     }
 }
 
-void Operation::set_left_operand (std::unique_ptr<Term>&& operand) {
-    m_left_operand = std::move(operand);
+void Operation::set_left_operand (std::shared_ptr<Term> operand) {
+    m_left_operand = operand;
 }
 
-const Term* Operation::get_left_operand () const {
-    return m_left_operand.get();
+const std::shared_ptr<Term> Operation::get_left_operand () const {
+    return m_left_operand;
 }
 
-void Operation::set_right_operand (std::unique_ptr<Term>&& operand) {
+void Operation::set_right_operand (std::shared_ptr<Term> operand) {
     m_right_operand = std::move(operand);
 }
 
-const Term* Operation::get_right_operand () const {
-    return m_right_operand.get();
+const std::shared_ptr<Term> Operation::get_right_operand () const {
+    return m_right_operand;
 }
 
 void Operation::print (std::ostream &os) const {
@@ -118,16 +118,5 @@ void Operation::set_operation_type (operation_types type) { m_type = type; }
 bool Operation::is_constant () const { return false; }
 bool Operation::is_variable () const { return false; }
 bool Operation::is_operation () const {return true; }
-
-std::unique_ptr<Term> Operation::create_copy () const {
-    std::unique_ptr<Operation> new_op = std::make_unique<Operation>(m_type);
-    if (m_left_operand) {
-        new_op->set_left_operand(m_left_operand->create_copy());
-    }
-    if (m_right_operand) {
-        new_op->set_right_operand(m_right_operand->create_copy());
-    }
-    return new_op;
-}
 
 } // namespace zcalc

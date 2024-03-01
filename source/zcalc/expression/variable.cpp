@@ -41,8 +41,4 @@ bool Variable::is_constant () const { return false; }
 bool Variable::is_variable () const { return true; }
 bool Variable::is_operation () const {return false; }
 
-std::unique_ptr<Term> Variable::create_copy () const {
-    return std::make_unique<Variable>(m_name);
-}
-
 } // namespace zcalc

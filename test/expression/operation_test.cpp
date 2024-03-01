@@ -15,11 +15,11 @@ TEST(OperationTest, EmptyOpTest) {
 
 TEST(OperationTest, ConstantOpTest) {
     zcalc::Operation op { zcalc::operation_types::add };
-    std::unique_ptr<zcalc::Constant> c1 = std::make_unique<zcalc::Constant>(zcalc::complex { 1.0, 0.0 });
-    std::unique_ptr<zcalc::Constant> c2 = std::make_unique<zcalc::Constant>(zcalc::complex { 2.0, 0.0 });
+    std::shared_ptr<zcalc::Constant> c1 = std::make_shared<zcalc::Constant>(zcalc::complex { 1.0, 0.0 });
+    std::shared_ptr<zcalc::Constant> c2 = std::make_shared<zcalc::Constant>(zcalc::complex { 2.0, 0.0 });
 
-    op.set_left_operand(std::move(c1));
-    op.set_right_operand(std::move(c2));
+    op.set_left_operand(c1);
+    op.set_right_operand(c2);
 
     ASSERT_TRUE(op.is_numeric());
     ASSERT_FALSE(op.is_zero());

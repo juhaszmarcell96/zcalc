@@ -15,8 +15,8 @@ enum class operation_types {
 
 class Operation : public Term {
 private:
-    std::unique_ptr<Term> m_left_operand { nullptr };
-    std::unique_ptr<Term> m_right_operand { nullptr };
+    std::shared_ptr<Term> m_left_operand { nullptr };
+    std::shared_ptr<Term> m_right_operand { nullptr };
 
     operation_types m_type;
 public:
@@ -30,18 +30,16 @@ public:
     bool is_one () const override;
     complex get () const override;
     void print (std::ostream &os) const override;
-    void set_left_operand (std::unique_ptr<Term>&& operand);
-    const Term* get_left_operand () const;
-    void set_right_operand (std::unique_ptr<Term>&& operand);
-    const Term* get_right_operand () const;
+    void set_left_operand (std::shared_ptr<Term> operand);
+    const std::shared_ptr<Term> get_left_operand () const;
+    void set_right_operand (std::shared_ptr<Term> operand);
+    const std::shared_ptr<Term> get_right_operand () const;
     operation_types get_operation_type () const;
     void set_operation_type (operation_types type);
 
     bool is_constant () const override;
     bool is_variable () const override;
     bool is_operation () const override;
-
-    std::unique_ptr<Term> create_copy () const override;
 };
 
 } // namespace zcalc

@@ -22,12 +22,12 @@ public:
     bool apply (std::shared_ptr<Term>& term) const override;
 };
 
-/*
-
 class ZeroRule : public Rule {
 public:
-    bool apply (Operation* operation) const override;
+    bool apply (std::shared_ptr<Term>& term) const override;
 };
+
+/*
 
 class DistributiveRule : public Rule {
 public:

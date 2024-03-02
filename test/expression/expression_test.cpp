@@ -19,7 +19,6 @@ TEST(ExpressionTest, BuildingExpressionTest) {
         )
     };
 
-    std::cout << exp << std::endl;
     zcalc::VariablePool::set_variable("x", 1);
     ASSERT_EQ(exp.evaluate(), zcalc::complex(5.0, 0.0));
     zcalc::VariablePool::unset_variable("x");
@@ -179,18 +178,4 @@ TEST(ExpressionTest, DivisionMultiplicationMultiVarTest) {
 
     zcalc::VariablePool::undefine_variable("m");
     zcalc::VariablePool::undefine_variable("n");
-}
-
-TEST(ExpressionTest, SimplifyTest) {
-    // 2 * ( 2 + 3 )
-    zcalc::Expression exp {
-        zcalc::Expression("x") * (
-            zcalc::Expression(2) +
-            zcalc::Expression("y")
-        )
-    };
-
-    std::cout << exp << std::endl;
-    exp.simplify();
-    std::cout << exp << std::endl;
 }

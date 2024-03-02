@@ -8,7 +8,7 @@ add_executable (
     variable_test.cpp
     operation_test.cpp
     expression_test.cpp
-    constant_rule_test.cpp
+    simple_rule_test.cpp
     simplification_test.cpp
 )
 target_link_libraries (expression_tests ${GTEST_LIBRARIES} pthread expression_static)

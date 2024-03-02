@@ -53,11 +53,85 @@ bool OneRule::apply (std::shared_ptr<Term>& term) const {
                 return true;
             }
         }
+    }
+    return false;
+}
+
+bool ZeroRule::apply (std::shared_ptr<Term>& term) const {
+    if (!term) { return false; }
+    // a * 0 = 0
+    // 0 * a = 0
+    // a / 0 = ERROR
+    // 0 / a = 0
+    // a + 0 = a
+    // 0 + a = a
+    // a - 0 = a
+    term_types term_type = term->get_type();
+    if (term_type == term_types::constant) { return false; }
+    if (term_type == term_types::variable) { return false; }
+
+    std::shared_ptr<Operation> op = std::dynamic_pointer_cast<Operation>(term);
+
+    operation_types op_type = op->get_operation_type();
+
+    const std::shared_ptr<Term> lhs = op->get_left_operand();
+    const std::shared_ptr<Term> rhs = op->get_right_operand();
+
+    if (op_type == operation_types::mul) {
+        // 0 * a = 0
+        if (lhs->is_constant()) {
+            if (lhs->is_zero()) {
+                term = TermFactory::create(complex{0.0, 0.0});
+                return true;
+            }
+        }
+        // a * 0 = 0
+        if (rhs->is_constant()) {
+            if (rhs->is_zero()) {
+                term = TermFactory::create(complex{0.0, 0.0});
+                return true;
+            }
+        }
+    }
+    if (op_type == operation_types::div) {
+        // 0 / a = 0
+        if (lhs->is_constant()) {
+            if (lhs->is_zero()) {
+                term = TermFactory::create(complex{0.0, 0.0});
+                return true;
+            }
+        }
+        // a / 0 = ERROR
         if (rhs->is_constant()) {
             if (rhs->is_zero()) {
                 throw std::runtime_error("ERROR : cannot divide by 0");
             }
-        }      
+        }
+    }
+    if (op_type == operation_types::add) {
+        // 0 + a = a
+        if (lhs->is_constant()) {
+            if (lhs->is_zero()) {
+                term = rhs;
+                return true;
+            }
+        }
+        // a + 0 = a
+        if (rhs->is_constant()) {
+            if (rhs->is_zero()) {
+                term = lhs;
+                return true;
+            }
+        }
+    }
+    if (op_type == operation_types::sub) {
+        // a - 0 = a
+        if (rhs->is_constant()) {
+            if (rhs->is_zero()) {
+                term = lhs;
+                return true;
+            }
+        }
     }
     return false;
 }

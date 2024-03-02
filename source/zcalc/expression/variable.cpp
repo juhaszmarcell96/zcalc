@@ -37,6 +37,8 @@ void Variable::print (std::ostream &os) const {
     os << m_name;
 }
 
+const std::string& Variable::get_name () const { return m_name; }
+
 bool Variable::is_constant () const { return false; }
 bool Variable::is_variable () const { return true; }
 bool Variable::is_operation () const {return false; }

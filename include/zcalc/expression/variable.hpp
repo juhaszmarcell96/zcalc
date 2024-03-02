@@ -23,6 +23,7 @@ public:
     void set_value (complex value);
     void unset_value ();
     void print (std::ostream &os) const override;
+    const std::string& get_name () const;
 
     bool is_constant () const override;
     bool is_variable () const override;

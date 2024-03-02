@@ -11,9 +11,9 @@ term_types Constant::get_type () const { return term_types::constant; }
 
 bool Constant::is_numeric () const { return true; }
 
-complex Constant::get () const { return m_value; }
+complex Constant::get_value () const { return m_value; }
 
-void Constant::reduce () { return; }
+void Constant::simplify () { return; }
 
 bool Constant::is_zero () const { return std::abs(m_value) < epsilon; }
 

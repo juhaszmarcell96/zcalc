@@ -7,10 +7,10 @@ TEST(OperationTest, EmptyOpTest) {
     zcalc::Operation op { zcalc::operation_types::add };
 
     ASSERT_FALSE(op.is_numeric());
-    EXPECT_THROW(op.reduce(), std::runtime_error);
+    EXPECT_THROW(op.simplify(), std::runtime_error);
     EXPECT_THROW(op.is_zero(), std::runtime_error);
     EXPECT_THROW(op.is_one(), std::runtime_error);
-    EXPECT_THROW(op.get(), std::runtime_error);
+    EXPECT_THROW(op.get_value(), std::runtime_error);
 }
 
 TEST(OperationTest, ConstantOpTest) {
@@ -24,5 +24,5 @@ TEST(OperationTest, ConstantOpTest) {
     ASSERT_TRUE(op.is_numeric());
     ASSERT_FALSE(op.is_zero());
     ASSERT_FALSE(op.is_one());
-    ASSERT_EQ(op.get(), zcalc::complex(3.0, 0.0));
+    ASSERT_EQ(op.get_value(), zcalc::complex(3.0, 0.0));
 }

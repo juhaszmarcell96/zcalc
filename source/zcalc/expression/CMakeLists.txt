@@ -9,6 +9,8 @@ add_library(
     variable_pool.cpp
     term_factory.cpp
     expression.cpp
+    rule.cpp
+    rule_pool.cpp
 )
 
 target_include_directories(
@@ -31,6 +33,8 @@ set(
     zcalc/expression/variable_pool.hpp
     zcalc/expression/term_factory.hpp
     zcalc/expression/expression.hpp
+    zcalc/expression/rule.hpp
+    zcalc/expression/rule_pool.hpp
 )
 
 set_target_properties(

@@ -25,10 +25,10 @@ public:
     ~Operation () = default;
     term_types get_type () const override;
     bool is_numeric () const override;
-    void reduce () override;
+    void simplify () override;
     bool is_zero () const override;
     bool is_one () const override;
-    complex get () const override;
+    complex get_value () const override;
     void print (std::ostream &os) const override;
     void set_left_operand (std::shared_ptr<Term> operand);
     const std::shared_ptr<Term> get_left_operand () const;

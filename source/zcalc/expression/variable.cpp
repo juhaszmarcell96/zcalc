@@ -14,7 +14,7 @@ Variable::Variable (const std::string& name) : m_name(name) {
 
 bool Variable::is_numeric () const { return VariablePool::is_known(m_name); }
 
-void Variable::reduce () { return; }
+void Variable::simplify () { return; }
 
 bool Variable::is_zero () const { return std::abs(VariablePool::get_value(m_name)) < epsilon; }
 
@@ -23,7 +23,7 @@ bool Variable::is_one () const {
     return ((std::abs(value.real() - 1.0)) < epsilon) && (std::abs(value.imag()) < epsilon);
 }
 
-complex Variable::get () const { return VariablePool::get_value(m_name); }
+complex Variable::get_value () const { return VariablePool::get_value(m_name); }
 
 void Variable::set_value (complex value) {
     VariablePool::set_variable(m_name, value);

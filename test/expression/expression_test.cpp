@@ -181,7 +181,7 @@ TEST(ExpressionTest, DivisionMultiplicationMultiVarTest) {
     zcalc::VariablePool::undefine_variable("n");
 }
 
-TEST(ExpressionTest, ReduceTest) {
+TEST(ExpressionTest, SimplifyTest) {
     // 2 * ( 2 + 3 )
     zcalc::Expression exp {
         zcalc::Expression("x") * (
@@ -191,6 +191,6 @@ TEST(ExpressionTest, ReduceTest) {
     };
 
     std::cout << exp << std::endl;
-    exp.reduce();
+    exp.simplify();
     std::cout << exp << std::endl;
 }

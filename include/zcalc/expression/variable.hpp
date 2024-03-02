@@ -16,10 +16,10 @@ public:
     Variable (const std::string& name);
     term_types get_type () const override;
     bool is_numeric () const override;
-    void reduce () override;
+    void simplify () override;
     bool is_zero () const override;
     bool is_one () const override;
-    complex get () const override;
+    complex get_value () const override;
     void set_value (complex value);
     void unset_value ();
     void print (std::ostream &os) const override;

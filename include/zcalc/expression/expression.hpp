@@ -20,7 +20,8 @@ public:
     bool has_value () const;
     bool is_zero () const;
     complex evaluate () const;
-    void reduce ();
+    const std::shared_ptr<Term> get_root () const;
+    void simplify ();
 
     Expression operator+(const Expression& rhs) const;
     Expression operator+(complex constant_value) const;

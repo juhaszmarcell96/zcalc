@@ -1,6 +1,7 @@
 #include "zcalc/expression/operation.hpp"
 #include "zcalc/expression/constant.hpp"
 #include "zcalc/expression/term_factory.hpp"
+#include "zcalc/expression/rule_pool.hpp"
 
 #include <memory>
 
@@ -16,61 +17,50 @@ bool Operation::is_numeric () const {
     return true;
 }
 
-void Operation::reduce () {
+void Operation::simplify () {
     if (m_left_operand == nullptr) { throw std::runtime_error("ERROR : left operand is null"); }
     if (m_right_operand == nullptr) { throw std::runtime_error("ERROR : right operand is null"); }
-    m_left_operand->reduce();
-    m_right_operand->reduce();
+    m_left_operand->simplify();
+    m_right_operand->simplify();
 
-    if (m_left_operand->is_numeric()) {
-        m_left_operand = TermFactory::create(m_left_operand->get());
-    }
-    if (m_right_operand->is_numeric()) {
-        m_right_operand = TermFactory::create(m_right_operand->get());
-    }
-
-    // a(b+c) = ab+ac
-    if ((m_type == operation_types::mul) || (m_type == operation_types::div)) {
-        if (m_left_operand->is_constant() || m_left_operand->is_variable()) {
-            if (m_right_operand->is_operation()) {
-                Operation* right_op = dynamic_cast<Operation*>(m_right_operand.get());
-                operation_types op_type = right_op->get_operation_type();
-                if ((op_type == operation_types::add) || (op_type == operation_types::sub)) {
-                    operation_types old_type = m_type;
-                    m_type = op_type;
-                    auto new_left_operand = TermFactory::create(old_type, m_left_operand, right_op->get_left_operand());
-                    auto new_right_operand = TermFactory::create(old_type, m_left_operand, right_op->get_right_operand());
-                    m_left_operand = new_left_operand;
-                    m_right_operand = new_right_operand;
-                }
+    while (true) {
+        bool rule_applied = false;
+        for (const std::shared_ptr<Rule> rule : RulePool::rules) {
+            if (rule->apply(m_left_operand)) {
+                rule_applied = true;
+                break;
             }
+        }
+        if (rule_applied == false) {
+            break;
         }
     }
     return;
 }
+
 bool Operation::is_zero () const {
-    return std::abs(get()) < epsilon;
+    return std::abs(get_value()) < epsilon;
 }
 
 bool Operation::is_one () const {
-    return ((std::abs(get().real() - 1.0)) < epsilon) && (std::abs(get().imag()) < epsilon);
+    return ((std::abs(get_value().real() - 1.0)) < epsilon) && (std::abs(get_value().imag()) < epsilon);
 }
 
-complex Operation::get () const {
+complex Operation::get_value () const {
     if (m_left_operand == nullptr) { throw std::runtime_error("ERROR : operand cannot be null"); }
     if (m_right_operand == nullptr) { throw std::runtime_error("ERROR : operand cannot be null"); }
     switch(m_type) {
         case operation_types::add : {
-            return m_left_operand->get() + m_right_operand->get();
+            return m_left_operand->get_value() + m_right_operand->get_value();
         }
         case operation_types::sub : {
-            return m_left_operand->get() - m_right_operand->get();
+            return m_left_operand->get_value() - m_right_operand->get_value();
         }
         case operation_types::mul : {
-            return m_left_operand->get() * m_right_operand->get();
+            return m_left_operand->get_value() * m_right_operand->get_value();
         }
         case operation_types::div : {
-            return m_left_operand->get() / m_right_operand->get(); /* TODO -> check if it is 0, math error */
+            return m_left_operand->get_value() / m_right_operand->get_value(); /* TODO -> check if it is 0, math error */
         }
         default : {
             throw std::runtime_error("ERROR : invalid operator type");

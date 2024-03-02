@@ -2,12 +2,11 @@
 #include "zcalc/expression/operation.hpp"
 #include "zcalc/expression/constant.hpp"
 #include "zcalc/expression/term_factory.hpp"
+#include "zcalc/expression/rule_pool.hpp"
 
 namespace zcalc {
 
-Expression::Expression (std::shared_ptr<Term>&& exp_root) : m_exp_root(std::move(exp_root)) {
-    reduce();
-}
+Expression::Expression (std::shared_ptr<Term>&& exp_root) : m_exp_root(std::move(exp_root)) {}
 Expression::Expression (complex constant_value) { m_exp_root = TermFactory::create(constant_value); }
 Expression::Expression (const std::string& var_name) { m_exp_root = TermFactory::create(var_name); }
 Expression::Expression () { m_exp_root = std::make_unique<Constant>(complex { 0.0, 0.0 }); }
@@ -26,10 +25,23 @@ bool Expression::is_zero () const {
 }
 complex Expression::evaluate () const {
     if (m_exp_root == nullptr) throw std::runtime_error("ERROR : root cannot be null");
-    return m_exp_root->get();
+    return m_exp_root->get_value();
 }
-void Expression::reduce () {
-    m_exp_root->reduce();
+const std::shared_ptr<Term> Expression::get_root () const { return m_exp_root; }
+void Expression::simplify () {
+    m_exp_root->simplify();
+    while (true) {
+        bool rule_applied = false;
+        for (const std::shared_ptr<Rule> rule : RulePool::rules) {
+            if (rule->apply(m_exp_root)) {
+                rule_applied = true;
+                break;
+            }
+        }
+        if (rule_applied == false) {
+            break;
+        }
+    }
     return;
 }
 

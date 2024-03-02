@@ -1,5 +1,3 @@
-#pragma once
-
 #include <zcalc/expression/rule.hpp>
 #include <zcalc/expression/term_factory.hpp>
 
@@ -7,7 +5,66 @@
 
 namespace zcalc {
 
-bool DistributiveRule::simplify (Operation* operation) const {
+bool ConstantRule::apply (std::shared_ptr<Term>& term) const {
+    if (!term) { return false; }
+    if (term->is_numeric() && !term->is_constant()) {
+        term = TermFactory::create(term->get_value());
+        return true;
+    }
+    return false;
+}
+
+bool OneRule::apply (std::shared_ptr<Term>& term) const {
+    if (!term) { return false; }
+    // a * 1 = a
+    // 1 * a = a
+    // a / 1 = a
+    term_types term_type = term->get_type();
+    if (term_type == term_types::constant) { return false; }
+    if (term_type == term_types::variable) { return false; }
+
+    std::shared_ptr<Operation> op = std::dynamic_pointer_cast<Operation>(term);
+
+    operation_types op_type = op->get_operation_type();
+    if (op_type == operation_types::add) { return false; }
+    if (op_type == operation_types::sub) { return false; }
+
+    const std::shared_ptr<Term> lhs = op->get_left_operand();
+    const std::shared_ptr<Term> rhs = op->get_right_operand();
+
+    if (op_type == operation_types::mul) {
+        if (lhs->is_constant()) {
+            if (lhs->is_one()) {
+                term = rhs;
+                return true;
+            }
+        }
+        if (rhs->is_constant()) {
+            if (rhs->is_one()) {
+                term = lhs;
+                return true;
+            }
+        }
+    }
+    if (op_type == operation_types::div) {
+        if (rhs->is_constant()) {
+            if (rhs->is_one()) {
+                term = lhs;
+                return true;
+            }
+        }
+        if (rhs->is_constant()) {
+            if (rhs->is_zero()) {
+                throw std::runtime_error("ERROR : cannot divide by 0");
+            }
+        }      
+    }
+    return false;
+}
+
+/*
+
+bool DistributiveRule::apply (Operation* operation) const {
     if (!operation) { return false; }
     // a(b+c) = ab+ac
     // (b+c)a = ba+ca
@@ -43,7 +100,7 @@ bool DistributiveRule::simplify (Operation* operation) const {
     return false;
 }
 
-bool AssociativeRule::simplify (Operation* operation) const {
+bool AssociativeRule::apply (Operation* operation) const {
     if (!operation) { return false; }
     // (a * b) * c = a * (b * c)
     // (a + b) + c = a + (b + c)
@@ -77,5 +134,7 @@ bool AssociativeRule::simplify (Operation* operation) const {
 
     return false;
 }
+
+*/
 
 } // namespace zcalc

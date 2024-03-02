@@ -15,8 +15,8 @@ public:
     Constant (complex value);
     term_types get_type () const override;
     bool is_numeric () const override;
-    complex get () const override;
-    void reduce () override;
+    complex get_value () const override;
+    void simplify () override;
     bool is_zero () const override;
     bool is_one () const override;
     void print (std::ostream &os) const override;

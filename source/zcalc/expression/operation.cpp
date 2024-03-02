@@ -40,8 +40,8 @@ void Operation::reduce () {
                     m_type = op_type;
                     auto new_left_operand = TermFactory::create(old_type, m_left_operand, right_op->get_left_operand());
                     auto new_right_operand = TermFactory::create(old_type, m_left_operand, right_op->get_right_operand());
-                    m_left_operand = std::move(new_left_operand);
-                    m_right_operand = std::move(new_right_operand);
+                    m_left_operand = new_left_operand;
+                    m_right_operand = new_right_operand;
                 }
             }
         }

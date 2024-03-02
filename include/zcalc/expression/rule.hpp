@@ -16,4 +16,9 @@ public:
     bool simplify (Operation* operation) const override;
 };
 
+class AssociativeRule : public Rule {
+public:
+    bool simplify (Operation* operation) const override;
+};
+
 } // namespace zcalc

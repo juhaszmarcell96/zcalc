@@ -7,12 +7,20 @@
 
 namespace zcalc {
 
-std::shared_ptr<Term> TermFactory::create (const std::string& var_name) {
+std::shared_ptr<Term> TermFactory::create (const std::string& var_name, complex coeff) {
     VariablePool::define_variable(var_name);
-    return std::make_shared<Variable>(var_name);
+    return std::make_shared<Variable>(var_name, coeff);
 }
 
 std::shared_ptr<Term> TermFactory::create (complex value) {
+    return std::make_shared<Constant>(value);
+}
+
+std::shared_ptr<Term> TermFactory::create (double value) {
+    return std::make_shared<Constant>(value);
+}
+
+std::shared_ptr<Term> TermFactory::create (int value) {
     return std::make_shared<Constant>(value);
 }
 

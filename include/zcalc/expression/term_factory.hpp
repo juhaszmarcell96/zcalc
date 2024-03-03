@@ -12,8 +12,10 @@ namespace zcalc {
 
 class TermFactory {
 public:
-    static std::shared_ptr<Term> create (const std::string& var_name);
+    static std::shared_ptr<Term> create (const std::string& var_name, complex coeff = complex { 1.0, 0.0 });
     static std::shared_ptr<Term> create (complex value);
+    static std::shared_ptr<Term> create (double value);
+    static std::shared_ptr<Term> create (int value);
     static std::shared_ptr<Term> create (operation_types type, std::shared_ptr<Term> lhs, std::shared_ptr<Term> rhs);
 };
 

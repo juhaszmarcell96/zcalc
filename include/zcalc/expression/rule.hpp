@@ -27,6 +27,11 @@ public:
     bool apply (std::shared_ptr<Term>& term) const override;
 };
 
+class CoefficientRule : public Rule {
+public:
+    bool apply (std::shared_ptr<Term>& term) const override;
+};
+
 /*
 
 class DistributiveRule : public Rule {

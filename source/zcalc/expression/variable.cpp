@@ -3,12 +3,13 @@
 
 #include <map>
 #include <string>
+#include <iomanip>
 
 namespace zcalc {
 
 term_types Variable::get_type () const { return term_types::variable; }
 
-Variable::Variable (const std::string& name) : m_name(name) {
+Variable::Variable (const std::string& name, complex coeff) : m_name(name), m_coeff(coeff) {
     VariablePool::define_variable(name);
 }
 
@@ -34,10 +35,28 @@ void Variable::unset_value () {
 }
 
 void Variable::print (std::ostream &os) const {
+    if (std::abs(m_coeff.imag()) < epsilon) {
+        if (!((std::abs(m_coeff.real() - 1.0)) < epsilon)) {
+            os << std::setprecision(4) << m_coeff.real();
+        }
+    }
+    else {
+        os << "(" << std::setprecision(4) << m_coeff.real();
+        if (m_coeff.imag() < 0.0) {
+            os << "-" << (m_coeff.imag() * (-1.0));
+        }
+        else {
+            os << "+" << m_coeff.imag();
+        }
+        os  << "j)";
+    }
+    //os << "(" << std::setprecision(4) << m_coeff.real() << "," << m_coeff.imag() << ")";
     os << m_name;
 }
 
 const std::string& Variable::get_name () const { return m_name; }
+complex Variable::get_coefficient () const { return m_coeff; }
+void Variable::set_coefficient (complex coeff) { m_coeff = coeff; }
 
 bool Variable::is_constant () const { return false; }
 bool Variable::is_variable () const { return true; }

@@ -19,13 +19,13 @@ TEST(SimplificationTest, ConstantSimplification) {
     std::stringstream stream;
 
     stream << exp;
-    ASSERT_EQ(stream.str(), "((8,0)+((3,0)*((2,0)*(3,0))))");
+    ASSERT_EQ(stream.str(), "(8+(3*(2*3)))");
     ASSERT_TRUE(exp.get_root()->is_operation());
     exp.simplify();
     stream.str(std::string());
     stream << exp;
     ASSERT_TRUE(exp.get_root()->is_constant());
-    ASSERT_EQ(stream.str(), "(26,0)");
+    ASSERT_EQ(stream.str(), "26");
 }
 
 TEST(SimplificationTest, SimplifyTest) {

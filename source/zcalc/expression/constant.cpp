@@ -22,7 +22,19 @@ bool Constant::is_one () const {
 }
 
 void Constant::print (std::ostream &os) const {
-    os << "(" << std::setprecision(4) << m_value.real() << "," << m_value.imag() << ")";
+    if (std::abs(m_value.imag()) < epsilon) {
+        os << std::setprecision(4) << m_value.real();
+    }
+    else {
+        os << "(" << std::setprecision(4) << m_value.real();
+        if (m_value.imag() < 0.0) {
+            os << "-" << (m_value.imag() * (-1.0));
+        }
+        else {
+            os << "+" << m_value.imag();
+        }
+        os  << "j)";
+    }
 }
 
 bool Constant::is_constant () const { return true; }

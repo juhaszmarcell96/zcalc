@@ -3,41 +3,40 @@
 #include <zcalc/expression/expression.hpp>
 #include <zcalc/expression/variable_pool.hpp>
 #include <zcalc/expression/operation.hpp>
+#include <zcalc/expression/term_factory.hpp>
+#include <zcalc/expression/rule.hpp>
 
 TEST(SimpleRuleTest, ConstantExpressionTest) {
 
     // 8 + 3 * (2 * 3)
-    zcalc::Expression exp {
-        zcalc::Expression(8) +
-        zcalc::Expression(3) * (
-            zcalc::Expression(2) *
-            zcalc::Expression(3)
-        )
-    };
+    auto const_8 = zcalc::TermFactory::create(8);
+    auto const_3 = zcalc::TermFactory::create(3);
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto op_mul_inner = zcalc::TermFactory::create(zcalc::operation_types::mul, const_2, const_3);
+    auto op_mul_outer = zcalc::TermFactory::create(zcalc::operation_types::mul, const_3, op_mul_inner);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::add, const_8, op_mul_outer);
 
-    ASSERT_TRUE(exp.get_root()->is_operation());
-    auto value = exp.evaluate();
-    exp.simplify();
-    ASSERT_TRUE(exp.get_root()->is_constant());
-    ASSERT_EQ(exp.evaluate(), value);
+    zcalc::ConstantRule rule {};
+    rule.apply(root);
+
+    ASSERT_TRUE(root->is_constant());
+    ASSERT_EQ(root->get_value(), zcalc::complex(26.0, 0.0));
 }
 
 TEST(SimpleRuleTest, MulByOneLeft) {
     zcalc::VariablePool::define_variable("x");
 
     // 1 * (2 + x * 3)
-    zcalc::Expression exp {
-        zcalc::Expression(1) * (
-            zcalc::Expression(2) +
-            zcalc::Expression("x") *
-            zcalc::Expression(3)
-        )
-    };
+    auto const_1 = zcalc::TermFactory::create(1);
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto var_x = zcalc::TermFactory::create("x");
+    auto const_3 = zcalc::TermFactory::create(3);
+    auto op_mul = zcalc::TermFactory::create(zcalc::operation_types::mul, var_x, const_3);
+    auto op_add = zcalc::TermFactory::create(zcalc::operation_types::add, const_2, op_mul);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::mul, const_1, op_add);
 
     {
         // ((1,0)*((2,0)+(x*(3,0))))
-        const auto root = exp.get_root();
-        ASSERT_TRUE(root);
         ASSERT_TRUE(root->is_operation());
         const auto root_op = std::dynamic_pointer_cast<zcalc::Operation>(root);
         ASSERT_TRUE(root_op);
@@ -50,11 +49,10 @@ TEST(SimpleRuleTest, MulByOneLeft) {
         ASSERT_TRUE(rhs->is_operation());
         ASSERT_EQ(lhs->get_value(), zcalc::complex(1.0, 0.0));
     }
-    exp.simplify();
+    zcalc::OneRule rule {};
+    rule.apply(root);
     {
         // ((2,0)+(x*(3,0)))
-        const auto root = exp.get_root();
-        ASSERT_TRUE(root);
         ASSERT_TRUE(root->is_operation());
         const auto root_op = std::dynamic_pointer_cast<zcalc::Operation>(root);
         ASSERT_TRUE(root_op);
@@ -91,14 +89,16 @@ TEST(SimpleRuleTest, MulByOneRight) {
     zcalc::VariablePool::define_variable("y");
 
     // (y * 2 + 3) * 1
-    zcalc::Expression exp {
-        (zcalc::Expression("y") * zcalc::Expression(2) + zcalc::Expression(3)) * zcalc::Expression(1)
-    };
+    auto var_y = zcalc::TermFactory::create("y");
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto const_3 = zcalc::TermFactory::create(3);
+    auto const_1 = zcalc::TermFactory::create(1);
+    auto op_mul = zcalc::TermFactory::create(zcalc::operation_types::mul, var_y, const_2);
+    auto op_add = zcalc::TermFactory::create(zcalc::operation_types::add, op_mul, const_3);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::mul, op_add, const_1);
 
     // Before simplification
     {
-        const auto root = exp.get_root();
-        ASSERT_TRUE(root);
         ASSERT_TRUE(root->is_operation());
         const auto root_op = std::dynamic_pointer_cast<zcalc::Operation>(root);
         ASSERT_EQ(root_op->get_operation_type(), zcalc::operation_types::mul);
@@ -107,12 +107,11 @@ TEST(SimpleRuleTest, MulByOneRight) {
         ASSERT_EQ(rhs->get_value(), zcalc::complex(1.0, 0.0));
     }
 
-    exp.simplify();
+    zcalc::OneRule rule {};
+    rule.apply(root);
 
     // After simplification, expecting (y*2 + 3)
     {
-        const auto root = exp.get_root();
-        ASSERT_TRUE(root);
         ASSERT_TRUE(root->is_operation());
         const auto root_op = std::dynamic_pointer_cast<zcalc::Operation>(root);
         ASSERT_EQ(root_op->get_operation_type(), zcalc::operation_types::add);
@@ -130,14 +129,16 @@ TEST(SimpleRuleTest, DivByOne) {
     zcalc::VariablePool::define_variable("z");
 
     // (4 + z * 2) / 1
-    zcalc::Expression exp {
-        (zcalc::Expression(4) + zcalc::Expression("z") * zcalc::Expression(2)) / zcalc::Expression(1)
-    };
+    auto const_4 = zcalc::TermFactory::create(4);
+    auto var_z = zcalc::TermFactory::create("z");
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto const_1 = zcalc::TermFactory::create(1);
+    auto op_mul = zcalc::TermFactory::create(zcalc::operation_types::mul, var_z, const_2);
+    auto op_add = zcalc::TermFactory::create(zcalc::operation_types::add, const_4, op_mul);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::div, op_add, const_1);
 
     // Before simplification
     {
-        const auto root = exp.get_root();
-        ASSERT_TRUE(root);
         ASSERT_TRUE(root->is_operation());
         const auto root_op = std::dynamic_pointer_cast<zcalc::Operation>(root);
         ASSERT_EQ(root_op->get_operation_type(), zcalc::operation_types::div);
@@ -146,12 +147,11 @@ TEST(SimpleRuleTest, DivByOne) {
         ASSERT_EQ(rhs->get_value(), zcalc::complex(1.0, 0.0));
     }
 
-    exp.simplify();
+    zcalc::OneRule rule {};
+    rule.apply(root);
 
     // After simplification, expecting (4+z*2)
     {
-        const auto root = exp.get_root();
-        ASSERT_TRUE(root);
         ASSERT_TRUE(root->is_operation());
         const auto root_op = std::dynamic_pointer_cast<zcalc::Operation>(root);
         ASSERT_EQ(root_op->get_operation_type(), zcalc::operation_types::add);
@@ -169,12 +169,14 @@ TEST(SimpleRuleTest, MultiplyByZero) {
     zcalc::VariablePool::define_variable("x");
 
     // x * 0
-    zcalc::Expression exp { zcalc::Expression("x") * zcalc::Expression(0) };
+    auto var_x = zcalc::TermFactory::create("x");
+    auto const_0 = zcalc::TermFactory::create(0);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::mul, var_x, const_0);
 
-    exp.simplify();
+    zcalc::ZeroRule rule {};
+    rule.apply(root);
 
     // Check that the simplified expression is 0
-    const auto root = exp.get_root();
     ASSERT_TRUE(root->is_constant());
     ASSERT_EQ(root->get_value(), zcalc::complex(0.0, 0.0));
 
@@ -185,12 +187,16 @@ TEST(SimpleRuleTest, ZeroMultiplyByA) {
     zcalc::VariablePool::define_variable("y");
 
     // 0 * (y + 2)
-    zcalc::Expression exp = zcalc::Expression(0) * (zcalc::Expression("y") + zcalc::Expression(2));
+    auto const_0 = zcalc::TermFactory::create(0);
+    auto var_y = zcalc::TermFactory::create("y");
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto op_add = zcalc::TermFactory::create(zcalc::operation_types::add, var_y, const_2);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::mul, const_0, op_add);
 
-    exp.simplify();
+    zcalc::ZeroRule rule {};
+    rule.apply(root);
 
     // Check that the simplified expression is 0
-    const auto root = exp.get_root();
     ASSERT_TRUE(root->is_constant());
     ASSERT_EQ(root->get_value(), zcalc::complex(0.0, 0.0));
 
@@ -201,8 +207,12 @@ TEST(SimpleRuleTest, DivideByZero) {
     zcalc::VariablePool::define_variable("z");
 
     // z / 0
-    zcalc::Expression exp = zcalc::Expression("z") / zcalc::Expression(0);
-    ASSERT_THROW(exp.simplify(), std::runtime_error);
+    auto var_z = zcalc::TermFactory::create("z");
+    auto const_0 = zcalc::TermFactory::create(0);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::div, var_z, const_0);
+
+    zcalc::ZeroRule rule {};
+    ASSERT_THROW(rule.apply(root);, std::runtime_error);
 
     zcalc::VariablePool::undefine_variable("z");
 }
@@ -211,12 +221,16 @@ TEST(SimpleRuleTest, ZeroDivideByA) {
     zcalc::VariablePool::define_variable("w");
 
     // 0 / (w + 1)
-    zcalc::Expression exp = zcalc::Expression(0) / (zcalc::Expression("w") + zcalc::Expression(1));
+    auto const_0 = zcalc::TermFactory::create(0);
+    auto var_w = zcalc::TermFactory::create("w");
+    auto const_1 = zcalc::TermFactory::create(1);
+    auto op_add = zcalc::TermFactory::create(zcalc::operation_types::add, var_w, const_1);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::div, const_0, op_add);
 
-    exp.simplify();
+    zcalc::ZeroRule rule {};
+    rule.apply(root);
 
     // Check that the simplified expression is 0
-    const auto root = exp.get_root();
     ASSERT_TRUE(root->is_constant());
     ASSERT_EQ(root->get_value(), zcalc::complex(0.0, 0.0));
 
@@ -227,12 +241,16 @@ TEST(SimpleRuleTest, AddZero) {
     zcalc::VariablePool::define_variable("v");
 
     // (v * 2) + 0
-    zcalc::Expression exp = (zcalc::Expression("v") * zcalc::Expression(2)) + zcalc::Expression(0);
+    auto var_v = zcalc::TermFactory::create("v");
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto const_0 = zcalc::TermFactory::create(0);
+    auto op_mul = zcalc::TermFactory::create(zcalc::operation_types::mul, var_v, const_2);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::add, op_mul, const_0);
 
-    exp.simplify();
+    zcalc::ZeroRule rule {};
+    rule.apply(root);
 
     // Check that the simplified expression is (v * 2)
-    const auto root = exp.get_root();
     ASSERT_TRUE(root->is_operation());
     ASSERT_EQ(std::dynamic_pointer_cast<zcalc::Operation>(root)->get_operation_type(), zcalc::operation_types::mul);
 
@@ -244,11 +262,16 @@ TEST(SimpleRuleTest, ZeroAdd) {
 
     // 0 + (u / 2)
     zcalc::Expression exp = zcalc::Expression(0) + (zcalc::Expression("u") / zcalc::Expression(2));
+    auto var_u = zcalc::TermFactory::create("u");
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto op_div = zcalc::TermFactory::create(zcalc::operation_types::div, var_u, const_2);
+    auto const_0 = zcalc::TermFactory::create(0);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::add, const_0, op_div);
 
-    exp.simplify();
+    zcalc::ZeroRule rule {};
+    rule.apply(root);
 
     // Check that the simplified expression is (u / 2)
-    const auto root = exp.get_root();
     ASSERT_TRUE(root->is_operation());
     ASSERT_EQ(std::dynamic_pointer_cast<zcalc::Operation>(root)->get_operation_type(), zcalc::operation_types::div);
 
@@ -259,12 +282,16 @@ TEST(SimpleRuleTest, SubtractZero) {
     zcalc::VariablePool::define_variable("t");
 
     // (t + 2) - 0
-    zcalc::Expression exp = (zcalc::Expression("t") + zcalc::Expression(2)) - zcalc::Expression(0);
+    auto var_t = zcalc::TermFactory::create("t");
+    auto const_2 = zcalc::TermFactory::create(2);
+    auto const_0 = zcalc::TermFactory::create(0);
+    auto op_add = zcalc::TermFactory::create(zcalc::operation_types::add, var_t, const_2);
+    auto root = zcalc::TermFactory::create(zcalc::operation_types::sub, op_add, const_0);
 
-    exp.simplify();
+    zcalc::ZeroRule rule {};
+    rule.apply(root);
 
-    // Check that the simplified expression is (t ^ 2)
-    const auto root = exp.get_root();
+    // Check that the simplified expression is (t + 2)
     ASSERT_TRUE(root->is_operation());
     ASSERT_EQ(std::dynamic_pointer_cast<zcalc::Operation>(root)->get_operation_type(), zcalc::operation_types::add);
 

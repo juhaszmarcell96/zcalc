@@ -19,9 +19,7 @@ bool OneRule::apply (std::shared_ptr<Term>& term) const {
     // a * 1 = a
     // 1 * a = a
     // a / 1 = a
-    term_types term_type = term->get_type();
-    if (term_type == term_types::constant) { return false; }
-    if (term_type == term_types::variable) { return false; }
+    if (term->get_type() != term_types::operation) { return false; }
 
     std::shared_ptr<Operation> op = std::dynamic_pointer_cast<Operation>(term);
 
@@ -66,9 +64,7 @@ bool ZeroRule::apply (std::shared_ptr<Term>& term) const {
     // a + 0 = a
     // 0 + a = a
     // a - 0 = a
-    term_types term_type = term->get_type();
-    if (term_type == term_types::constant) { return false; }
-    if (term_type == term_types::variable) { return false; }
+    if (term->get_type() != term_types::operation) { return false; }
 
     std::shared_ptr<Operation> op = std::dynamic_pointer_cast<Operation>(term);
 
@@ -130,6 +126,87 @@ bool ZeroRule::apply (std::shared_ptr<Term>& term) const {
             if (rhs->is_zero()) {
                 term = lhs;
                 return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool CoefficientRule::apply (std::shared_ptr<Term>& term) const {
+    if (!term) { return false; }
+    // c1, c2, ... cn are constant coefficients
+    // a and b are constants
+    // x and y are variables
+    // a * c1x = ac1x
+    // c1x * a = c1ax
+    // c1x + c2x = (c1+c2)x
+    // c1x - c2x = (c1-c2)x
+    // c1x / a = (c1/a)x
+    if (term->get_type() != term_types::operation) { return false; }
+
+    std::shared_ptr<Operation> op = std::dynamic_pointer_cast<Operation>(term);
+
+    operation_types op_type = op->get_operation_type();
+
+    const std::shared_ptr<Term> lhs = op->get_left_operand();
+    const std::shared_ptr<Term> rhs = op->get_right_operand();
+
+    if (op_type == operation_types::mul) {
+        // a * c1x = ac1x
+        if (lhs->is_numeric()) {
+            if (rhs->is_variable()) {
+                std::shared_ptr<Variable> x = std::dynamic_pointer_cast<Variable>(rhs);
+                x->set_coefficient(lhs->get_value() * x->get_coefficient());
+                term = x;
+                return true;
+            }
+        }
+        // c1x * a = c1ax
+        if (lhs->is_variable()) {
+            if (rhs->is_numeric()) {
+                std::shared_ptr<Variable> x = std::dynamic_pointer_cast<Variable>(lhs);
+                x->set_coefficient(x->get_coefficient() * rhs->get_value());
+                term = x;
+                return true;
+            }
+        }
+    }
+    if (op_type == operation_types::div) {
+        // c1x / a = (c1/a)x
+        if (lhs->is_variable()) {
+            if (rhs->is_numeric()) {
+                std::shared_ptr<Variable> x = std::dynamic_pointer_cast<Variable>(lhs);
+                x->set_coefficient(x->get_coefficient() / rhs->get_value());
+                term = x;
+                return true;
+            }
+        }
+    }
+    if (op_type == operation_types::add) {
+        // c1x + c2x = (c1+c2)x
+        if (lhs->is_variable()) {
+            if (rhs->is_variable()) {
+                std::shared_ptr<Variable> x = std::dynamic_pointer_cast<Variable>(lhs);
+                std::shared_ptr<Variable> y = std::dynamic_pointer_cast<Variable>(rhs);
+                if (x->get_name() == y->get_name()) {
+                    x->set_coefficient(x->get_coefficient() + y->get_coefficient());
+                    term = x;
+                    return true;
+                }
+            }
+        }
+    }
+    if (op_type == operation_types::sub) {
+        // c1x - c2x = (c1-c2)x
+        if (lhs->is_variable()) {
+            if (rhs->is_variable()) {
+                std::shared_ptr<Variable> x = std::dynamic_pointer_cast<Variable>(lhs);
+                std::shared_ptr<Variable> y = std::dynamic_pointer_cast<Variable>(rhs);
+                if (x->get_name() == y->get_name()) {
+                    x->set_coefficient(x->get_coefficient() - y->get_coefficient());
+                    term = x;
+                    return true;
+                }
             }
         }
     }

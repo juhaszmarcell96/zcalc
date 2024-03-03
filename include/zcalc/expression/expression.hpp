@@ -11,8 +11,10 @@ class Expression {
 private:
     std::shared_ptr<Term> m_exp_root { nullptr };
 public:
-    Expression (std::shared_ptr<Term>&& exp_root);
+    Expression (std::shared_ptr<Term> exp_root);
     Expression (complex constant_value);
+    Expression (double constant_value);
+    Expression (int constant_value);
     Expression (const std::string& var_name); 
     Expression ();
     ~Expression () = default;

@@ -164,3 +164,109 @@ TEST(SimpleRuleTest, DivByOne) {
 
     zcalc::VariablePool::undefine_variable("z");
 }
+
+TEST(SimpleRuleTest, MultiplyByZero) {
+    zcalc::VariablePool::define_variable("x");
+
+    // x * 0
+    zcalc::Expression exp { zcalc::Expression("x") * zcalc::Expression(0) };
+
+    exp.simplify();
+
+    // Check that the simplified expression is 0
+    const auto root = exp.get_root();
+    ASSERT_TRUE(root->is_constant());
+    ASSERT_EQ(root->get_value(), zcalc::complex(0.0, 0.0));
+
+    zcalc::VariablePool::undefine_variable("x");
+}
+
+TEST(SimpleRuleTest, ZeroMultiplyByA) {
+    zcalc::VariablePool::define_variable("y");
+
+    // 0 * (y + 2)
+    zcalc::Expression exp = zcalc::Expression(0) * (zcalc::Expression("y") + zcalc::Expression(2));
+
+    exp.simplify();
+
+    // Check that the simplified expression is 0
+    const auto root = exp.get_root();
+    ASSERT_TRUE(root->is_constant());
+    ASSERT_EQ(root->get_value(), zcalc::complex(0.0, 0.0));
+
+    zcalc::VariablePool::undefine_variable("y");
+}
+
+TEST(SimpleRuleTest, DivideByZero) {
+    zcalc::VariablePool::define_variable("z");
+
+    // z / 0
+    zcalc::Expression exp = zcalc::Expression("z") / zcalc::Expression(0);
+    ASSERT_THROW(exp.simplify(), std::runtime_error);
+
+    zcalc::VariablePool::undefine_variable("z");
+}
+
+TEST(SimpleRuleTest, ZeroDivideByA) {
+    zcalc::VariablePool::define_variable("w");
+
+    // 0 / (w + 1)
+    zcalc::Expression exp = zcalc::Expression(0) / (zcalc::Expression("w") + zcalc::Expression(1));
+
+    exp.simplify();
+
+    // Check that the simplified expression is 0
+    const auto root = exp.get_root();
+    ASSERT_TRUE(root->is_constant());
+    ASSERT_EQ(root->get_value(), zcalc::complex(0.0, 0.0));
+
+    zcalc::VariablePool::undefine_variable("w");
+}
+
+TEST(SimpleRuleTest, AddZero) {
+    zcalc::VariablePool::define_variable("v");
+
+    // (v * 2) + 0
+    zcalc::Expression exp = (zcalc::Expression("v") * zcalc::Expression(2)) + zcalc::Expression(0);
+
+    exp.simplify();
+
+    // Check that the simplified expression is (v * 2)
+    const auto root = exp.get_root();
+    ASSERT_TRUE(root->is_operation());
+    ASSERT_EQ(std::dynamic_pointer_cast<zcalc::Operation>(root)->get_operation_type(), zcalc::operation_types::mul);
+
+    zcalc::VariablePool::undefine_variable("v");
+}
+
+TEST(SimpleRuleTest, ZeroAdd) {
+    zcalc::VariablePool::define_variable("u");
+
+    // 0 + (u / 2)
+    zcalc::Expression exp = zcalc::Expression(0) + (zcalc::Expression("u") / zcalc::Expression(2));
+
+    exp.simplify();
+
+    // Check that the simplified expression is (u / 2)
+    const auto root = exp.get_root();
+    ASSERT_TRUE(root->is_operation());
+    ASSERT_EQ(std::dynamic_pointer_cast<zcalc::Operation>(root)->get_operation_type(), zcalc::operation_types::div);
+
+    zcalc::VariablePool::undefine_variable("u");
+}
+
+TEST(SimpleRuleTest, SubtractZero) {
+    zcalc::VariablePool::define_variable("t");
+
+    // (t + 2) - 0
+    zcalc::Expression exp = (zcalc::Expression("t") + zcalc::Expression(2)) - zcalc::Expression(0);
+
+    exp.simplify();
+
+    // Check that the simplified expression is (t ^ 2)
+    const auto root = exp.get_root();
+    ASSERT_TRUE(root->is_operation());
+    ASSERT_EQ(std::dynamic_pointer_cast<zcalc::Operation>(root)->get_operation_type(), zcalc::operation_types::add);
+
+    zcalc::VariablePool::undefine_variable("t");
+}

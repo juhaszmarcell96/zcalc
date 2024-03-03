@@ -6,8 +6,10 @@
 
 namespace zcalc {
 
-Expression::Expression (std::shared_ptr<Term>&& exp_root) : m_exp_root(std::move(exp_root)) {}
+Expression::Expression (std::shared_ptr<Term> exp_root) : m_exp_root(exp_root) {}
 Expression::Expression (complex constant_value) { m_exp_root = TermFactory::create(constant_value); }
+Expression::Expression (double constant_value) { m_exp_root = TermFactory::create(constant_value); }
+Expression::Expression (int constant_value) { m_exp_root = TermFactory::create(constant_value); }
 Expression::Expression (const std::string& var_name) { m_exp_root = TermFactory::create(var_name); }
 Expression::Expression () { m_exp_root = std::make_unique<Constant>(complex { 0.0, 0.0 }); }
 void Expression::print (std::ostream &os) {

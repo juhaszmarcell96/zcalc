@@ -19,7 +19,7 @@ int main () {
     lc_filter.add_capacitor("C", 100e-9, "out", "gnd");     /* 100nF */
 
     zcalc::Plotter plotter {};
-    plotter.plot("tmp", lc_filter);
+    plotter.plot("lc_filter", lc_filter);
 
     return 0;
 }

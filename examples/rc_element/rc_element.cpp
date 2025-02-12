@@ -14,15 +14,11 @@
 int main () {
 
     zcalc::Network rc_net { };
-    //rc_net.add_node("gnd");
-    //rc_net.add_node("in");
-    //rc_net.add_node("out");
-    //rc_net.add_source("U1", 1, "in", "gnd");
     rc_net.add_resistor("R", 50.0, "in", "out");
     rc_net.add_capacitor("C", 100.0e-6, "out", "gnd");
 
     zcalc::Plotter plotter {};
-    plotter.plot("tmp", rc_net);
+    plotter.plot("rc_element", rc_net);
 
     return 0;
 }

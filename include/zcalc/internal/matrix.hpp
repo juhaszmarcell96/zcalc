@@ -12,6 +12,11 @@
 
 namespace zcalc {
 
+struct Dimensions {
+    std::size_t row { 0 };
+    std::size_t col { 0 };
+};
+
 /*
 nxm = 2x3
     a_00 a_01 a_02
@@ -24,8 +29,8 @@ private:
     std::vector<std::vector<T>> m_matrix;
 public:
     Matrix (std::size_t num_rows, std::size_t num_cols) {
-        if (num_rows == 0) throw std::invalid_argument("number of rows cannot be 0");
-        if (num_cols == 0) throw std::invalid_argument("number of columns cannot be 0");
+        if (num_rows == 0) { throw std::invalid_argument("number of rows cannot be 0"); }
+        if (num_cols == 0) { throw std::invalid_argument("number of columns cannot be 0"); }
         m_matrix = std::vector<std::vector<T>>(num_rows, std::vector<T>(num_cols, T{}));
     }
     Matrix () = delete;
@@ -33,16 +38,19 @@ public:
 
     std::size_t get_num_rows () const { return m_matrix.size(); }
     std::size_t get_num_cols () const { return m_matrix[0].size(); }
+    Dimensions get_dimensions () const {
+        return Dimensions { .row = get_num_rows(), .col = get_num_cols() };
+    }
 
-    std::vector<T> operator[](const std::size_t i) const { return m_matrix[i]; }
+    const std::vector<T>& operator[](const std::size_t i) const { return m_matrix[i]; }
     std::vector<T>& operator[](const std::size_t i) { return m_matrix[i]; }
     T operator()(const std::size_t i, const std::size_t j) const { return m_matrix[i][j]; }
     T& operator()(const std::size_t i, const std::size_t j) { return m_matrix[i][j]; }
-    std::vector<T> operator()(const std::size_t i) const { return m_matrix[i]; }
+    const std::vector<T>& operator()(const std::size_t i) const { return m_matrix[i]; }
     std::vector<T>& operator()(const std::size_t i) { return m_matrix[i]; }
     Matrix<T> operator+(const Matrix<T>& matrix) const {
-        if (matrix.get_num_rows() != get_num_rows()) throw std::invalid_argument("matrixes must be of the same dimension");
-        if (matrix.get_num_cols() != get_num_cols()) throw std::invalid_argument("matrixes must be of the same dimension");
+        if (matrix.get_num_rows() != get_num_rows()) { throw std::invalid_argument("matrixes must be of the same dimension"); }
+        if (matrix.get_num_cols() != get_num_cols()) { throw std::invalid_argument("matrixes must be of the same dimension"); }
         Matrix<T> ret_matrix {get_num_rows(), get_num_cols()};
         for (std::size_t i = 0; i < get_num_rows(); ++i) {
             for (std::size_t j = 0; j < get_num_cols(); ++j) {
@@ -52,8 +60,8 @@ public:
         return std::move(ret_matrix);
     }
     Matrix<T> operator-(const Matrix<T>& matrix) const {
-        if (matrix.get_num_rows() != get_num_rows()) throw std::invalid_argument("matrixes must be of the same dimension");
-        if (matrix.get_num_cols() != get_num_cols()) throw std::invalid_argument("matrixes must be of the same dimension");
+        if (matrix.get_num_rows() != get_num_rows()) { throw std::invalid_argument("matrixes must be of the same dimension"); }
+        if (matrix.get_num_cols() != get_num_cols()) { throw std::invalid_argument("matrixes must be of the same dimension"); }
         Matrix<T> ret_matrix {get_num_rows(), get_num_cols()};
         for (std::size_t i = 0; i < get_num_rows(); ++i) {
             for (std::size_t j = 0; j < get_num_cols(); ++j) {
@@ -84,7 +92,7 @@ public:
         Matrix<T> ret_matrix {get_num_rows(), get_num_cols()};
         for (std::size_t i = 0; i < get_num_rows(); ++i) {
             for (std::size_t j = 0; j < get_num_cols(); ++j) {
-                ret_matrix.m_matrix[i][j] = scalar / m_matrix[i][j];
+                ret_matrix.m_matrix[i][j] = m_matrix[i][j] / scalar;
             }
         }
         return std::move(ret_matrix);
@@ -128,7 +136,7 @@ public:
     
     /* A_nxm * B_mxr = C_nxr */
     Matrix<T> operator*(const Matrix<T>& matrix) const {
-        if (get_num_cols() != matrix.get_num_rows())  throw std::invalid_argument("matrixes must be of the same dimension");
+        if (get_num_cols() != matrix.get_num_rows()) { throw std::invalid_argument("matrixes must be of the same dimension"); }
         Matrix<T> ret_matrix {get_num_rows(), matrix.get_num_cols()};
         for (std::size_t i = 0; i < ret_matrix.get_num_rows(); ++i) {
             for (std::size_t j = 0; j < ret_matrix.get_num_cols(); ++j) {

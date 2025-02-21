@@ -12,5 +12,22 @@ TEST(BasicNetworkTest, Test) {
     test_network.add_resistor("R2", 10, "out", "gnd");
     
     auto g = test_network.to_graph();
-    std::cerr << g << std::endl;
+    auto cycles = g.find_cycles();
+    for (const auto& c : cycles) {
+        const auto& edges = c.get_edges();
+        for (const auto e : edges) {
+            std::cerr << e->v0;
+            if (e->direction == zcalc::graph::edge_direction::bidirectional) {
+                std::cerr << " --(" << test_network.get_designator_of_component(e->weight).value() << ")-- ";
+            }
+            else if (e->direction == zcalc::graph::edge_direction::forward) {
+                std::cerr << " --(" << test_network.get_designator_of_component(e->weight).value() << ")-> ";
+            }
+            else { // reverse
+                std::cerr << " <-(" << test_network.get_designator_of_component(e->weight).value() << ")-- ";
+            }
+            std::cerr << e->v1 << "|";
+        }
+        std::cerr << std::endl;
+    }
 }

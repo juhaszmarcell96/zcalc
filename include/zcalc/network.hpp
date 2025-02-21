@@ -19,6 +19,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
+#include <optional>
 
 namespace zcalc {
 
@@ -86,6 +87,24 @@ public:
         add_source ("U", 1.0, "in", "gnd");
     }
     ~Network () = default;
+
+    std::shared_ptr<component::Component> get_component (id_t id) {
+        for (auto& [des, val] : m_components) {
+            if (val->get_id() == id) {
+                return val;
+            }
+        }
+        return nullptr;
+    }
+
+    std::optional<std::string> get_designator_of_component (id_t id) {
+        for (auto& [des, val] : m_components) {
+            if (val->get_id() == id) {
+                return des;
+            }
+        }
+        return std::nullopt;
+    }
     
     /* add a node to the graph */
     void add_node (const std::string& designator) {
@@ -112,18 +131,18 @@ public:
     }
 
     // Vertex v0, Vertex v1, edge_direction direction = edge_direction::bidirectional, float weight = 1.0f
-    graph::Graph to_graph () const {
+    graph::Graph<id_t> to_graph () const {
         // nodes are the vertices, compnents are the edges
-        graph::Graph g { m_nodes.size() };
-        for (auto const& [des, val] : m_components) {
-            g.add_edge(val->get_gate(0), val->get_gate(1));
+        graph::Graph<id_t> g { m_nodes.size() };
+        for (const auto& [des, val] : m_components) {
+            g.add_edge(val->get_gate(0), val->get_gate(1), val->get_id());
         }
         return g;
     }
 
     // std::vector<math::Complex> compute () {
     //     m_num_variables = 0;
-    //     for (auto const& [des, val] : m_components) {
+    //     for (const auto& [des, val] : m_components) {
     //         m_num_variables += val->get_num_variables();
     //     }
     //     m_lin_equ_system = std::make_unique<math::LinearEquationSystem>(m_num_variables);
@@ -147,11 +166,11 @@ public:
     void print () {
         std::cout << "frequency : " << m_frequency << std::endl;
         std::cout << "nodes" << std::endl;
-        for (auto const& [des, val] : m_nodes) {
+        for (const auto& [des, val] : m_nodes) {
             std::cout << "    " << des << " : " << val << std::endl;
         }
         std::cout << "components" << std::endl;
-        for (auto const& [des, val] : m_components) {
+        for (const auto& [des, val] : m_components) {
             std::cout << "    " << des << " : " << val << std::endl;
         }
     }

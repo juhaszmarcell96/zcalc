@@ -8,6 +8,10 @@
 
 TEST(BasicNetworkTest, Test) {
     zcalc::Network test_network {};
+    test_network.add_node ("in");
+    test_network.add_node ("out");
+    test_network.add_node ("gnd");
+    test_network.add_source ("U", 1.0, "in", "gnd");
     test_network.add_resistor("R1", 10, "in", "out");
     test_network.add_resistor("R2", 10, "out", "gnd");
     

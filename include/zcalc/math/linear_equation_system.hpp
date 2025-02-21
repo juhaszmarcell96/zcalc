@@ -10,7 +10,7 @@
 #include <numbers>
 #include <stdexcept>
 
-#include <zcalc/internal/linear_equation.hpp>
+#include <zcalc/math/linear_equation.hpp>
 
 namespace zcalc {
 namespace math {

@@ -65,6 +65,22 @@ public:
         }
     }
 
+    friend bool operator==(const Path& p1, const Path& p2) {
+        if (p1.m_v.size() != p2.m_v.size()) { return false; }
+        if (p1.m_e.size() != p2.m_e.size()) { return false; }
+        for (const auto v : p1.m_v) {
+            if (std::find(p2.m_v.begin(), p2.m_v.end(), v) == p2.m_v.end()) {
+                return false;
+            }
+        }
+        for (const auto e : p1.m_e) {
+            if (std::find(p2.m_e.begin(), p2.m_e.end(), e) == p2.m_e.end()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const Path& p) {
         for (std::size_t i = 0; i < p.m_e.size(); ++i) {
             Vertex v = p.m_v[i];
@@ -114,7 +130,16 @@ private:
             if ((edge.v0 == node) && ((edge.direction == edge_direction::forward) || (edge.direction == edge_direction::bidirectional))) {
                 if (edge.v1 == start) { // Cycle detected
                     path.push_back_v(start);
-                    cycles.push_back(path);
+                    bool found = false;
+                    for (const auto& p : cycles) {
+                        if (p == path) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        cycles.push_back(path);
+                    }
                     path.pop_back_v();
                 }
                 else if (!visited[edge.v1]) {
@@ -124,7 +149,16 @@ private:
             else if ((edge.v1 == node) && ((edge.direction == edge_direction::reverse) || (edge.direction == edge_direction::bidirectional))) {
                 if (edge.v0 == start) { // Cycle detected
                     path.push_back_v(start);
-                    cycles.push_back(path);
+                    bool found = false;
+                    for (const auto& p : cycles) {
+                        if (p == path) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        cycles.push_back(path);
+                    }
                     path.pop_back_v();
                 }
                 else if (!visited[edge.v0]) {

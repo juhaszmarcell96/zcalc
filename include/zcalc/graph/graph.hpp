@@ -2,8 +2,8 @@
 
 #include <cstdint>
 #include <vector>
-#include <set>
 #include <algorithm>
+#include <stdexcept>
 
 namespace zcalc {
 namespace graph {
@@ -28,28 +28,94 @@ struct Edge {
         v0(u0), v1(u1), direction(dir), weight(w) {};
 };
 
+// TODO : redundant storage, vertices are contained in the edge structures
+class Path {
+private:
+    std::vector<Vertex> m_v;
+    std::vector<const Edge*> m_e;
+public:
+    Path () = default;
+    ~Path () = default;
+
+    void clear () {
+        m_v.clear();
+        m_e.clear();
+    }
+
+    void push_back_v (Vertex v) {
+        if (m_v.size() != m_e.size()) { throw std::invalid_argument("unexpected vertex"); }
+        m_v.push_back(v);
+    }
+
+    void push_back_e (const Edge* e) {
+        if (m_v.size() <= m_e.size()) { throw std::invalid_argument("unexpected edge"); }
+        if (!e) { throw std::invalid_argument("edge cannot be null"); }
+        m_e.push_back(e);
+    }
+
+    void pop_back_v () {
+        if (!m_v.empty()) {
+            m_v.pop_back();
+        }
+    }
+
+    void pop_back_e () {
+        if (!m_e.empty()) {
+            m_e.pop_back();
+        }
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Path& p) {
+        for (std::size_t i = 0; i < p.m_e.size(); ++i) {
+            Vertex v = p.m_v[i];
+            const Edge& e = *(p.m_e[i]);
+            os << v;
+            if (e.v0 == v) {
+                if (e.direction == edge_direction::bidirectional) {
+                    os << " --(" << e.weight << ")-- ";
+                }
+                else if (e.direction == edge_direction::forward) {
+                    os << " --(" << e.weight << ")-> ";
+                }
+                else { // reverse
+                    os << " <-(" << e.weight << ")-- ";
+                }
+            }
+            else {
+                if (e.direction == edge_direction::bidirectional) {
+                    os << " --(" << e.weight << ")-- ";
+                }
+                else if (e.direction == edge_direction::forward) {
+                    os << " <-(" << e.weight << ")-- ";
+                }
+                else { // reverse
+                    os << " --(" << e.weight << ")-> ";
+                }
+            }
+        }
+        os << p.m_v.back();
+        return os;
+    }
+};
+
 class Graph {
 private:
     Vertex m_v { 0 };
     std::vector<Edge> m_e;
-    
-    void normalize_cycle(std::vector<Vertex>& cycle) {
-        auto minIt = std::min_element(cycle.begin(), cycle.end());
-        std::rotate(cycle.begin(), minIt, cycle.end());
-    }
 
-    void dfs (Vertex node, Vertex start, std::vector<bool>& visited, std::vector<Vertex>& path, std::set<std::vector<Vertex>>& cycles) {
+    void dfs (Vertex node, Vertex start, std::vector<bool>& visited, Path& path, std::vector<Path>& cycles) {
         visited[node] = true;
-        path.push_back(node);
+        path.push_back_v(node);
 
         for (const Edge& edge : m_e) {
             if (edge.traversed) { continue; }
             edge.traversed = true;
+            path.push_back_e(&edge);
             if ((edge.v0 == node) && ((edge.direction == edge_direction::forward) || (edge.direction == edge_direction::bidirectional))) {
                 if (edge.v1 == start) { // Cycle detected
-                    auto cycle = std::vector<Vertex>(path.begin(), path.end());
-                    normalize_cycle(cycle);
-                    cycles.insert(cycle);
+                    path.push_back_v(start);
+                    cycles.push_back(path);
+                    path.pop_back_v();
                 }
                 else if (!visited[edge.v1]) {
                     dfs(edge.v1, start, visited, path, cycles);
@@ -57,18 +123,19 @@ private:
             }
             else if ((edge.v1 == node) && ((edge.direction == edge_direction::reverse) || (edge.direction == edge_direction::bidirectional))) {
                 if (edge.v0 == start) { // Cycle detected
-                    auto cycle = std::vector<Vertex>(path.begin(), path.end());
-                    normalize_cycle(cycle);
-                    cycles.insert(cycle);
+                    path.push_back_v(start);
+                    cycles.push_back(path);
+                    path.pop_back_v();
                 }
                 else if (!visited[edge.v0]) {
                     dfs(edge.v0, start, visited, path, cycles);
                 }
             }
+            path.pop_back_e();
             edge.traversed = false;
         }
         
-        path.pop_back();
+        path.pop_back_v();
         visited[node] = false;
     }
 
@@ -81,10 +148,10 @@ public:
         m_e.push_back(Edge{v0, v1, direction, weight});
     }
 
-    std::set<std::vector<Vertex>> find_cycles () {
+    std::vector<Path> find_cycles () {
         std::vector<bool> visited ( m_v, false );
-        std::vector<Vertex> path;
-        std::set<std::vector<Vertex>> cycles;
+        Path path;
+        std::vector<Path> cycles;
         for (Vertex i = 0; i < m_v; ++i) {
             std::fill(visited.begin(), visited.end(), false);
             path.clear();

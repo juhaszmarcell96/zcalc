@@ -2,11 +2,10 @@
 
 #include <zcalc/common.hpp>
 #include <zcalc/component/component.hpp>
-#include <zcalc/internal/complex.hpp>
+#include <zcalc/math/complex.hpp>
 
 #include <complex>
 #include <memory>
-#include <exception>
 
 namespace zcalc {
 namespace component {
@@ -52,12 +51,15 @@ public:
         else { return Complex { 0.0, 0.0 }; }
     }
 
-    // U = Z * I -> U - ZI = 0
+    // U = Z * I -> 1 * U - Z * I = 0
     Complex own_i () const override {
-        return m_value * Complex{-1.0, 0.0};
+        return m_value * Complex{ -1.0, 0.0 };
     }
     Complex own_u () const override {
         return Complex { 1.0, 0.0 };
+    }
+    Complex own_r () const override {
+        return Complex { 0.0, 0.0 };
     }
 };
 

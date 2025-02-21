@@ -4,6 +4,10 @@
 
 namespace zcalc {
 
+typedef double frequency_t;
+typedef double magnitude_t;
+typedef double phase_t;
+
 static constexpr double epsilon = 1e-4;
 
 static constexpr bool log_enabled = false;

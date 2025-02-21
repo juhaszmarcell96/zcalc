@@ -13,7 +13,7 @@ public:
     }
     ~Resistor () = default;
 
-    void set_frequency (double frequency) override { /* nothing to do */ }
+    void set_frequency (frequency_t frequency) override { /* nothing to do */ }
 };
 
 } /* namespace component */

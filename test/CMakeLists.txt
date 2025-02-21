@@ -10,5 +10,6 @@ add_executable (
     matrix_test.cpp
     linear_equation_test.cpp
     linear_equation_system_test.cpp
+    graph_test.cpp
 )
 target_link_libraries (tests ${GTEST_LIBRARIES} pthread)

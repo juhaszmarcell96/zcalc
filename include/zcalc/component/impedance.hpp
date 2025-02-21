@@ -12,19 +12,19 @@ namespace component {
 
 class Impedance : public Component {
 protected:
-    Complex m_value;
+    math::Complex m_value;
 public:
     Impedance () = delete;
-    Impedance (Complex value, Node node_0, Node node_1, id_t id) : Component(id), m_value(value) {
+    Impedance (math::Complex value, Node node_0, Node node_1, id_t id) : Component(id), m_value(value) {
         m_gates.push_back(node_0);
         m_gates.push_back(node_1);
     }
     ~Impedance() = default;
 
-    void set_rectangular (double resistance, double reactance) { m_value = Complex {resistance, reactance}; }
-    void set_polar (double modulus, double argument) { m_value = Complex {std::polar(modulus, argument)}; }
+    void set_rectangular (double resistance, double reactance) { m_value = math::Complex {resistance, reactance}; }
+    void set_polar (double modulus, double argument) { m_value = math::Complex {std::polar(modulus, argument)}; }
 
-    Complex get_impedance () const { return m_value; }
+    math::Complex get_impedance () const { return m_value; }
     double get_modulus () const { return std::abs(m_value.get()); }
     double get_argument () const { return std::arg(m_value.get()); }
     double get_resistance () const { return std::real(m_value.get()); }
@@ -39,27 +39,27 @@ public:
         return 2;
     }
 
-    Complex kcl (Node node) const override {
-        if (m_gates[0] == node) { return Complex { -1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return Complex { 1.0, 0.0 }; }
-        else { return Complex { 0.0, 0.0 }; }
+    math::Complex kcl (Node node) const override {
+        if (m_gates[0] == node) { return math::Complex { -1.0, 0.0 }; }
+        else if (m_gates[1] == node) { return math::Complex { 1.0, 0.0 }; }
+        else { return math::Complex { 0.0, 0.0 }; }
     }
 
-    Complex kvl (Node node) const override {
-        if (m_gates[0] == node) { return Complex { 1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return Complex { -1.0, 0.0 }; }
-        else { return Complex { 0.0, 0.0 }; }
+    math::Complex kvl (Node node) const override {
+        if (m_gates[0] == node) { return math::Complex { 1.0, 0.0 }; }
+        else if (m_gates[1] == node) { return math::Complex { -1.0, 0.0 }; }
+        else { return math::Complex { 0.0, 0.0 }; }
     }
 
     // U = Z * I -> 1 * U - Z * I = 0
-    Complex own_i () const override {
-        return m_value * Complex{ -1.0, 0.0 };
+    math::Complex own_i () const override {
+        return m_value * math::Complex{ -1.0, 0.0 };
     }
-    Complex own_u () const override {
-        return Complex { 1.0, 0.0 };
+    math::Complex own_u () const override {
+        return math::Complex { 1.0, 0.0 };
     }
-    Complex own_r () const override {
-        return Complex { 0.0, 0.0 };
+    math::Complex own_r () const override {
+        return math::Complex { 0.0, 0.0 };
     }
 };
 

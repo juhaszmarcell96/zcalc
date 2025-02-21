@@ -16,12 +16,12 @@ protected:
     math::Phasor m_voltage { 1.0, 0.0, 0.0 };
 public:
     Source () = delete;
-    Source (Complex voltage, Node node_0, Node node_1, std::size_t id) : Component(id) {
+    Source (math::Complex voltage, Node node_0, Node node_1, std::size_t id) : Component(id) {
         m_gates.push_back(node_0);
         m_gates.push_back(node_1);
         m_voltage = math::Phasor::from_complex(voltage);
     }
-    Source (Complex voltage, frequency_t frequency, Node node_0, Node node_1, std::size_t id) : Component(id) {
+    Source (math::Complex voltage, frequency_t frequency, Node node_0, Node node_1, std::size_t id) : Component(id) {
         m_gates.push_back(node_0);
         m_gates.push_back(node_1);
         m_voltage = math::Phasor::from_complex(voltage, frequency);
@@ -32,26 +32,26 @@ public:
         return 2;
     }
 
-    Complex kcl (Node node) const override {
-        if (m_gates[0] == node) { return Complex { -1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return Complex { 1.0, 0.0 }; }
-        else { return Complex { 0.0, 0.0 }; }
+    math::Complex kcl (Node node) const override {
+        if (m_gates[0] == node) { return math::Complex { -1.0, 0.0 }; }
+        else if (m_gates[1] == node) { return math::Complex { 1.0, 0.0 }; }
+        else { return math::Complex { 0.0, 0.0 }; }
     }
 
-    Complex kvl (Node node) const override {
-        if (m_gates[0] == node) { return Complex { 1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return Complex { -1.0, 0.0 }; }
-        else { return Complex { 0.0, 0.0 }; }
+    math::Complex kvl (Node node) const override {
+        if (m_gates[0] == node) { return math::Complex { 1.0, 0.0 }; }
+        else if (m_gates[1] == node) { return math::Complex { -1.0, 0.0 }; }
+        else { return math::Complex { 0.0, 0.0 }; }
     }
 
     // 0*I + 1*U = m_voltage
-    Complex own_i () const override {
-        return Complex{ 0.0, 0.0 };
+    math::Complex own_i () const override {
+        return math::Complex{ 0.0, 0.0 };
     }
-    Complex own_u () const override {
-        return Complex { 1.0, 0.0 };
+    math::Complex own_u () const override {
+        return math::Complex { 1.0, 0.0 };
     }
-    Complex own_r () const override {
+    math::Complex own_r () const override {
         return m_voltage.to_complex();
     }
 

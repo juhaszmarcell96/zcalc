@@ -5,6 +5,7 @@
 #include "zcalc/common.hpp"
 
 namespace zcalc {
+namespace math {
 
 class Complex {
 protected:
@@ -59,4 +60,5 @@ public:
     }
 };
 
+} /* namespace component */
 } /* namespace zcalc */

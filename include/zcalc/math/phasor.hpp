@@ -32,6 +32,11 @@ public:
     static Phasor from_complex(Complex c, frequency_t frequency = 0.0) {
         return Phasor(c.abs(), c.arg(), frequency);
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const Phasor& phasor) {
+        os << phasor.m_magnitude << "cos(" << 2.0 * pi * phasor.m_frequency << "t+" << phasor.m_phase << ")" << std::endl;
+        return os;
+    }
 };
 
 } /* namespace component */

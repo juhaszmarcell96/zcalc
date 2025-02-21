@@ -26,11 +26,11 @@ public:
 
     id_t get_id () const { return m_id; }
 
-    virtual Complex kcl (Node node) const = 0;
-    virtual Complex kvl (Node node) const = 0;
-    virtual Complex own_i () const = 0;
-    virtual Complex own_u () const = 0;
-    virtual Complex own_r () const = 0;
+    virtual math::Complex kcl (Node node) const = 0;
+    virtual math::Complex kvl (Node node) const = 0;
+    virtual math::Complex own_i () const = 0;
+    virtual math::Complex own_u () const = 0;
+    virtual math::Complex own_r () const = 0;
 
     virtual std::size_t get_num_variables () const = 0;
 };

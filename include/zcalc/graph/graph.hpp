@@ -32,6 +32,11 @@ class Graph {
 private:
     Vertex m_v { 0 };
     std::vector<Edge> m_e;
+    
+    void normalize_cycle(std::vector<Vertex>& cycle) {
+        auto minIt = std::min_element(cycle.begin(), cycle.end());
+        std::rotate(cycle.begin(), minIt, cycle.end());
+    }
 
     void dfs (Vertex node, Vertex start, std::vector<bool>& visited, std::vector<Vertex>& path, std::set<std::vector<Vertex>>& cycles) {
         visited[node] = true;
@@ -42,9 +47,9 @@ private:
             edge.traversed = true;
             if ((edge.v0 == node) && ((edge.direction == edge_direction::forward) || (edge.direction == edge_direction::bidirectional))) {
                 if (edge.v1 == start) { // Cycle detected
-                    //path.push_back(start);
-                    cycles.insert(std::vector<Vertex>(path.begin(), path.end()));
-                    //path.pop_back();
+                    auto cycle = std::vector<Vertex>(path.begin(), path.end());
+                    normalize_cycle(cycle);
+                    cycles.insert(cycle);
                 }
                 else if (!visited[edge.v1]) {
                     dfs(edge.v1, start, visited, path, cycles);
@@ -52,9 +57,9 @@ private:
             }
             else if ((edge.v1 == node) && ((edge.direction == edge_direction::reverse) || (edge.direction == edge_direction::bidirectional))) {
                 if (edge.v0 == start) { // Cycle detected
-                    //path.push_back(start);
-                    cycles.insert(std::vector<Vertex>(path.begin(), path.end()));
-                    //path.pop_back();
+                    auto cycle = std::vector<Vertex>(path.begin(), path.end());
+                    normalize_cycle(cycle);
+                    cycles.insert(cycle);
                 }
                 else if (!visited[edge.v0]) {
                     dfs(edge.v0, start, visited, path, cycles);

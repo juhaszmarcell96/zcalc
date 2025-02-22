@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "zcalc/network.hpp"
+#include "zcalc/network_calculator.hpp"
 #include "zcalc/plot/plot.hpp"
 #include "zcalc/plot/figure.hpp"
 
@@ -32,7 +33,7 @@ public:
         while (frequency < m_max_freq) {
             try {
                 m_network.set_frequency(frequency);
-                Complex response = m_network.compute_response();
+                math::Complex response = NetworkCalculator::compute(m_network)[0];
                 m_magnitude_plot.add_point(std::log10(frequency), 20.0 * std::log10(response.abs()), 1.0, 1.0);
                 m_phase_plot.add_point(std::log10(frequency), 180.0 + response.arg() * 180.0 / pi);
             }

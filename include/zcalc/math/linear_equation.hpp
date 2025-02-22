@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include <zcalc/internal/complex.hpp>
+#include <zcalc/math/complex.hpp>
 
 namespace zcalc {
 namespace math {
@@ -100,7 +100,7 @@ public:
             equation.m_a[i] = m_a[i] + rhs.m_a[i];
         }
         equation.m_b = m_b + rhs.m_b;
-        return std::move(equation);
+        return equation;
     }
     LinearEquation<T> operator-(const LinearEquation<T>& rhs) const {
         if (m_a.size() != rhs.m_a.size()) throw std::invalid_argument("equations must have the same number of variables");
@@ -109,7 +109,7 @@ public:
             equation.m_a[i] = m_a[i] - rhs.m_a[i];
         }
         equation.m_b = m_b - rhs.m_b;
-        return std::move(equation);
+        return equation;
     }
     LinearEquation<T> operator*(const T& rhs) const {
         LinearEquation<T> equation {m_a.size()};
@@ -117,7 +117,7 @@ public:
             equation.m_a[i] = m_a[i] * rhs;
         }
         equation.m_b = m_b * rhs;
-        return std::move(equation);
+        return equation;
     }
     LinearEquation<T> operator/(const T& rhs) const {
         if (rhs == T{}) throw std::invalid_argument("cannot divide with zero");
@@ -126,14 +126,14 @@ public:
             equation.m_a[i] = m_a[i] / rhs;
         }
         equation.m_b = m_b / rhs;
-        return std::move(equation);
+        return equation;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquation<T>& equation) {
         for (std::size_t i = 0; i < equation.m_a.size(); ++i) {
-            os << equation.m_a[i] << "  ";
+            os << equation.m_a[i] << ",";
         }
-        os << "|" << equation.m_b;
+        os << equation.m_b;
         return os;
     }
 };

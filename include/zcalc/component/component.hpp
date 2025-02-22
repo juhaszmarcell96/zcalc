@@ -26,6 +26,10 @@ public:
 
     id_t get_id () const { return m_id; }
 
+    Node get_gate (std::size_t index) const {
+        return m_gates[index];
+    }
+
     virtual math::Complex kcl (Node node) const = 0;
     virtual math::Complex kvl (Node node) const = 0;
     virtual math::Complex own_i () const = 0;

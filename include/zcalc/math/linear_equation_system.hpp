@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -10,7 +11,7 @@
 #include <numbers>
 #include <stdexcept>
 
-#include <zcalc/internal/linear_equation.hpp>
+#include <zcalc/math/linear_equation.hpp>
 
 namespace zcalc {
 namespace math {
@@ -25,6 +26,7 @@ class LinearEquationSystem {
 private:
     std::size_t m_num_variables = 0;
     std::vector<LinearEquation<Complex>> m_linear_equation_system;
+    std::vector<std::string> m_labels;
 
     bool forward_elimination () {
         /* algorithm for reducing the matrix to row echelon form */
@@ -118,13 +120,19 @@ private:
         return false;
     }
 public:
-    LinearEquationSystem (std::size_t num_variables) : m_num_variables (num_variables) {}
+    LinearEquationSystem (std::size_t num_variables) : m_num_variables(num_variables) {}
     LinearEquationSystem () = delete;
     ~LinearEquationSystem () = default;
 
-    bool append_equation (const LinearEquation<Complex> & equation) {
-        if (equation.get_num_variables() != m_num_variables) return false;
+    bool append_equation (const LinearEquation<Complex>& equation) {
+        if (equation.get_num_variables() != m_num_variables) { return false; }
         m_linear_equation_system.push_back(equation);
+        return true;
+    }
+
+    bool append_label (const std::string& label) {
+        if (m_labels.size() == m_num_variables + 1) { return false; }
+        m_labels.push_back(label);
         return true;
     }
 
@@ -158,6 +166,10 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquationSystem& system) {
+        for (const auto& label : system.m_labels) {
+            os << label << ",";
+        }
+        os << std::endl;
         for (std::size_t equ_index = 0; equ_index < system.get_num_equations(); ++equ_index) {
             os << system.m_linear_equation_system[equ_index] << std::endl;
         }

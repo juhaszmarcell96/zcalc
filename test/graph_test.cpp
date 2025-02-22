@@ -3,13 +3,13 @@
 #include <zcalc/graph/graph.hpp>
 
 TEST(GraphTest, UndirectedGraphTest) {
-    zcalc::graph::Graph g(5);
-    g.add_edge(0, 1);
-    g.add_edge(1, 2);
-    g.add_edge(2, 0);
-    g.add_edge(2, 3);
-    g.add_edge(3, 4);
-    g.add_edge(4, 2);
+    zcalc::graph::Graph<float> g(5);
+    g.add_edge(0, 1, 1.0f);
+    g.add_edge(1, 2, 1.0f);
+    g.add_edge(2, 0, 1.0f);
+    g.add_edge(2, 3, 1.0f);
+    g.add_edge(3, 4, 1.0f);
+    g.add_edge(4, 2, 1.0f);
 
     std::cerr << "Cycles in the graph:\n";
     auto cycles = g.find_cycles();
@@ -32,12 +32,12 @@ TEST(GraphTest, UndirectedGraphTest) {
 }
 
 TEST(GraphTest, DirectedGraphTest) {
-    zcalc::graph::Graph g(4);
-    g.add_edge(0, 1, zcalc::graph::edge_direction::bidirectional);
-    g.add_edge(1, 2, zcalc::graph::edge_direction::bidirectional);
-    g.add_edge(2, 0, zcalc::graph::edge_direction::forward);
-    g.add_edge(2, 3, zcalc::graph::edge_direction::bidirectional);
-    g.add_edge(3, 1, zcalc::graph::edge_direction::reverse);
+    zcalc::graph::Graph<float> g(4);
+    g.add_edge(0, 1, 1.0f, zcalc::graph::edge_direction::bidirectional);
+    g.add_edge(1, 2, 1.0f, zcalc::graph::edge_direction::bidirectional);
+    g.add_edge(2, 0, 1.0f, zcalc::graph::edge_direction::forward);
+    g.add_edge(2, 3, 1.0f, zcalc::graph::edge_direction::bidirectional);
+    g.add_edge(3, 1, 1.0f, zcalc::graph::edge_direction::reverse);
 
     std::cerr << "Cycles in the graph:\n";
     auto cycles = g.find_cycles();

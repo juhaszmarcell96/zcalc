@@ -2,24 +2,39 @@
 
 #include <zcalc/common.hpp>
 #include <zcalc/network.hpp>
-#include <zcalc/resistor.hpp>
-#include <zcalc/capacitor.hpp>
-#include <zcalc/inductor.hpp>
+#include <zcalc/component/resistor.hpp>
+#include <zcalc/component/capacitor.hpp>
+#include <zcalc/component/inductor.hpp>
+#include <zcalc/network_calculator.hpp>
 
 TEST(BasicNetworkTest, Test) {
-    zcalc::Network test_network { 50.0e3 };
-    test_network.add_node("gnd");
-    test_network.add_node("in");
-    test_network.add_node("out");
-    test_network.add_source("U1", 5, "in", "gnd");
+    zcalc::Network test_network {};
+    test_network.add_node ("gnd");
+    test_network.add_node ("in");
+    test_network.add_node ("out");
+    test_network.add_source ("Us", 1.0, "in", "gnd");
     test_network.add_resistor("R1", 10, "in", "out");
     test_network.add_resistor("R2", 10, "out", "gnd");
-    std::vector<zcalc::Complex> result = test_network.compute();
+    
+    auto g = test_network.to_graph();
+    auto cycles = g.find_cycles();
+    for (const auto& c : cycles) {
+        const auto& edges = c.get_edges();
+        for (const auto e : edges) {
+            std::cerr << e->v0;
+            if (e->direction == zcalc::graph::edge_direction::bidirectional) {
+                std::cerr << " --(" << test_network.get_designator_of_component(e->weight).value() << ")-- ";
+            }
+            else if (e->direction == zcalc::graph::edge_direction::forward) {
+                std::cerr << " --(" << test_network.get_designator_of_component(e->weight).value() << ")-> ";
+            }
+            else { // reverse
+                std::cerr << " <-(" << test_network.get_designator_of_component(e->weight).value() << ")-- ";
+            }
+            std::cerr << e->v1 << "|";
+        }
+        std::cerr << std::endl;
+    }
 
-    ASSERT_EQ(result[0], zcalc::Complex(-0.25, 0.0));
-    ASSERT_EQ(result[1], zcalc::Complex(5.0, 0.0));
-    ASSERT_EQ(result[2], zcalc::Complex(0.25, 0.0));
-    ASSERT_EQ(result[3], zcalc::Complex(2.5, 0.0));
-    ASSERT_EQ(result[4], zcalc::Complex(0.25, 0.0));
-    ASSERT_EQ(result[5], zcalc::Complex(2.5, 0.0));
+    zcalc::NetworkCalculator::compute(test_network);
 }

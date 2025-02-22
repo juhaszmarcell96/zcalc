@@ -1,5 +1,8 @@
 #pragma once
 
+#include "zcalc/graph/vertex.hpp"
+#include "zcalc/graph/edge.hpp"
+
 #include <cstdint>
 #include <vector>
 #include <algorithm>
@@ -8,122 +11,17 @@
 namespace zcalc {
 namespace graph {
 
-enum class edge_direction {
-    bidirectional, // 0 <-> 1
-    forward,       // 0 -> 1
-    reverse        // 0 <- 1
-};
-
-typedef std::uint32_t Vertex;
-
-struct Edge {
-    Vertex v0 { 0 };
-    Vertex v1 { 0 };
-    edge_direction direction { edge_direction::bidirectional };
-    float weight { 1.0f };
-    mutable bool traversed { false };
-
-    Edge () = default;
-    Edge (Vertex u0, Vertex u1, edge_direction dir = edge_direction::bidirectional, float w = 1.0f) :
-        v0(u0), v1(u1), direction(dir), weight(w) {};
-};
-
-// TODO : redundant storage, vertices are contained in the edge structures
-class Path {
-private:
-    std::vector<Vertex> m_v;
-    std::vector<const Edge*> m_e;
-public:
-    Path () = default;
-    ~Path () = default;
-
-    void clear () {
-        m_v.clear();
-        m_e.clear();
-    }
-
-    void push_back_v (Vertex v) {
-        if (m_v.size() != m_e.size()) { throw std::invalid_argument("unexpected vertex"); }
-        m_v.push_back(v);
-    }
-
-    void push_back_e (const Edge* e) {
-        if (m_v.size() <= m_e.size()) { throw std::invalid_argument("unexpected edge"); }
-        if (!e) { throw std::invalid_argument("edge cannot be null"); }
-        m_e.push_back(e);
-    }
-
-    void pop_back_v () {
-        if (!m_v.empty()) {
-            m_v.pop_back();
-        }
-    }
-
-    void pop_back_e () {
-        if (!m_e.empty()) {
-            m_e.pop_back();
-        }
-    }
-
-    friend bool operator==(const Path& p1, const Path& p2) {
-        if (p1.m_v.size() != p2.m_v.size()) { return false; }
-        if (p1.m_e.size() != p2.m_e.size()) { return false; }
-        for (const auto v : p1.m_v) {
-            if (std::find(p2.m_v.begin(), p2.m_v.end(), v) == p2.m_v.end()) {
-                return false;
-            }
-        }
-        for (const auto e : p1.m_e) {
-            if (std::find(p2.m_e.begin(), p2.m_e.end(), e) == p2.m_e.end()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const Path& p) {
-        for (std::size_t i = 0; i < p.m_e.size(); ++i) {
-            Vertex v = p.m_v[i];
-            const Edge& e = *(p.m_e[i]);
-            os << v;
-            if (e.v0 == v) {
-                if (e.direction == edge_direction::bidirectional) {
-                    os << " --(" << e.weight << ")-- ";
-                }
-                else if (e.direction == edge_direction::forward) {
-                    os << " --(" << e.weight << ")-> ";
-                }
-                else { // reverse
-                    os << " <-(" << e.weight << ")-- ";
-                }
-            }
-            else {
-                if (e.direction == edge_direction::bidirectional) {
-                    os << " --(" << e.weight << ")-- ";
-                }
-                else if (e.direction == edge_direction::forward) {
-                    os << " <-(" << e.weight << ")-- ";
-                }
-                else { // reverse
-                    os << " --(" << e.weight << ")-> ";
-                }
-            }
-        }
-        os << p.m_v.back();
-        return os;
-    }
-};
-
+template<typename T>
 class Graph {
 private:
     Vertex m_v { 0 };
-    std::vector<Edge> m_e;
+    std::vector<Edge<T>> m_e;
 
-    void dfs (Vertex node, Vertex start, std::vector<bool>& visited, Path& path, std::vector<Path>& cycles) {
+    void dfs (Vertex node, Vertex start, std::vector<bool>& visited, Path<T>& path, std::vector<Path<T>>& cycles) const {
         visited[node] = true;
         path.push_back_v(node);
 
-        for (const Edge& edge : m_e) {
+        for (const auto& edge : m_e) {
             if (edge.traversed) { continue; }
             edge.traversed = true;
             path.push_back_e(&edge);
@@ -178,20 +76,39 @@ public:
     Graph (Vertex v) : m_v(v) {};
     ~Graph () = default;
 
-    void add_edge (Vertex v0, Vertex v1, edge_direction direction = edge_direction::bidirectional, float weight = 1.0f) {
-        m_e.push_back(Edge{v0, v1, direction, weight});
+    void add_edge (Vertex v0, Vertex v1, T weight, edge_direction direction = edge_direction::bidirectional) {
+        m_e.push_back(Edge<T>{v0, v1, weight, direction});
     }
 
-    std::vector<Path> find_cycles () {
+    const std::vector<Edge<T>> get_edges () const { return m_e; }
+    Vertex get_vertices () const { return m_v; }
+
+    std::vector<Path<T>> find_cycles () const {
         std::vector<bool> visited ( m_v, false );
-        Path path;
-        std::vector<Path> cycles;
+        Path<T> path;
+        std::vector<Path<T>> cycles;
         for (Vertex i = 0; i < m_v; ++i) {
             std::fill(visited.begin(), visited.end(), false);
             path.clear();
             dfs(i, i, visited, path, cycles);
         }
         return cycles;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Graph& g) {
+        os << "number of vertices : " << g.m_v << std::endl;
+        for (const auto& e : g.m_e) {
+            if (e.direction == edge_direction::bidirectional) {
+                os << e.v0 << " --(" << e.weight << ")-- " << e.v1 << std::endl;
+            }
+            else if (e.direction == edge_direction::forward) {
+                os << e.v0 << " --(" << e.weight << ")-> " << e.v1 << std::endl;
+            }
+            else { // reverse
+                os << e.v0 << " <-(" << e.weight << ")-- " << e.v1 << std::endl;
+            }
+        }
+        return os;
     }
 };
 

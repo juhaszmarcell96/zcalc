@@ -1,185 +1,129 @@
 #pragma once
 
-#include <zcalc/internal/component.hpp>
-#include <zcalc/internal/complex.hpp>
-#include <zcalc/internal/linear_equation_system.hpp>
+#include <zcalc/component/component.hpp>
+#include <zcalc/component/impedance.hpp>
+#include <zcalc/component/resistor.hpp>
+#include <zcalc/component/capacitor.hpp>
+#include <zcalc/component/inductor.hpp>
+#include <zcalc/component/source.hpp>
 
-#include <zcalc/impedance.hpp>
-#include <zcalc/resistor.hpp>
-#include <zcalc/capacitor.hpp>
-#include <zcalc/inductor.hpp>
-#include <zcalc/source.hpp>
+#include <zcalc/math/complex.hpp>
+
+#include <zcalc/graph/graph.hpp>
 
 #include <vector>
+#include <map>
 #include <string>
 #include <memory>
 #include <iostream>
-#include <iomanip>
 #include <stdexcept>
+#include <optional>
 
 namespace zcalc {
 
 class Network {
 private:
-    std::vector<std::unique_ptr<Node>> m_nodes;
-    std::vector<std::unique_ptr<Component>> m_components;
-
-    std::unique_ptr<LinearEquationSystem> m_lin_equ_system;
+    std::map<std::string, component::Node> m_nodes;
+    std::map<std::string, std::shared_ptr<component::Component>> m_components;
 
     double m_frequency { 1.0 };
-    std::size_t m_num_variables;
 
+public:
+    Network () {}
+    ~Network () = default;
 
-    bool component_exists (const std::string& designator) const {
-        for (const auto& component : m_components) {
-            if (designator.compare(component->get_designator()) == 0) return true;
-        }
-        return false;
+    component::Node get_node (const std::string& designator) const {
+        auto node = m_nodes.find(designator);
+        if (node == m_nodes.end()) { throw std::invalid_argument("node " + designator + " does not exists"); }
+        return node->second;
     }
 
-    Node* get_node (const std::string& designator) const {
-        for (const auto& node : m_nodes) {
-            if (designator.compare(node->designator) == 0) return node.get();
-        }
-        throw std::invalid_argument("node " + designator + " doesn't exist");
-    }
-
-    void compute_equations () {
-        if (m_nodes.size() == 0) return;
-        if (m_components.size() == 0) return;
-
-        std::size_t row_index = 0;
-        /* Kirchhoff's current law */
-        for (const auto& node : m_nodes) {
-            LinearEquation<Complex> equ { m_num_variables };
-            for (const auto& component : m_components) {
-                equ.set_result(Complex{0.0, 0.0});
-                component->kcl(node.get(), equ);
+    const std::shared_ptr<component::Component> get_component (id_t id) const {
+        for (const auto& [des, val] : m_components) {
+            if (val->get_id() == id) {
+                return val;
             }
-            m_lin_equ_system->append_equation(equ);
         }
- 
-        /* equation for every impedance */
-        for (const auto& component : m_components) {
-            LinearEquation<Complex> equ { m_num_variables };
-            component->own_equ(equ);
-            m_lin_equ_system->append_equation(equ);
-        }
+        return nullptr;
+    }
 
-        /* Kirchhoff's voltage law */
-        LoopFinder::find_loops(m_nodes[0].get(), m_num_variables);
-        for (LoopMessage& message : LoopFinder::get_loops()) {
-            message.equ.set_result(Complex{0.0, 0.0});
-            m_lin_equ_system->append_equation(message.equ);
+    std::optional<std::string> get_designator_of_component (id_t id) const {
+        for (auto& [des, val] : m_components) {
+            if (val->get_id() == id) {
+                return des;
+            }
         }
+        return std::nullopt;
     }
 
     /* add a source to the network */
     void add_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
-        /* TODO : only one source can be added? */
-        if (component_exists(designator)) throw std::invalid_argument("component " + designator + " already exists");
-        Node* node_0 = get_node(node_0_des);
-        Node* node_1 = get_node(node_1_des);
-        /* TODO : the source should send out signals of such frequencies and calculate impedance on the go */
-        std::unique_ptr<Source> new_component = std::make_unique<Source>(designator, voltage, node_0, node_1, m_components.size());
-        m_components.push_back(std::move(new_component));
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        m_components[designator] = std::make_unique<component::Source>(voltage, m_frequency, get_node(node_0_des), get_node(node_1_des), m_components.size());
     }
-
-public:
-    Network () {
-        add_node ("in");
-        add_node ("out");
-        add_node ("gnd");
-        /* important that RL_pseudo must have index 0 */
-        /* the pseudo load resistor serves as a measurement resistor that insignificantly influences the measurement accuracy (like a multimeter) */
-        add_resistor("RL_pseudo", 10e9, "out", "gnd");
-        add_source ("U", 1.0, "in", "gnd");
-    }
-    ~Network () = default;
     
     /* add a node to the graph */
     void add_node (const std::string& designator) {
-        for (const auto& node : m_nodes) {
-            if (designator.compare(node->designator) == 0) {
-                throw std::invalid_argument("node " + designator + " already exists");
-            }
-        }
-        std::unique_ptr<Node> new_node = std::make_unique<Node>();
-        new_node->designator = designator;
-        m_nodes.push_back(std::move(new_node));
+        if (m_nodes.contains(designator)) { throw std::invalid_argument("node " + designator + " already exists"); }
+        m_nodes[designator] = m_nodes.size();
     }
 
     /* add a resistor to the network */
     void add_resistor (const std::string& designator, double resistance, const std::string& node_0_des, const std::string& node_1_des) {
-        if (component_exists(designator)) throw std::invalid_argument("component " + designator + " already exists");
-        Node* node_0 = get_node(node_0_des);
-        Node* node_1 = get_node(node_1_des);
-        std::unique_ptr<Resistor> new_component = std::make_unique<Resistor>(designator, resistance, node_0, node_1, m_components.size());
-        m_components.push_back(std::move(new_component));
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        m_components[designator] = std::make_unique<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), m_components.size());
     }
 
     /* add an inductor to the network */
     void add_inductor (const std::string& designator, double inductance, const std::string& node_0_des, const std::string& node_1_des) {
-        if (component_exists(designator)) throw std::invalid_argument("component " + designator + " already exists");
-        Node* node_0 = get_node(node_0_des);
-        Node* node_1 = get_node(node_1_des);
-        std::unique_ptr<Inductor> new_component = std::make_unique<Inductor>(designator, inductance, m_frequency, node_0, node_1, m_components.size());
-        m_components.push_back(std::move(new_component));
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        m_components[designator] = std::make_unique<component::Inductor>(inductance, m_frequency, get_node(node_0_des), get_node(node_1_des), m_components.size());
     }
 
     /* add a capacitor to the network */
     void add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_des, const std::string& node_1_des) {
-        if (component_exists(designator)) throw std::invalid_argument("component " + designator + " already exists");
-        Node* node_0 = get_node(node_0_des);
-        Node* node_1 = get_node(node_1_des);
-        std::unique_ptr<Capacitor> new_component = std::make_unique<Capacitor>(designator, capacitance, m_frequency, node_0, node_1, m_components.size());
-        m_components.push_back(std::move(new_component));
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        m_components[designator] = std::make_unique<component::Capacitor>(capacitance, m_frequency, get_node(node_0_des), get_node(node_1_des), m_components.size());
     }
 
-    std::vector<Complex> compute () {
-        m_num_variables = 0;
-        for (const auto& component : m_components) {
-            m_num_variables += component->get_num_variables();
-        }
-        m_lin_equ_system = std::make_unique<LinearEquationSystem>(m_num_variables);
-        compute_equations();
-        std::vector<Complex> solution;
-        bool success = m_lin_equ_system->solve(solution);
-        if (!success) {
-            throw std::runtime_error("could not solve equation system");
-        }
-        //for (const auto& c : solution) {
-        //    std::cout << c << " ";
-        //}
-        //std::cout << std::endl;
-        return std::move(solution);
+    std::size_t get_num_nodes () const {
+        return m_nodes.size();
     }
 
-    Complex compute_response () {
-        return compute()[0 + equ_voltage_offset];
+    graph::Graph<id_t> to_graph () const {
+        // nodes are the vertices, compnents are the edges
+        graph::Graph<id_t> g { m_nodes.size() };
+        for (const auto& [des, val] : m_components) {
+            g.add_edge(val->get_gate(0), val->get_gate(1), val->get_id());
+        }
+        return g;
+    }
+
+    graph::Graph<std::shared_ptr<component::Component>> to_graph_pointers () const {
+        // nodes are the vertices, compnents are the edges
+        graph::Graph<std::shared_ptr<component::Component>> g { m_nodes.size() };
+        for (const auto& [des, val] : m_components) {
+            g.add_edge(val->get_gate(0), val->get_gate(1), val);
+        }
+        return g;
     }
 
     void print () {
         std::cout << "frequency : " << m_frequency << std::endl;
         std::cout << "nodes" << std::endl;
-        for (const auto& node : m_nodes) {
-            std::cout << "    " << node->designator << std::endl;
+        for (const auto& [des, val] : m_nodes) {
+            std::cout << "    " << des << " : " << val << std::endl;
         }
         std::cout << "components" << std::endl;
-        for (const auto& component : m_components) {
-            std::cout << "    " << component->get_designator() << std::endl;
+        for (const auto& [des, val] : m_components) {
+            std::cout << "    " << des << " : " << val << std::endl;
         }
-    }
-
-    void print_equations () {
-        std::cout << std::fixed << std::setprecision(2);
-        std::cout << (*m_lin_equ_system) << std::endl;
     }
 
     void set_frequency (double frequency) {
         m_frequency = frequency;
         for (const auto& component : m_components) {
-            component->set_frequency(frequency);
+            component.second->set_frequency(frequency);
         }
     }
 };

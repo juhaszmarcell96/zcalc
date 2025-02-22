@@ -28,7 +28,7 @@ public:
     NetworkCalculator () = default;
     ~NetworkCalculator () = default;
 
-    static void compute (const Network& network) {
+    static std::vector<math::Complex> compute (const Network& network) {
         // convert to graph
         const auto g = network.to_graph_pointers();
         // count the number of variables
@@ -38,6 +38,14 @@ public:
         }
         // set up the linear equation system
         math::LinearEquationSystem lin_equ_system { num_variables };
+        if (log_enabled) {
+            for (const auto& e : g.get_edges()) {
+                const auto& component = *(e.weight);
+                lin_equ_system.append_label(std::string{"I_"} + network.get_designator_of_component(component.get_id()).value());
+                lin_equ_system.append_label(std::string{"U_"} + network.get_designator_of_component(component.get_id()).value());
+            }
+            lin_equ_system.append_label("result");
+        }
         // derive the equations
         // Kirchhoff's current law -> one equation per node
         for (graph::Vertex v = 0; v < g.get_vertices(); ++v) {
@@ -105,12 +113,13 @@ public:
         if (!success) {
             throw std::runtime_error("could not solve equation system");
         }
-        std::cout << std::fixed << std::setprecision(2);
-        std::cout << lin_equ_system << std::endl;
-        for (const auto& c : solution) {
-            std::cout << c << " ";
-        }
-        std::cout << std::endl;
+        // std::cout << std::fixed << std::setprecision(2);
+        // std::cout << lin_equ_system << std::endl;
+        // for (const auto& c : solution) {
+        //     std::cout << c << ",";
+        // }
+        // std::cout << std::endl;
+        return solution;
     }
 };
 

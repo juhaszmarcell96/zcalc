@@ -131,9 +131,9 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquation<T>& equation) {
         for (std::size_t i = 0; i < equation.m_a.size(); ++i) {
-            os << equation.m_a[i] << "  ";
+            os << equation.m_a[i] << ",";
         }
-        os << "|" << equation.m_b;
+        os << equation.m_b;
         return os;
     }
 };

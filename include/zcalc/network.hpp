@@ -47,7 +47,7 @@ public:
         return nullptr;
     }
 
-    std::optional<std::string> get_designator_of_component (id_t id) {
+    std::optional<std::string> get_designator_of_component (id_t id) const {
         for (auto& [des, val] : m_components) {
             if (val->get_id() == id) {
                 return des;

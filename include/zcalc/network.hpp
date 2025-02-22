@@ -16,7 +16,6 @@
 #include <string>
 #include <memory>
 #include <iostream>
-#include <iomanip>
 #include <stdexcept>
 #include <optional>
 
@@ -39,8 +38,8 @@ public:
         return node->second;
     }
 
-    std::shared_ptr<component::Component> get_component (id_t id) {
-        for (auto& [des, val] : m_components) {
+    const std::shared_ptr<component::Component> get_component (id_t id) const {
+        for (const auto& [des, val] : m_components) {
             if (val->get_id() == id) {
                 return val;
             }
@@ -87,11 +86,24 @@ public:
         m_components[designator] = std::make_unique<component::Capacitor>(capacitance, m_frequency, get_node(node_0_des), get_node(node_1_des), m_components.size());
     }
 
+    std::size_t get_num_nodes () const {
+        return m_nodes.size();
+    }
+
     graph::Graph<id_t> to_graph () const {
         // nodes are the vertices, compnents are the edges
         graph::Graph<id_t> g { m_nodes.size() };
         for (const auto& [des, val] : m_components) {
             g.add_edge(val->get_gate(0), val->get_gate(1), val->get_id());
+        }
+        return g;
+    }
+
+    graph::Graph<std::shared_ptr<component::Component>> to_graph_pointers () const {
+        // nodes are the vertices, compnents are the edges
+        graph::Graph<std::shared_ptr<component::Component>> g { m_nodes.size() };
+        for (const auto& [des, val] : m_components) {
+            g.add_edge(val->get_gate(0), val->get_gate(1), val);
         }
         return g;
     }

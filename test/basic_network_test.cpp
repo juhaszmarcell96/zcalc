@@ -5,12 +5,13 @@
 #include <zcalc/component/resistor.hpp>
 #include <zcalc/component/capacitor.hpp>
 #include <zcalc/component/inductor.hpp>
+#include <zcalc/network_calculator.hpp>
 
 TEST(BasicNetworkTest, Test) {
     zcalc::Network test_network {};
+    test_network.add_node ("gnd");
     test_network.add_node ("in");
     test_network.add_node ("out");
-    test_network.add_node ("gnd");
     test_network.add_source ("U", 1.0, "in", "gnd");
     test_network.add_resistor("R1", 10, "in", "out");
     test_network.add_resistor("R2", 10, "out", "gnd");
@@ -34,4 +35,6 @@ TEST(BasicNetworkTest, Test) {
         }
         std::cerr << std::endl;
     }
+
+    zcalc::NetworkCalculator::compute(test_network);
 }

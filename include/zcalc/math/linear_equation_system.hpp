@@ -120,7 +120,9 @@ private:
         return false;
     }
 public:
-    LinearEquationSystem (std::size_t num_variables) : m_num_variables(num_variables) {}
+    LinearEquationSystem (std::size_t num_variables) : m_num_variables(num_variables) {
+        m_labels.resize(num_variables + 1);
+    }
     LinearEquationSystem () = delete;
     ~LinearEquationSystem () = default;
 
@@ -130,9 +132,9 @@ public:
         return true;
     }
 
-    bool append_label (const std::string& label) {
-        if (m_labels.size() == m_num_variables + 1) { return false; }
-        m_labels.push_back(label);
+    bool set_label (const std::string& label, std::size_t index) {
+        if (index >= m_labels.size()) { return false; }
+        m_labels[index] = label;
         return true;
     }
 
@@ -166,8 +168,15 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquationSystem& system) {
+        bool first = true;
         for (const auto& label : system.m_labels) {
-            os << label << ",";
+            if (first) {
+                os << label;
+                first = false;
+            }
+            else {
+                os << "," << label;
+            }
         }
         os << std::endl;
         for (std::size_t equ_index = 0; equ_index < system.get_num_equations(); ++equ_index) {

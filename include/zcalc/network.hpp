@@ -18,6 +18,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <optional>
+#include <limits>
 
 namespace zcalc {
 
@@ -36,6 +37,11 @@ public:
         auto node = m_nodes.find(designator);
         if (node == m_nodes.end()) { throw std::invalid_argument("node " + designator + " does not exists"); }
         return node->second;
+    }
+
+    id_t get_component_id (std::string designator) const {
+        if (!m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " does not exists"); }
+        return m_components.at(designator)->get_id();
     }
 
     const std::shared_ptr<component::Component> get_component (id_t id) const {
@@ -57,33 +63,43 @@ public:
     }
 
     /* add a source to the network */
-    void add_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
-        m_components[designator] = std::make_unique<component::Source>(voltage, m_frequency, get_node(node_0_des), get_node(node_1_des), m_components.size());
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::Source>(voltage, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        return id;
     }
     
     /* add a node to the graph */
-    void add_node (const std::string& designator) {
+    component::Node add_node (const std::string& designator) {
         if (m_nodes.contains(designator)) { throw std::invalid_argument("node " + designator + " already exists"); }
-        m_nodes[designator] = m_nodes.size();
+        const auto node = m_nodes.size();
+        m_nodes[designator] = node;
+        return node;
     }
 
     /* add a resistor to the network */
-    void add_resistor (const std::string& designator, double resistance, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_resistor (const std::string& designator, double resistance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
-        m_components[designator] = std::make_unique<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), m_components.size());
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), id);
+        return id;
     }
 
     /* add an inductor to the network */
-    void add_inductor (const std::string& designator, double inductance, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_inductor (const std::string& designator, double inductance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
-        m_components[designator] = std::make_unique<component::Inductor>(inductance, m_frequency, get_node(node_0_des), get_node(node_1_des), m_components.size());
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::Inductor>(inductance, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        return id;
     }
 
     /* add a capacitor to the network */
-    void add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
-        m_components[designator] = std::make_unique<component::Capacitor>(capacitance, m_frequency, get_node(node_0_des), get_node(node_1_des), m_components.size());
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::Capacitor>(capacitance, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        return id;
     }
 
     std::size_t get_num_nodes () const {
@@ -92,7 +108,11 @@ public:
 
     graph::Graph<id_t> to_graph () const {
         // nodes are the vertices, compnents are the edges
-        graph::Graph<id_t> g { m_nodes.size() };
+        const auto num_nodes = m_nodes.size();
+        if (num_nodes > std::numeric_limits<graph::Vertex>::max()) {
+            throw std::invalid_argument("too many nodes in the graph");
+        }
+        graph::Graph<id_t> g { static_cast<graph::Vertex>(num_nodes) };
         for (const auto& [des, val] : m_components) {
             g.add_edge(val->get_gate(0), val->get_gate(1), val->get_id());
         }
@@ -101,7 +121,11 @@ public:
 
     graph::Graph<std::shared_ptr<component::Component>> to_graph_pointers () const {
         // nodes are the vertices, compnents are the edges
-        graph::Graph<std::shared_ptr<component::Component>> g { m_nodes.size() };
+        const auto num_nodes = m_nodes.size();
+        if (num_nodes > std::numeric_limits<graph::Vertex>::max()) {
+            throw std::invalid_argument("too many nodes in the graph");
+        }
+        graph::Graph<std::shared_ptr<component::Component>> g { static_cast<graph::Vertex>(num_nodes) };
         for (const auto& [des, val] : m_components) {
             g.add_edge(val->get_gate(0), val->get_gate(1), val);
         }

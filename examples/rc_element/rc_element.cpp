@@ -1,8 +1,5 @@
 #include <zcalc/common.hpp>
 #include <zcalc/network.hpp>
-#include <zcalc/resistor.hpp>
-#include <zcalc/capacitor.hpp>
-#include <zcalc/inductor.hpp>
 
 #include <zcalc/plot/plotter.hpp>
 
@@ -14,11 +11,16 @@
 int main () {
 
     zcalc::Network rc_net { };
+    rc_net.add_node ("gnd");
+    rc_net.add_node ("in");
+    rc_net.add_node ("out");
+    rc_net.add_source ("Us", 1.0, "in", "gnd");
+    rc_net.add_resistor("R_output", 10e9, "out", "gnd");
     rc_net.add_resistor("R", 50.0, "in", "out");
     rc_net.add_capacitor("C", 100.0e-6, "out", "gnd");
 
     zcalc::Plotter plotter {};
-    plotter.plot("rc_element", rc_net);
+    plotter.plot("rc_element", rc_net, rc_net.get_component_id("R_output"));
 
     return 0;
 }

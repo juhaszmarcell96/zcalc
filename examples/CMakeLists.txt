@@ -6,11 +6,11 @@ set (CMAKE_BUILD_TYPE debug)
 
 set (
     EXAMPLES
-    #basic
+    basic
     filter
-    #rc_element
-    #bandpass
-    #lc_filter
+    rc_element
+    bandpass
+    lc_filter
 )
 
 include_directories("../include/")

@@ -34,7 +34,7 @@ public:
     NetworkCalculator () = default;
     ~NetworkCalculator () = default;
 
-    static std::vector<math::Complex> compute (const Network& network) {
+    static std::vector<Result> compute (const Network& network) {
         // convert to graph
         const auto g = network.to_graph_pointers();
         // count the number of variables
@@ -127,12 +127,12 @@ public:
         if (solution.size() != num_variables) {
             throw std::runtime_error("unexpected solution size");
         }
-        std::cout << std::fixed << std::setprecision(2);
-        std::cout << lin_equ_system << std::endl;
-        for (const auto& c : solution) {
-            std::cout << c << ",";
-        }
-        std::cout << std::endl;
+        // std::cout << std::fixed << std::setprecision(2);
+        // std::cout << lin_equ_system << std::endl;
+        // for (const auto& c : solution) {
+        //     std::cout << c << ",";
+        // }
+        // std::cout << std::endl;
         std::vector<Result> results {};
         for (std::size_t i = 0; i < num_variables; i += 2) {
             Result res {};
@@ -141,12 +141,12 @@ public:
             res.voltage = solution[i + equ_voltage_offset];
             results.push_back(res);
         }
-        for (const auto& res : results) {
-            std::cout << network.get_designator_of_component(res.component_id).value() << " : " << std::endl;
-            std::cout << "    voltage : " << res.voltage << std::endl;
-            std::cout << "    current : " << res.current << std::endl;
-        }
-        return solution;
+        // for (const auto& res : results) {
+        //     std::cout << network.get_designator_of_component(res.component_id).value() << " : " << std::endl;
+        //     std::cout << "    voltage : " << res.voltage << std::endl;
+        //     std::cout << "    current : " << res.current << std::endl;
+        // }
+        return results;
     }
 };
 

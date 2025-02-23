@@ -7,34 +7,43 @@
 #include <zcalc/component/inductor.hpp>
 #include <zcalc/network_calculator.hpp>
 
-TEST(BasicNetworkTest, Test) {
+TEST(BasicNetworkTest, VoltageDivider) {
     zcalc::Network test_network {};
     test_network.add_node ("gnd");
     test_network.add_node ("in");
     test_network.add_node ("out");
-    test_network.add_source ("Us", 1.0, "in", "gnd");
-    test_network.add_resistor("R1", 10, "in", "out");
-    test_network.add_resistor("R2", 10, "out", "gnd");
-    
-    auto g = test_network.to_graph();
-    auto cycles = g.find_cycles();
-    for (const auto& c : cycles) {
-        const auto& edges = c.get_edges();
-        for (const auto e : edges) {
-            std::cerr << e->v0;
-            if (e->direction == zcalc::graph::edge_direction::bidirectional) {
-                std::cerr << " --(" << test_network.get_designator_of_component(e->weight).value() << ")-- ";
-            }
-            else if (e->direction == zcalc::graph::edge_direction::forward) {
-                std::cerr << " --(" << test_network.get_designator_of_component(e->weight).value() << ")-> ";
-            }
-            else { // reverse
-                std::cerr << " <-(" << test_network.get_designator_of_component(e->weight).value() << ")-- ";
-            }
-            std::cerr << e->v1 << "|";
+    const auto us_id = test_network.add_source ("Us", 1.0, "in", "gnd");
+    const auto r1_id = test_network.add_resistor("R1", 10, "in", "out");
+    const auto r2_id = test_network.add_resistor("R2", 10, "out", "gnd");
+
+    const auto results = zcalc::NetworkCalculator::compute(test_network);
+    ASSERT_EQ(results.size(), 3);
+    bool us_found = false;
+    bool r1_found = false;
+    bool r2_found = false;
+
+    for (const auto& res : results) {
+        if (res.component_id == us_id) {
+            us_found = true;
+            ASSERT_EQ(res.current, zcalc::math::Complex(-0.05, 0.0));
+            ASSERT_EQ(res.voltage, zcalc::math::Complex(1.0, 0.0));
         }
-        std::cerr << std::endl;
+        else if (res.component_id == r1_id) {
+            r1_found = true;
+            ASSERT_EQ(res.current, zcalc::math::Complex(0.05, 0.0));
+            ASSERT_EQ(res.voltage, zcalc::math::Complex(0.5, 0.0));
+        }
+        else if (res.component_id == r2_id) {
+            r2_found = true;
+            ASSERT_EQ(res.current, zcalc::math::Complex(0.05, 0.0));
+            ASSERT_EQ(res.voltage, zcalc::math::Complex(0.5, 0.0));
+        }
+        else {
+            ASSERT_TRUE(false);
+        }
     }
 
-    zcalc::NetworkCalculator::compute(test_network);
+    ASSERT_TRUE(us_found);
+    ASSERT_TRUE(r1_found);
+    ASSERT_TRUE(r2_found);
 }

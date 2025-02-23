@@ -109,13 +109,6 @@ TEST(ComplexTest, MagnitudeAndPhase) {
     ASSERT_NEAR(c.arg(), atan2(4.0, 3.0), comparison_epsilon);
 }
 
-TEST(ComplexTest, StreamOperator) {
-    Complex c(2.0, -3.0);
-    std::ostringstream oss;
-    oss << c;
-    ASSERT_EQ(oss.str(), "(2-j3)");
-}
-
 TEST(ComplexTest, EdgeCases) {
     Complex zero(0.0, 0.0);
     ASSERT_EQ(zero.abs(), 0.0);

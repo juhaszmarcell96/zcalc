@@ -47,3 +47,28 @@ TEST(BasicNetworkTest, VoltageDivider) {
     ASSERT_TRUE(r1_found);
     ASSERT_TRUE(r2_found);
 }
+
+TEST(BasicNetworkTest, VoltageResponse) {
+    zcalc::Network network {};
+    network.set_frequency(795.8);
+    network.add_node ("gnd");
+    network.add_node ("in");
+    network.add_node ("out");
+    network.add_node ("A");
+    const auto us_id = network.add_source ("Us", 10.0, "in", "gnd");
+    const auto c1_id = network.add_capacitor("C1", 2.0e-6, "in", "out");
+    const auto c2_id = network.add_capacitor("C2", 1.0e-6, "out", "gnd");
+    const auto r_id = network.add_resistor("R", 40, "out", "A");
+    const auto l_id = network.add_inductor("L", 8.0e-3, "A", "gnd");
+    const auto osci_id = network.add_resistor("osci", 10e9, "out", "gnd");
+
+    const auto results = zcalc::NetworkCalculator::compute(network);
+    bool osci_found = false;
+    for (const auto& res : results) {
+        if (res.component_id == osci_id) {
+            osci_found = true;
+            ASSERT_EQ(res.voltage, zcalc::math::Complex(1.53888, 7.69266));
+        }
+    }
+    ASSERT_TRUE(osci_found);
+}

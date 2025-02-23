@@ -18,6 +18,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <optional>
+#include <limits>
 
 namespace zcalc {
 
@@ -92,7 +93,11 @@ public:
 
     graph::Graph<id_t> to_graph () const {
         // nodes are the vertices, compnents are the edges
-        graph::Graph<id_t> g { m_nodes.size() };
+        const auto num_nodes = m_nodes.size();
+        if (num_nodes > std::numeric_limits<graph::Vertex>::max()) {
+            throw std::invalid_argument("too many nodes in the graph");
+        }
+        graph::Graph<id_t> g { static_cast<graph::Vertex>(num_nodes) };
         for (const auto& [des, val] : m_components) {
             g.add_edge(val->get_gate(0), val->get_gate(1), val->get_id());
         }
@@ -101,7 +106,11 @@ public:
 
     graph::Graph<std::shared_ptr<component::Component>> to_graph_pointers () const {
         // nodes are the vertices, compnents are the edges
-        graph::Graph<std::shared_ptr<component::Component>> g { m_nodes.size() };
+        const auto num_nodes = m_nodes.size();
+        if (num_nodes > std::numeric_limits<graph::Vertex>::max()) {
+            throw std::invalid_argument("too many nodes in the graph");
+        }
+        graph::Graph<std::shared_ptr<component::Component>> g { static_cast<graph::Vertex>(num_nodes) };
         for (const auto& [des, val] : m_components) {
             g.add_edge(val->get_gate(0), val->get_gate(1), val);
         }

@@ -20,6 +20,12 @@
 
 namespace zcalc {
 
+struct Result {
+    component::id_t component_id { 0 };
+    math::Complex voltage { 0.0, 0.0 };
+    math::Complex current { 0.0, 0.0 };
+};
+
 class NetworkCalculator {
 private:
     Network m_net {};
@@ -36,15 +42,20 @@ public:
         for (const auto& e : g.get_edges()) {
             num_variables += e.weight->get_num_variables();
         }
+        if ((num_variables % 2) != 0) {
+            throw std::runtime_error("cannot deal with an odd number of variables");
+        }
         // set up the linear equation system
         math::LinearEquationSystem lin_equ_system { num_variables };
         if (log_enabled) {
             for (const auto& e : g.get_edges()) {
                 const auto& component = *(e.weight);
-                lin_equ_system.append_label(std::string{"I_"} + network.get_designator_of_component(component.get_id()).value());
-                lin_equ_system.append_label(std::string{"U_"} + network.get_designator_of_component(component.get_id()).value());
+                auto component_id = component.get_id();
+                const auto designator = network.get_designator_of_component(component_id).value();
+                lin_equ_system.set_label(std::string{"I_"} + designator, 2 * component_id + equ_current_offset);
+                lin_equ_system.set_label(std::string{"U_"} + designator, 2 * component_id + equ_voltage_offset);
             }
-            lin_equ_system.append_label("result");
+            lin_equ_system.set_label("result", num_variables);
         }
         // derive the equations
         // Kirchhoff's current law -> one equation per node
@@ -113,12 +124,28 @@ public:
         if (!success) {
             throw std::runtime_error("could not solve equation system");
         }
-        // std::cout << std::fixed << std::setprecision(2);
-        // std::cout << lin_equ_system << std::endl;
-        // for (const auto& c : solution) {
-        //     std::cout << c << ",";
-        // }
-        // std::cout << std::endl;
+        if (solution.size() != num_variables) {
+            throw std::runtime_error("unexpected solution size");
+        }
+        std::cout << std::fixed << std::setprecision(2);
+        std::cout << lin_equ_system << std::endl;
+        for (const auto& c : solution) {
+            std::cout << c << ",";
+        }
+        std::cout << std::endl;
+        std::vector<Result> results {};
+        for (std::size_t i = 0; i < num_variables; i += 2) {
+            Result res {};
+            res.component_id = i / 2;
+            res.current = solution[i + equ_current_offset];
+            res.voltage = solution[i + equ_voltage_offset];
+            results.push_back(res);
+        }
+        for (const auto& res : results) {
+            std::cout << network.get_designator_of_component(res.component_id).value() << " : " << std::endl;
+            std::cout << "    voltage : " << res.voltage << std::endl;
+            std::cout << "    current : " << res.current << std::endl;
+        }
         return solution;
     }
 };

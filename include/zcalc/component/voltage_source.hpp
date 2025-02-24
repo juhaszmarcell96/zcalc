@@ -11,22 +11,22 @@
 namespace zcalc {
 namespace component {
 
-class Source : public Component {
+class VoltageSource : public Component {
 protected:
     math::Phasor m_voltage { 1.0, 0.0, 0.0 };
 public:
-    Source () = delete;
-    Source (math::Complex voltage, Node node_0, Node node_1, std::size_t id) : Component(id) {
+    VoltageSource () = delete;
+    VoltageSource (math::Complex voltage, Node node_0, Node node_1, std::size_t id) : Component(id) {
         m_gates.push_back(node_0);
         m_gates.push_back(node_1);
         m_voltage = math::Phasor::from_complex(voltage);
     }
-    Source (math::Complex voltage, frequency_t frequency, Node node_0, Node node_1, std::size_t id) : Component(id) {
+    VoltageSource (math::Complex voltage, frequency_t frequency, Node node_0, Node node_1, std::size_t id) : Component(id) {
         m_gates.push_back(node_0);
         m_gates.push_back(node_1);
         m_voltage = math::Phasor::from_complex(voltage, frequency);
     }
-    ~Source () = default;
+    ~VoltageSource () = default;
 
     std::size_t get_num_variables () const override {
         return 2;

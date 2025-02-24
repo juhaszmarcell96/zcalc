@@ -14,7 +14,7 @@ int main () {
     lora_filter.add_node ("gnd");
     lora_filter.add_node ("in");
     lora_filter.add_node ("out");
-    lora_filter.add_source ("Us", 1.0, "in", "gnd");
+    lora_filter.add_voltage_source ("Us", 1.0, "in", "gnd");
     lora_filter.add_resistor("R_output", 10e9, "out", "gnd");
     lora_filter.add_capacitor("C1", 4.7e-12, "in", "gnd");
     lora_filter.add_capacitor("C2", 1.2e-12, "in", "out");

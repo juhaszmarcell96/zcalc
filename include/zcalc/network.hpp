@@ -5,7 +5,8 @@
 #include <zcalc/component/resistor.hpp>
 #include <zcalc/component/capacitor.hpp>
 #include <zcalc/component/inductor.hpp>
-#include <zcalc/component/source.hpp>
+#include <zcalc/component/voltage_source.hpp>
+#include <zcalc/component/current_source.hpp>
 
 #include <zcalc/math/complex.hpp>
 
@@ -62,11 +63,19 @@ public:
         return std::nullopt;
     }
 
-    /* add a source to the network */
-    id_t add_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
+    /* add a voltage source to the network */
+    id_t add_voltage_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Source>(voltage, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::VoltageSource>(voltage, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        return id;
+    }
+
+    /* add a current source to the network */
+    id_t add_current_source (const std::string& designator, double current, const std::string& node_0_des, const std::string& node_1_des) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::CurrentSource>(current, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
         return id;
     }
     

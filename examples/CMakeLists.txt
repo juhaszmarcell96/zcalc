@@ -11,6 +11,7 @@ set (
     rc_element
     bandpass
     lc_filter
+    capacitor
 )
 
 include_directories("../include/")

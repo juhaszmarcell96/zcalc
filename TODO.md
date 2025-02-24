@@ -1,0 +1,11 @@
+- superposition (multiple sources -> multiple graphs with only 1 source enabled, others deactivated -> add the results)
+- current source (for now, only voltage source is implemented)
+- composite components
+    - internally consisting of passive elements and nodes
+    - exposes nodes as connections
+    - the goal is it build up to being able to validate e.g. home electrical networks
+        - having e.g. circuit break with a near 0 resistor inside, checking the current of the resistor -> detect shorts
+
+- knwown bugs
+    - sometimes there is a jump in the phase plot -> continuity must be ensured
+    - first decade does not have vertical lines

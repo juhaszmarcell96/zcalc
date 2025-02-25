@@ -61,6 +61,16 @@ public:
     math::Complex own_r () const override {
         return math::Complex { 0.0, 0.0 };
     }
+
+    bool is_source () const override { return false; }
+
+    void eliminate () override {
+        throw std::runtime_error("cannot eliminate an impedance");
+    }
+
+    void reactivate () override {
+        throw std::runtime_error("cannot reactivate an impedance");
+    }
 };
 
 } /* namespace component */

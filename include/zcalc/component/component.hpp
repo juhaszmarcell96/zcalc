@@ -37,6 +37,10 @@ public:
     virtual math::Complex own_r () const = 0;
 
     virtual std::size_t get_num_variables () const = 0;
+
+    virtual bool is_source () const = 0;
+    virtual void eliminate () = 0;
+    virtual void reactivate () = 0;
 };
 
 } /* namespace component */

@@ -95,6 +95,9 @@ private:
             return false;
         }
         else if (rank_A < get_num_variables()) {
+            std::cerr << "rank(A) = " << std::to_string(rank_A) << std::endl;
+            std::cerr << "rank(A|b) = " << std::to_string(rank_Ab) << std::endl;
+            std::cerr << "number of variables = " << std::to_string(get_num_variables()) << std::endl;
             std::cerr << "rank(A) == rank(A|b) < number of variables -> infinite solution" << std::endl;
             return false;
         }

@@ -21,9 +21,8 @@
 namespace zcalc {
 
 struct Result {
-    component::id_t component_id { 0 };
-    math::Complex voltage { 0.0, 0.0 };
-    math::Complex current { 0.0, 0.0 };
+    std::vector<math::Phasor> voltages {};
+    std::vector<math::Phasor> currents {};
 };
 
 class NetworkCalculator {
@@ -162,8 +161,8 @@ public:
             // std::cout << std::endl;
             for (std::size_t i = 0; i < num_variables; i += 2) {
                 auto component_id = i / 2;
-                results[component_id].current += solution[i + equ_current_offset];
-                results[component_id].voltage += solution[i + equ_voltage_offset];
+                results[component_id].currents.push_back(math::Phasor{solution[i + equ_current_offset], frequency});
+                results[component_id].voltages.push_back(math::Phasor{solution[i + equ_voltage_offset], frequency});
             }
             // for (const auto& res : results) {
             //     std::cout << network.get_designator_of_component(res.component_id).value() << " : " << std::endl;

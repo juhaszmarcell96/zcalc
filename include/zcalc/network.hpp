@@ -27,9 +27,6 @@ class Network {
 private:
     std::map<std::string, component::Node> m_nodes;
     std::map<std::string, std::shared_ptr<component::Component>> m_components;
-
-    double m_frequency { 1.0 };
-
 public:
     Network () {}
     ~Network () = default;
@@ -43,6 +40,11 @@ public:
     id_t get_component_id (std::string designator) const {
         if (!m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " does not exists"); }
         return m_components.at(designator)->get_id();
+    }
+
+    std::shared_ptr<component::Component> get_component (std::string designator) {
+        if (!m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " does not exists"); }
+        return m_components.at(designator);
     }
 
     const std::shared_ptr<component::Component> get_component (id_t id) const {
@@ -64,18 +66,18 @@ public:
     }
 
     /* add a voltage source to the network */
-    id_t add_voltage_source (const std::string& designator, double voltage, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_voltage_source (const std::string& designator, double voltage, frequency_t frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::VoltageSource>(voltage, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::VoltageSource>(voltage, frequency, get_node(node_0_des), get_node(node_1_des), id);
         return id;
     }
 
     /* add a current source to the network */
-    id_t add_current_source (const std::string& designator, double current, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_current_source (const std::string& designator, double current, frequency_t frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::CurrentSource>(current, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::CurrentSource>(current, frequency, get_node(node_0_des), get_node(node_1_des), id);
         return id;
     }
     
@@ -99,7 +101,7 @@ public:
     id_t add_inductor (const std::string& designator, double inductance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Inductor>(inductance, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Inductor>(inductance, get_node(node_0_des), get_node(node_1_des), id);
         return id;
     }
 
@@ -107,7 +109,7 @@ public:
     id_t add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Capacitor>(capacitance, m_frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Capacitor>(capacitance, get_node(node_0_des), get_node(node_1_des), id);
         return id;
     }
 
@@ -142,7 +144,6 @@ public:
     }
 
     void print () {
-        std::cout << "frequency : " << m_frequency << std::endl;
         std::cout << "nodes" << std::endl;
         for (const auto& [des, val] : m_nodes) {
             std::cout << "    " << des << " : " << val << std::endl;
@@ -153,12 +154,12 @@ public:
         }
     }
 
-    void set_frequency (double frequency) {
-        m_frequency = frequency;
-        for (const auto& component : m_components) {
-            component.second->set_frequency(frequency);
-        }
-    }
+    // void set_frequency (double frequency) {
+    //     m_frequency = frequency;
+    //     for (const auto& component : m_components) {
+    //         component.second->set_frequency(frequency);
+    //     }
+    // }
 };
 
 } /* namespace zcalc */

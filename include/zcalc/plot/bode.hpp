@@ -28,16 +28,23 @@ public:
         return std::log10(m_max_freq) - std::log10(m_min_freq);
     }
 
-    void plot (Figure* fig_magnitude, Figure* fig_phase, component::id_t component_id) {
+    void plot (Figure* fig_magnitude, Figure* fig_phase, const std::string& input_source, const std::string& output_component) {
         double frequency = m_min_freq;
+        component::id_t output_component_id = m_network.get_component_id(output_component);
+        auto input_source_ptr = m_network.get_component(input_source);
+        if (!input_source_ptr->is_source()) {
+            throw std::invalid_argument("component " + input_source + " must be a source");
+        }
         while (frequency < m_max_freq) {
             try {
-                m_network.set_frequency(frequency);
+                input_source_ptr->set_frequency(frequency); // set the frequency of the input source
                 const auto results = NetworkCalculator::compute(m_network);
                 math::Complex response { 0.0, 0.0 };
-                for (const auto& res : results) {
-                    if (res.component_id == component_id) {
-                        response = res.voltage;
+                for (const auto& voltage : results.at(output_component_id).voltages)
+                {
+                    // response is the voltage accross the output component at the given frequency -> TODO : check for source component ID rather than frequency
+                    if (voltage.get_frequency() == frequency) {
+                        response = voltage.to_complex();
                         break;
                     }
                 }

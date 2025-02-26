@@ -95,7 +95,10 @@ private:
             return false;
         }
         else if (rank_A < get_num_variables()) {
-            std::cerr << "rank(A) == rank(A|b) <  number of variables -> infinite solution" << std::endl;
+            std::cerr << "rank(A) = " << std::to_string(rank_A) << std::endl;
+            std::cerr << "rank(A|b) = " << std::to_string(rank_Ab) << std::endl;
+            std::cerr << "number of variables = " << std::to_string(get_num_variables()) << std::endl;
+            std::cerr << "rank(A) == rank(A|b) < number of variables -> infinite solution" << std::endl;
             return false;
         }
         else { return true; }
@@ -125,6 +128,10 @@ public:
     }
     LinearEquationSystem () = delete;
     ~LinearEquationSystem () = default;
+
+    void clear_equations () {
+        m_linear_equation_system.clear();
+    }
 
     bool append_equation (const LinearEquation<Complex>& equation) {
         if (equation.get_num_variables() != m_num_variables) { return false; }
@@ -168,15 +175,9 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquationSystem& system) {
-        bool first = true;
+        os << "equ\\var";
         for (const auto& label : system.m_labels) {
-            if (first) {
-                os << label;
-                first = false;
-            }
-            else {
-                os << "," << label;
-            }
+            os << "," << label;
         }
         os << std::endl;
         for (std::size_t equ_index = 0; equ_index < system.get_num_equations(); ++equ_index) {

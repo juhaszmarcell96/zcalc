@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include <zcalc/math/complex.hpp>
 
@@ -15,8 +16,9 @@ class LinearEquation {
 private:
     std::vector<T> m_a;
     T m_b;
+    std::string m_label;
 public:
-    LinearEquation (std::size_t num_variables) : m_a(num_variables, T{}), m_b(T{}) { }
+    LinearEquation (std::size_t num_variables, const std::string& label = "") : m_a(num_variables, T{}), m_b(T{}), m_label(label) { }
     LinearEquation () = delete;
     ~LinearEquation () = default;
 
@@ -130,6 +132,7 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquation<T>& equation) {
+        os << equation.m_label << ",";
         for (std::size_t i = 0; i < equation.m_a.size(); ++i) {
             os << equation.m_a[i] << ",";
         }

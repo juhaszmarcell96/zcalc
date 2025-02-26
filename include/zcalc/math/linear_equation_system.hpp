@@ -126,6 +126,10 @@ public:
     LinearEquationSystem () = delete;
     ~LinearEquationSystem () = default;
 
+    void clear_equations () {
+        m_linear_equation_system.clear();
+    }
+
     bool append_equation (const LinearEquation<Complex>& equation) {
         if (equation.get_num_variables() != m_num_variables) { return false; }
         m_linear_equation_system.push_back(equation);

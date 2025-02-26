@@ -34,13 +34,7 @@ public:
             try {
                 m_network.set_frequency(frequency);
                 const auto results = NetworkCalculator::compute(m_network);
-                math::Complex response { 0.0, 0.0 };
-                for (const auto& res : results) {
-                    if (res.component_id == component_id) {
-                        response = res.voltage;
-                        break;
-                    }
-                }
+                math::Complex response = results.at(component_id).voltage;
                 m_magnitude_plot.add_point(std::log10(frequency), 20.0 * std::log10(response.abs()), 1.0, 1.0);
                 m_phase_plot.add_point(std::log10(frequency), 180.0 + response.arg() * 180.0 / pi);
             }

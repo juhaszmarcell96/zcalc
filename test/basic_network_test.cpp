@@ -18,34 +18,12 @@ TEST(BasicNetworkTest, VoltageDivider) {
 
     const auto results = zcalc::NetworkCalculator::compute(test_network);
     ASSERT_EQ(results.size(), 3);
-    bool us_found = false;
-    bool r1_found = false;
-    bool r2_found = false;
-
-    for (const auto& res : results) {
-        if (res.component_id == us_id) {
-            us_found = true;
-            ASSERT_EQ(res.current, zcalc::math::Complex(-0.05, 0.0));
-            ASSERT_EQ(res.voltage, zcalc::math::Complex(1.0, 0.0));
-        }
-        else if (res.component_id == r1_id) {
-            r1_found = true;
-            ASSERT_EQ(res.current, zcalc::math::Complex(0.05, 0.0));
-            ASSERT_EQ(res.voltage, zcalc::math::Complex(0.5, 0.0));
-        }
-        else if (res.component_id == r2_id) {
-            r2_found = true;
-            ASSERT_EQ(res.current, zcalc::math::Complex(0.05, 0.0));
-            ASSERT_EQ(res.voltage, zcalc::math::Complex(0.5, 0.0));
-        }
-        else {
-            ASSERT_TRUE(false);
-        }
-    }
-
-    ASSERT_TRUE(us_found);
-    ASSERT_TRUE(r1_found);
-    ASSERT_TRUE(r2_found);
+    ASSERT_EQ(results.at(us_id).current, zcalc::math::Complex(-0.05, 0.0));
+    ASSERT_EQ(results.at(us_id).voltage, zcalc::math::Complex(1.0, 0.0));
+    ASSERT_EQ(results.at(r1_id).current, zcalc::math::Complex(0.05, 0.0));
+    ASSERT_EQ(results.at(r1_id).voltage, zcalc::math::Complex(0.5, 0.0));
+    ASSERT_EQ(results.at(r2_id).current, zcalc::math::Complex(0.05, 0.0));
+    ASSERT_EQ(results.at(r2_id).voltage, zcalc::math::Complex(0.5, 0.0));
 }
 
 TEST(BasicNetworkTest, VoltageResponse) {
@@ -63,14 +41,7 @@ TEST(BasicNetworkTest, VoltageResponse) {
     const auto osci_id = network.add_resistor("osci", 10e9, "out", "gnd");
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    bool osci_found = false;
-    for (const auto& res : results) {
-        if (res.component_id == osci_id) {
-            osci_found = true;
-            ASSERT_EQ(res.voltage, zcalc::math::Complex(1.53888, 7.69266));
-        }
-    }
-    ASSERT_TRUE(osci_found);
+    ASSERT_EQ(results.at(osci_id).voltage, zcalc::math::Complex(1.53888, 7.69266));
 }
 
 TEST(BasicNetworkTest, VoltageAndCurrentResponse) {
@@ -103,22 +74,6 @@ TEST(BasicNetworkTest, VoltageAndCurrentResponse) {
     const auto c_id = network.add_capacitor("C", 120.0e-9, "out", "gnd"); // 120nF
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    bool c_found = false;
-    bool r_found = false;
-    for (const auto& res : results) {
-        if (res.component_id == c_id) {
-            c_found = true;
-            //res.voltage.set_print_format(zcalc::math::Complex::print_format::euler_deg);
-            //std::cout << res.voltage << std::endl;
-            ASSERT_EQ(res.voltage, zcalc::math::Complex(0.830672, -2.89235));
-        }
-        else if (res.component_id == r_id) {
-            r_found = true;
-            //res.current.set_print_format(zcalc::math::Complex::print_format::euler_deg);
-            //std::cout << res.current << std::endl;
-            ASSERT_EQ(res.current, zcalc::math::Complex(0.0122884, -0.00168902));
-        }
-    }
-    ASSERT_TRUE(c_found);
-    ASSERT_TRUE(r_found);
+    ASSERT_EQ(results.at(c_id).voltage, zcalc::math::Complex(0.830672, -2.89235));
+    ASSERT_EQ(results.at(r_id).current, zcalc::math::Complex(0.0122884, -0.00168902));
 }

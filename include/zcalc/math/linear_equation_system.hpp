@@ -95,7 +95,7 @@ private:
             return false;
         }
         else if (rank_A < get_num_variables()) {
-            std::cerr << "rank(A) == rank(A|b) <  number of variables -> infinite solution" << std::endl;
+            std::cerr << "rank(A) == rank(A|b) < number of variables -> infinite solution" << std::endl;
             return false;
         }
         else { return true; }
@@ -172,15 +172,9 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquationSystem& system) {
-        bool first = true;
+        os << "equ\\var";
         for (const auto& label : system.m_labels) {
-            if (first) {
-                os << label;
-                first = false;
-            }
-            else {
-                os << "," << label;
-            }
+            os << "," << label;
         }
         os << std::endl;
         for (std::size_t equ_index = 0; equ_index < system.get_num_equations(); ++equ_index) {

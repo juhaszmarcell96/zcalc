@@ -87,7 +87,7 @@ public:
             // derive the equations
             // Kirchhoff's current law -> one equation per node
             for (graph::Vertex v = 0; v < g.get_vertices(); ++v) {
-                math::LinearEquation<math::Complex> equ { num_variables };
+                math::LinearEquation<math::Complex> equ { num_variables, std::string{"kcl_"} + std::to_string(v) };
                 for (const auto& e : g.get_edges()) {
                     const auto& component = *(e.weight);
                     equ.set_result(math::Complex{0.0, 0.0});
@@ -99,7 +99,7 @@ public:
             // Kirchhoff's voltage law -> one equation per loop
             const auto cycles = g.find_cycles();
             for (const auto& c : cycles) {
-                math::LinearEquation<math::Complex> equ { num_variables };
+                math::LinearEquation<math::Complex> equ { num_variables, "kvl" };
                 const auto& edges = c.get_edges();
                 graph::Vertex last_v = 0;
                 for (std::size_t i = 0; i < edges.size(); ++i) {
@@ -138,8 +138,8 @@ public:
             }
             // equation for every component -> one equation per component
             for (const auto& e : g.get_edges()) {
-                math::LinearEquation<math::Complex> equ { num_variables };
                 const auto& component = *(e.weight);
+                math::LinearEquation<math::Complex> equ { num_variables, std::string{"own_"} + std::to_string(component.get_id()) };
                 equ.set_result(component.own_r());
                 equ[2 * component.get_id() + equ_current_offset] = component.own_i();
                 equ[2 * component.get_id() + equ_voltage_offset] = component.own_u();

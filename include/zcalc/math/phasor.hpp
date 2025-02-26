@@ -15,6 +15,7 @@ private:
 public:
     Phasor () = delete;
     Phasor(magnitude_t magnitude, phase_t phase, frequency_t frequency) : m_magnitude(magnitude), m_phase(phase), m_frequency(frequency) {}
+    Phasor(Complex value, frequency_t frequency) : m_magnitude(value.abs()), m_phase(value.arg()), m_frequency(frequency) {}
     ~Phasor () = default;
 
     magnitude_t get_magnitude () const { return m_magnitude; }

@@ -11,6 +11,6 @@ add_executable (
     linear_equation_test.cpp
     linear_equation_system_test.cpp
     graph_test.cpp
-    basic_network_test.cpp
+    network_calculator_test.cpp
 )
 target_link_libraries (tests ${GTEST_LIBRARIES} pthread)

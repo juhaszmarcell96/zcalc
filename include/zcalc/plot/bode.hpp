@@ -39,7 +39,15 @@ public:
             try {
                 input_source_ptr->set_frequency(frequency); // set the frequency of the input source
                 const auto results = NetworkCalculator::compute(m_network);
-                math::Complex response = results.at(output_component_id).voltage; // response is the voltage accross the output component
+                math::Complex response { 0.0, 0.0 };
+                for (const auto& voltage : results.at(output_component_id).voltages)
+                {
+                    // response is the voltage accross the output component at the given frequency -> TODO : check for source component ID rather than frequency
+                    if (voltage.get_frequency() == frequency) {
+                        response = voltage.to_complex();
+                        break;
+                    }
+                }
                 m_magnitude_plot.add_point(std::log10(frequency), 20.0 * std::log10(response.abs()), 1.0, 1.0);
                 m_phase_plot.add_point(std::log10(frequency), 180.0 + response.arg() * 180.0 / pi);
             }

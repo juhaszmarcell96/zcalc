@@ -23,6 +23,7 @@ public:
     virtual ~Component() = default;
 
     virtual void set_frequency (frequency_t frequency) = 0;
+    virtual frequency_t get_frequency () const = 0;
 
     id_t get_id () const { return m_id; }
 

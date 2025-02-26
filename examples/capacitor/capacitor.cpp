@@ -16,7 +16,7 @@ int main () {
     capacitor.add_node ("A");
     capacitor.add_node ("B");
 
-    capacitor.add_current_source ("Is", 1.0, "in", "gnd");
+    capacitor.add_current_source ("Is", 1.0, 0.0, "in", "gnd");
 
     capacitor.add_capacitor("C", 100.0e-9, "in", "A"); // 100nF
     capacitor.add_resistor("R_esr", 0.01, "A", "B"); // 10mohm
@@ -25,7 +25,7 @@ int main () {
     capacitor.add_resistor("R_output", 10e9, "in", "gnd");
 
     zcalc::Plotter plotter {};
-    plotter.plot("capacitor", capacitor, capacitor.get_component_id("R_output"));
+    plotter.plot("capacitor", capacitor, "Is", "R_output");
 
     return 0;
 }

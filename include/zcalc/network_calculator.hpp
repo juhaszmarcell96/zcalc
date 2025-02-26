@@ -74,6 +74,15 @@ public:
         // go over the sources, reactivate them one by one, add the result at the end -> supoerposition
         for (auto source : sources) {
             source->reactivate(); // reactive this single source
+            // set the frequency of the network
+            frequency_t frequency = source->get_frequency();
+            for (auto& e : g.get_edges()) {
+                auto& component = *(e.weight);
+                if (!component.is_source()) {
+                    component.set_frequency(frequency);
+                }
+            }
+            // clear the equations of the linear equation system (leave the labels)
             lin_equ_system.clear_equations();
             // derive the equations
             // Kirchhoff's current law -> one equation per node

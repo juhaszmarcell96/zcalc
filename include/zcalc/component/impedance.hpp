@@ -12,7 +12,9 @@ namespace component {
 
 class Impedance : public Component {
 protected:
-    math::Complex m_value;
+    math::Complex m_value { 0.0, 0.0 };
+    bool m_short { false };
+    bool m_open { false };
 public:
     Impedance () = delete;
     Impedance (math::Complex value, Node node_0, Node node_1, id_t id) : Component(id), m_value(value) {
@@ -39,26 +41,36 @@ public:
         return 2;
     }
 
+    frequency_t get_frequency () const override {
+        throw std::runtime_error("why do you want the frequency of an impedance?");
+    }
+
     math::Complex kcl (Node node) const override {
+        if (m_open) { return math::Complex { 0.0, 0.0 }; } // open circuit -> no current
         if (m_gates[0] == node) { return math::Complex { -1.0, 0.0 }; }
         else if (m_gates[1] == node) { return math::Complex { 1.0, 0.0 }; }
         else { return math::Complex { 0.0, 0.0 }; }
     }
 
     math::Complex kvl (Node node) const override {
+        if (m_short) { return math::Complex{ 0.0, 0.0 }; } // short circuit -> no voltage
         if (m_gates[0] == node) { return math::Complex { 1.0, 0.0 }; }
         else if (m_gates[1] == node) { return math::Complex { -1.0, 0.0 }; }
         else { return math::Complex { 0.0, 0.0 }; }
     }
 
     // U = Z * I -> 1 * U - Z * I = 0
+    // open or short -> no own equation -> 0 + 0 = 0
     math::Complex own_i () const override {
+        if (m_open || m_short) { return math::Complex{ 0.0, 0.0 }; }
         return m_value * math::Complex{ -1.0, 0.0 };
     }
     math::Complex own_u () const override {
+        if (m_open || m_short) { return math::Complex{ 0.0, 0.0 }; }
         return math::Complex { 1.0, 0.0 };
     }
     math::Complex own_r () const override {
+        if (m_open || m_short) { return math::Complex{ 0.0, 0.0 }; }
         return math::Complex { 0.0, 0.0 };
     }
 

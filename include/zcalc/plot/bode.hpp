@@ -28,13 +28,18 @@ public:
         return std::log10(m_max_freq) - std::log10(m_min_freq);
     }
 
-    void plot (Figure* fig_magnitude, Figure* fig_phase, component::id_t component_id) {
+    void plot (Figure* fig_magnitude, Figure* fig_phase, const std::string& input_source, const std::string& output_component) {
         double frequency = m_min_freq;
+        component::id_t output_component_id = m_network.get_component_id(output_component);
+        auto input_source_ptr = m_network.get_component(input_source);
+        if (!input_source_ptr->is_source()) {
+            throw std::invalid_argument("component " + input_source + " must be a source");
+        }
         while (frequency < m_max_freq) {
             try {
-                m_network.set_frequency(frequency);
+                input_source_ptr->set_frequency(frequency); // set the frequency of the input source
                 const auto results = NetworkCalculator::compute(m_network);
-                math::Complex response = results.at(component_id).voltage;
+                math::Complex response = results.at(output_component_id).voltage; // response is the voltage accross the output component
                 m_magnitude_plot.add_point(std::log10(frequency), 20.0 * std::log10(response.abs()), 1.0, 1.0);
                 m_phase_plot.add_point(std::log10(frequency), 180.0 + response.arg() * 180.0 / pi);
             }

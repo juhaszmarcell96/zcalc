@@ -66,6 +66,10 @@ public:
         m_voltage.set_frequency(frequency);
     }
 
+    frequency_t get_frequency () const override {
+        return m_voltage.get_frequency();
+    }
+
     bool is_source () const override { return true; }
 
     void eliminate () override { m_eliminated = true; }

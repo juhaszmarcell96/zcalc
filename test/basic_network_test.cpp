@@ -12,7 +12,7 @@ TEST(BasicNetworkTest, VoltageDivider) {
     test_network.add_node ("gnd");
     test_network.add_node ("in");
     test_network.add_node ("out");
-    const auto us_id = test_network.add_voltage_source ("Us", 1.0, "in", "gnd");
+    const auto us_id = test_network.add_voltage_source ("Us", 1.0, 0.0, "in", "gnd");
     const auto r1_id = test_network.add_resistor("R1", 10, "in", "out");
     const auto r2_id = test_network.add_resistor("R2", 10, "out", "gnd");
 
@@ -28,12 +28,11 @@ TEST(BasicNetworkTest, VoltageDivider) {
 
 TEST(BasicNetworkTest, VoltageResponse) {
     zcalc::Network network {};
-    network.set_frequency(795.8); // 5krad/s (5/(2pi))
     network.add_node ("gnd");
     network.add_node ("in");
     network.add_node ("out");
     network.add_node ("A");
-    const auto us_id = network.add_voltage_source ("Us", 10.0, "in", "gnd"); // 10V
+    const auto us_id = network.add_voltage_source ("Us", 10.0, 795.8, "in", "gnd"); // 10V, 5krad/s (5/(2pi))
     const auto c1_id = network.add_capacitor("C1", 2.0e-6, "in", "out"); // 2uF
     const auto c2_id = network.add_capacitor("C2", 1.0e-6, "out", "gnd"); // 1uF
     const auto r_id = network.add_resistor("R", 40, "out", "A"); // 40ohm
@@ -59,13 +58,12 @@ TEST(BasicNetworkTest, VoltageAndCurrentResponse) {
     //     └───────────────────────────────o──────────────o─────────┘
     //
     zcalc::Network network {};
-    network.set_frequency(5000); // 5kHz
     network.add_node ("gnd");
     network.add_node ("in");
     network.add_node ("out");
     network.add_node ("A");
     network.add_node ("B");
-    network.add_voltage_source ("Us", 24.0, "in", "gnd"); // 24V
+    network.add_voltage_source ("Us", 24.0, 5000.0, "in", "gnd"); // 24V, 5kHz
     network.add_resistor("R1", 500, "in", "A"); // 500ohm
     network.add_inductor("L", 10.0e-3, "A", "B"); // 10mH
     network.add_resistor("R2", 1000, "B", "gnd"); // 1kohm

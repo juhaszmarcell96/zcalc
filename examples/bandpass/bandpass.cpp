@@ -15,7 +15,7 @@ int main () {
     bandpass.add_node ("gnd");
     bandpass.add_node ("in");
     bandpass.add_node ("out");
-    bandpass.add_voltage_source ("Us", 1.0, "in", "gnd");
+    bandpass.add_voltage_source ("Us", 1.0, 0.0, "in", "gnd");
     bandpass.add_resistor("R_output", 10e9, "out", "gnd");
     bandpass.add_capacitor("C1", 15e-9, "in", "A");
     bandpass.add_resistor("R1", 10e3, "A", "gnd");
@@ -23,7 +23,7 @@ int main () {
     bandpass.add_capacitor("C2", 560.0e-12, "out", "gnd");
 
     zcalc::Plotter plotter {};
-    plotter.plot("bandpass", bandpass, bandpass.get_component_id("R_output"));
+    plotter.plot("bandpass", bandpass, "Us", "R_output");
 
     return 0;
 }

@@ -7,7 +7,7 @@
 #include <zcalc/component/inductor.hpp>
 #include <zcalc/network_calculator.hpp>
 
-TEST(BasicNetworkTest, VoltageDivider) {
+TEST(NetworkCalculatorTest, VoltageDivider) {
     zcalc::Network test_network {};
     test_network.add_node ("gnd");
     test_network.add_node ("in");
@@ -26,7 +26,7 @@ TEST(BasicNetworkTest, VoltageDivider) {
     ASSERT_EQ(results.at(r2_id).voltage, zcalc::math::Complex(0.5, 0.0));
 }
 
-TEST(BasicNetworkTest, VoltageResponse) {
+TEST(NetworkCalculatorTest, VoltageResponse) {
     zcalc::Network network {};
     network.add_node ("gnd");
     network.add_node ("in");
@@ -43,7 +43,7 @@ TEST(BasicNetworkTest, VoltageResponse) {
     ASSERT_EQ(results.at(osci_id).voltage, zcalc::math::Complex(1.53888, 7.69266));
 }
 
-TEST(BasicNetworkTest, VoltageAndCurrentResponse) {
+TEST(NetworkCalculatorTest, VoltageAndCurrentResponse) {
     //
     //      in     ┌──────┐   A  ┌┐┌┐┌┐    B     ┌──────┐    out
     //     ┌───────┤  R1  ├──────┘└┘└┘└────o─────┤  R3  ├──────┐

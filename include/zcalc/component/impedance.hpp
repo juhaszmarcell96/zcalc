@@ -60,17 +60,19 @@ public:
     }
 
     // U = Z * I -> 1 * U - Z * I = 0
-    // open or short -> no own equation -> 0 + 0 = 0
+    // open -> 1 * I = 0
+    // short -> 1 * U = 0
     math::Complex own_i () const override {
-        if (m_open || m_short) { return math::Complex{ 0.0, 0.0 }; }
+        if (m_open) { return math::Complex{ 1.0, 0.0 }; }
+        if (m_short) { return math::Complex{ 0.0, 0.0 }; }
         return m_value * math::Complex{ -1.0, 0.0 };
     }
     math::Complex own_u () const override {
-        if (m_open || m_short) { return math::Complex{ 0.0, 0.0 }; }
+        if (m_open) { return math::Complex{ 0.0, 0.0 }; }
+        if (m_short) { return math::Complex{ 1.0, 0.0 }; }
         return math::Complex { 1.0, 0.0 };
     }
     math::Complex own_r () const override {
-        if (m_open || m_short) { return math::Complex{ 0.0, 0.0 }; }
         return math::Complex { 0.0, 0.0 };
     }
 

@@ -48,13 +48,13 @@ public:
     }
 
     // 0*I + 1*U = m_voltage
-    // eliminated -> 0 + 0 = 0
+    // eliminated -> 0*I + 1*U = 0
     math::Complex own_i () const override {
         if (m_eliminated) { return math::Complex{ 0.0, 0.0 }; }
         return math::Complex{ 0.0, 0.0 };
     }
     math::Complex own_u () const override {
-        if (m_eliminated) { return math::Complex{ 0.0, 0.0 }; }
+        if (m_eliminated) { return math::Complex{ 1.0, 0.0 }; }
         return math::Complex { 1.0, 0.0 };
     }
     math::Complex own_r () const override {

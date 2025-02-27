@@ -24,7 +24,17 @@ public:
         m_e.clear();
     }
 
-    bool fits (const Edge<T>& e) {
+    bool is_cycle () const {
+        if (m_e.empty()) { return false; }
+        return m_e.back().get_v1() == m_start;
+    }
+
+    Vertex get_end () const {
+        if (m_e.empty()) { return m_start; }
+        return m_e.back().get_v1();
+    }
+
+    bool fits (const Edge<T>& e) const {
         Vertex start;
         if (m_e.empty()) { start = m_start; }
         else { start = m_e.back().get_v1(); }

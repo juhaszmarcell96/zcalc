@@ -35,6 +35,16 @@ public:
     void traverse () const { m_traversed = true; }
     bool was_traversed () const { return m_traversed; }
     void reset () const { m_traversed = false; }
+
+    bool can_start_at (Vertex v) const {
+        if (v == m_v0) {
+            return (m_direction == edge_direction::bidirectional) || (m_direction == edge_direction::forward);
+        }
+        if (v == m_v1) {
+            return (m_direction == edge_direction::bidirectional) || (m_direction == edge_direction::reverse);
+        }
+        return false;
+    }
     
     void flip () {
         std::swap(m_v0, m_v1);

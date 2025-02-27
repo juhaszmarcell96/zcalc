@@ -38,13 +38,13 @@ public:
         Vertex start;
         if (m_e.empty()) { start = m_start; }
         else { start = m_e.back().get_v1(); }
-
-        if (e.get_v0() == start) { return true; }
-        else if (e.get_v1() == start) { return true; }
-        return false;
+        return e.can_start_at(start);
     }
 
     void push_back (const Edge<T>& e) {
+        if (!fits(e)) {
+            throw std::invalid_argument("edge does not start where it should");
+        }
         Vertex start;
         if (m_e.empty()) { start = m_start; }
         else { start = m_e.back().get_v1(); }
@@ -52,13 +52,10 @@ public:
         if (e.get_v0() == start) {
             m_e.push_back(e);
         }
-        else if (e.get_v1() == start) {
+        else {
             Edge<T> new_e = e;
             new_e.flip();
             m_e.push_back(std::move(new_e));
-        }
-        else {
-            throw std::invalid_argument("edge does not start where it should");
         }
     }
 

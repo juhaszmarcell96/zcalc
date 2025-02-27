@@ -78,7 +78,6 @@ public:
         for (const auto e : p.m_e) {
             os << *e << " ";
         }
-        os << p.m_v.back();
         return os;
     }
 };

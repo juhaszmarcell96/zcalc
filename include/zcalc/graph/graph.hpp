@@ -99,15 +99,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Graph& g) {
         os << "number of vertices : " << g.m_v << std::endl;
         for (const auto& e : g.m_e) {
-            if (e.direction == edge_direction::bidirectional) {
-                os << e.v0 << " --(" << e.weight << ")-- " << e.v1 << std::endl;
-            }
-            else if (e.direction == edge_direction::forward) {
-                os << e.v0 << " --(" << e.weight << ")-> " << e.v1 << std::endl;
-            }
-            else { // reverse
-                os << e.v0 << " <-(" << e.weight << ")-- " << e.v1 << std::endl;
-            }
+            os << e << std::endl;
         }
         return os;
     }

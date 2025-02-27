@@ -39,15 +39,15 @@ public:
         std::vector<std::shared_ptr<zcalc::component::Component>> sources;
         // collect the sources and eliminate all of them
         for (auto& e : g.get_edges()) {
-            if (e.weight->is_source()) {
-                e.weight->eliminate();
-                sources.push_back(e.weight);
+            if (e.get_weight()->is_source()) {
+                e.get_weight()->eliminate();
+                sources.push_back(e.get_weight());
             }
         }
         // count the number of variables
         std::size_t num_variables { 0 };
         for (const auto& e : g.get_edges()) {
-            num_variables += e.weight->get_num_variables();
+            num_variables += e.get_weight()->get_num_variables();
         }
         if ((num_variables % 2) != 0) {
             throw std::runtime_error("cannot deal with an odd number of variables");
@@ -55,14 +55,14 @@ public:
         // define the results
         std::map<component::id_t, Result> results {};
         for (auto& e : g.get_edges()) {
-            auto& component = *(e.weight);
+            auto& component = *(e.get_weight());
             results[component.get_id()] = Result {};
         }
         // set up the linear equation system
         math::LinearEquationSystem lin_equ_system { num_variables };
         if (log_enabled) {
             for (const auto& e : g.get_edges()) {
-                const auto& component = *(e.weight);
+                const auto& component = *(e.get_weight());
                 auto component_id = component.get_id();
                 const auto designator = network.get_designator_of_component(component_id).value();
                 lin_equ_system.set_label(std::string{"I_"} + designator, 2 * component_id + equ_current_offset);
@@ -76,7 +76,7 @@ public:
             // set the frequency of the network
             frequency_t frequency = source->get_frequency();
             for (auto& e : g.get_edges()) {
-                auto& component = *(e.weight);
+                auto& component = *(e.get_weight());
                 if (!component.is_source()) {
                     component.set_frequency(frequency);
                 }
@@ -88,7 +88,7 @@ public:
             for (graph::Vertex v = 0; v < g.get_vertices(); ++v) {
                 math::LinearEquation<math::Complex> equ { num_variables, std::string{"kcl_"} + std::to_string(v) };
                 for (const auto& e : g.get_edges()) {
-                    const auto& component = *(e.weight);
+                    const auto& component = *(e.get_weight());
                     equ.set_result(math::Complex{0.0, 0.0});
                     equ[2 * component.get_id() + equ_current_offset] = component.kcl(v); // TODO : cast?
                     equ[2 * component.get_id() + equ_voltage_offset] = math::Complex{0.0, 0.0};
@@ -103,30 +103,30 @@ public:
                 graph::Vertex last_v = 0;
                 for (std::size_t i = 0; i < edges.size(); ++i) {
                     const auto& e = edges[i];
-                    if (i == 0) { last_v = e->v0; } // initialize it to something meaningful in case of a 1 edge loop
-                    const auto& component = *(e->weight);
+                    if (i == 0) { last_v = e.get_v0(); } // initialize it to something meaningful in case of a 1 edge loop
+                    const auto& component = *(e.get_weight());
                     equ.set_result(math::Complex{0.0, 0.0});
                     equ[2 * component.get_id() + equ_current_offset] = math::Complex{0.0, 0.0};
                     if (i < edges.size() - 1) {
                         const auto& next_e = edges[i + 1];
-                        if ((e->v0 == next_e->v0) || (e->v0 == next_e->v1)) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->v1); // TODO : cast?
-                            last_v = e->v0;
+                        if ((e.get_v0() == next_e.get_v0()) || (e.get_v0() == next_e.get_v1())) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v1()); // TODO : cast?
+                            last_v = e.get_v0();
                         }
-                        else if ((e->v1 == next_e->v0) || (e->v1 == next_e->v1)) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->v0); // TODO : cast?
-                            last_v = e->v1;
+                        else if ((e.get_v1() == next_e.get_v0()) || (e.get_v1() == next_e.get_v1())) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v0()); // TODO : cast?
+                            last_v = e.get_v1();
                         }
                         else {
                             throw std::runtime_error("unexpected edge in the cycle");
                         }
                     }
                     else {
-                        if (e->v0 == last_v) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->v0); // TODO : cast?
+                        if (e.get_v0() == last_v) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v0()); // TODO : cast?
                         }
-                        else if (e->v1 == last_v) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->v1); // TODO : cast?
+                        else if (e.get_v1() == last_v) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v1()); // TODO : cast?
                         }
                         else {
                             throw std::runtime_error("unexpected edge in the cycle");
@@ -137,7 +137,7 @@ public:
             }
             // equation for every component -> one equation per component
             for (const auto& e : g.get_edges()) {
-                const auto& component = *(e.weight);
+                const auto& component = *(e.get_weight());
                 math::LinearEquation<math::Complex> equ { num_variables, std::string{"own_"} + std::to_string(component.get_id()) };
                 equ.set_result(component.own_r());
                 equ[2 * component.get_id() + equ_current_offset] = component.own_i();

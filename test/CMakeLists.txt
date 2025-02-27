@@ -10,6 +10,8 @@ add_executable (
     matrix_test.cpp
     linear_equation_test.cpp
     linear_equation_system_test.cpp
+    edge_test.cpp
+    path_test.cpp
     graph_test.cpp
     network_calculator_test.cpp
 )

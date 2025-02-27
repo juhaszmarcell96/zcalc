@@ -2,6 +2,7 @@
 
 #include "zcalc/graph/vertex.hpp"
 #include "zcalc/graph/edge.hpp"
+#include "zcalc/graph/path.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -17,57 +18,34 @@ private:
     Vertex m_v { 0 };
     std::vector<Edge<T>> m_e;
 
-    void dfs (Vertex node, Vertex start, std::vector<bool>& visited, Path<T>& path, std::vector<Path<T>>& cycles) const {
+    void dfs (Vertex node, std::vector<bool>& visited, Path<T>& path, std::vector<Path<T>>& cycles) const {
         visited[node] = true;
-        path.push_back_v(node);
 
         for (const auto& edge : m_e) {
-            if (edge.traversed) { continue; }
-            edge.traversed = true;
-            path.push_back_e(&edge);
-            if ((edge.v0 == node) && ((edge.direction == edge_direction::forward) || (edge.direction == edge_direction::bidirectional))) {
-                if (edge.v1 == start) { // Cycle detected
-                    path.push_back_v(start);
-                    bool found = false;
-                    for (const auto& p : cycles) {
-                        if (p == path) {
-                            found = true;
-                            break;
-                        }
+            if (edge.was_traversed()) { continue; }
+            if (!path.fits(edge)) { continue; }
+            edge.traverse();
+            path.push_back(edge);
+            if (path.is_cycle()) {
+                // push every cycle only once
+                bool found = false;
+                for (const auto& p : cycles) {
+                    if (p == path) {
+                        found = true;
+                        break;
                     }
-                    if (!found) {
-                        cycles.push_back(path);
-                    }
-                    path.pop_back_v();
                 }
-                else if (!visited[edge.v1]) {
-                    dfs(edge.v1, start, visited, path, cycles);
+                if (!found) {
+                    cycles.push_back(path);
                 }
             }
-            else if ((edge.v1 == node) && ((edge.direction == edge_direction::reverse) || (edge.direction == edge_direction::bidirectional))) {
-                if (edge.v0 == start) { // Cycle detected
-                    path.push_back_v(start);
-                    bool found = false;
-                    for (const auto& p : cycles) {
-                        if (p == path) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        cycles.push_back(path);
-                    }
-                    path.pop_back_v();
-                }
-                else if (!visited[edge.v0]) {
-                    dfs(edge.v0, start, visited, path, cycles);
-                }
+            else if (!visited[path.get_end()]) {
+                dfs(path.get_end(), visited, path, cycles);
             }
-            path.pop_back_e();
-            edge.traversed = false;
+            path.pop_back();
+            edge.reset();
         }
         
-        path.pop_back_v();
         visited[node] = false;
     }
 
@@ -85,12 +63,11 @@ public:
 
     std::vector<Path<T>> find_cycles () const {
         std::vector<bool> visited ( m_v, false );
-        Path<T> path;
         std::vector<Path<T>> cycles;
         for (Vertex i = 0; i < m_v; ++i) {
+            Path<T> path { i };
             std::fill(visited.begin(), visited.end(), false);
-            path.clear();
-            dfs(i, i, visited, path, cycles);
+            dfs(i, visited, path, cycles);
         }
         return cycles;
     }
@@ -98,15 +75,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Graph& g) {
         os << "number of vertices : " << g.m_v << std::endl;
         for (const auto& e : g.m_e) {
-            if (e.direction == edge_direction::bidirectional) {
-                os << e.v0 << " --(" << e.weight << ")-- " << e.v1 << std::endl;
-            }
-            else if (e.direction == edge_direction::forward) {
-                os << e.v0 << " --(" << e.weight << ")-> " << e.v1 << std::endl;
-            }
-            else { // reverse
-                os << e.v0 << " <-(" << e.weight << ")-- " << e.v1 << std::endl;
-            }
+            os << e << std::endl;
         }
         return os;
     }

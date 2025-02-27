@@ -159,7 +159,6 @@ public:
         equation_system.back_substitution();
         if (!equation_system.is_solvable()) {
             std::cerr << "equation system is not solvable" << std::endl;
-            std::cout << equation_system << std::endl;
             return false;
         }
         solution = std::vector<Complex>(get_num_variables());

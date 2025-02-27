@@ -11,6 +11,8 @@ TEST(GraphTest, UndirectedGraphTest) {
     g.add_edge(3, 4, 1.0f);
     g.add_edge(4, 2, 1.0f);
 
+    std::cerr << g << std::endl;
+
     std::cerr << "Cycles in the graph:\n";
     auto cycles = g.find_cycles();
     for (const auto &cycle : cycles) {
@@ -38,6 +40,8 @@ TEST(GraphTest, DirectedGraphTest) {
     g.add_edge(2, 0, 1.0f, zcalc::graph::edge_direction::forward);
     g.add_edge(2, 3, 1.0f, zcalc::graph::edge_direction::bidirectional);
     g.add_edge(3, 1, 1.0f, zcalc::graph::edge_direction::reverse);
+
+    std::cerr << g << std::endl;
 
     std::cerr << "Cycles in the graph:\n";
     auto cycles = g.find_cycles();

@@ -1,11 +1,8 @@
 #pragma once
 
-#include "zcalc/graph/vertex.hpp"
-
-#include <cstdint>
-#include <vector>
 #include <algorithm>
-#include <stdexcept>
+
+#include "zcalc/graph/vertex.hpp"
 
 namespace zcalc {
 namespace graph {
@@ -17,103 +14,77 @@ enum class edge_direction {
 };
 
 template<typename T>
-struct Edge {
-    Vertex v0 { 0 };
-    Vertex v1 { 0 };
-    edge_direction direction { edge_direction::bidirectional };
-    T weight;
-    mutable bool traversed { false };
-
+class Edge {
+private:
+    Vertex m_v0 { 0 };
+    Vertex m_v1 { 0 };
+    edge_direction m_direction { edge_direction::bidirectional };
+    T m_weight;
+    mutable bool m_traversed { false };
+public:
     Edge () = default;
     Edge (Vertex u0, Vertex u1, T w, edge_direction dir = edge_direction::bidirectional) :
-        v0(u0), v1(u1), direction(dir), weight(w) {};
-};
+        m_v0(u0), m_v1(u1), m_direction(dir), m_weight(w) {};
+    ~Edge () = default;
 
-// TODO : redundant storage, vertices are contained in the edge structures
-template<typename T>
-class Path {
-private:
-    std::vector<Vertex> m_v;
-    std::vector<const Edge<T>*> m_e;
-public:
-    Path () = default;
-    ~Path () = default;
+    Vertex get_v0 () const { return m_v0; }
+    Vertex get_v1 () const { return m_v1; }
+    edge_direction get_direction () const { return m_direction; }
+    T get_weight () const { return m_weight; }
 
-    void clear () {
-        m_v.clear();
-        m_e.clear();
-    }
+    void traverse () const { m_traversed = true; }
+    bool was_traversed () const { return m_traversed; }
+    void reset () const { m_traversed = false; }
 
-    void push_back_v (Vertex v) {
-        if (m_v.size() != m_e.size()) { throw std::invalid_argument("unexpected vertex"); }
-        m_v.push_back(v);
-    }
-
-    void push_back_e (const Edge<T>* e) {
-        if (m_v.size() <= m_e.size()) { throw std::invalid_argument("unexpected edge"); }
-        if (!e) { throw std::invalid_argument("edge cannot be null"); }
-        m_e.push_back(e);
-    }
-
-    void pop_back_v () {
-        if (!m_v.empty()) {
-            m_v.pop_back();
+    bool can_start_at (Vertex v) const {
+        if (v == m_v0) {
+            return (m_direction == edge_direction::bidirectional) || (m_direction == edge_direction::forward);
         }
-    }
-
-    void pop_back_e () {
-        if (!m_e.empty()) {
-            m_e.pop_back();
+        if (v == m_v1) {
+            return (m_direction == edge_direction::bidirectional) || (m_direction == edge_direction::reverse);
         }
+        return false;
+    }
+    
+    void flip () {
+        std::swap(m_v0, m_v1);
+        if (m_direction == edge_direction::forward) { m_direction = edge_direction::reverse; }
+        else if (m_direction == edge_direction::reverse) { m_direction = edge_direction::forward; }
     }
 
-    const std::vector<const Edge<T>*>& get_edges () const { return m_e; }
-
-    friend bool operator==(const Path<T>& p1, const Path<T>& p2) {
-        if (p1.m_v.size() != p2.m_v.size()) { return false; }
-        if (p1.m_e.size() != p2.m_e.size()) { return false; }
-        for (const auto v : p1.m_v) {
-            if (std::find(p2.m_v.begin(), p2.m_v.end(), v) == p2.m_v.end()) {
-                return false;
+    friend bool operator==(const Edge<T>& e1, const Edge<T>& e2) {
+        if (e1.m_weight != e2.m_weight) { return false; }
+        if (e1.m_v0 == e2.m_v0) {
+            if (e1.m_v1 != e2.m_v1) { return false; }
+            if (e1.m_direction != e2.m_direction) { return false; }
+            return true;
+        }
+        else if (e1.m_v0 == e2.m_v1) {
+            if (e1.m_v1 != e2.m_v0) { return false; }
+            if (e1.m_direction == edge_direction::bidirectional) {
+                if (e2.m_direction != edge_direction::bidirectional) { return false; }
             }
-        }
-        for (const auto e : p1.m_e) {
-            if (std::find(p2.m_e.begin(), p2.m_e.end(), e) == p2.m_e.end()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const Path<T>& p) {
-        for (std::size_t i = 0; i < p.m_e.size(); ++i) {
-            Vertex v = p.m_v[i];
-            const auto& e = *(p.m_e[i]);
-            os << v;
-            if (e.v0 == v) {
-                if (e.direction == edge_direction::bidirectional) {
-                    os << " --(" << e.weight << ")-- ";
-                }
-                else if (e.direction == edge_direction::forward) {
-                    os << " --(" << e.weight << ")-> ";
-                }
-                else { // reverse
-                    os << " <-(" << e.weight << ")-- ";
-                }
+            else if (e1.m_direction == edge_direction::forward) {
+                if (e2.m_direction != edge_direction::reverse) { return false; }
             }
             else {
-                if (e.direction == edge_direction::bidirectional) {
-                    os << " --(" << e.weight << ")-- ";
-                }
-                else if (e.direction == edge_direction::forward) {
-                    os << " <-(" << e.weight << ")-- ";
-                }
-                else { // reverse
-                    os << " --(" << e.weight << ")-> ";
-                }
+                if (e2.m_direction != edge_direction::forward) { return false; }
             }
+            return true;
         }
-        os << p.m_v.back();
+        return false;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Edge<T>& e) {
+        if (e.m_direction == edge_direction::bidirectional) {
+            os << e.m_v0 << " --(" << e.m_weight << ")-- " << e.m_v1;
+        }
+        else if (e.m_direction == edge_direction::forward) {
+            os << e.m_v0 << " --(" << e.m_weight << ")-> " << e.m_v1;
+        }
+        else { // reverse
+            os << e.m_v0 << " <-(" << e.m_weight << ")-- " << e.m_v1;
+        }
         return os;
     }
 };

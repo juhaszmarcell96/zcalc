@@ -2,6 +2,7 @@
 
 #include "zcalc/graph/vertex.hpp"
 #include "zcalc/graph/edge.hpp"
+#include "zcalc/graph/path.hpp"
 
 #include <cstdint>
 #include <vector>

@@ -103,30 +103,30 @@ public:
                 graph::Vertex last_v = 0;
                 for (std::size_t i = 0; i < edges.size(); ++i) {
                     const auto& e = edges[i];
-                    if (i == 0) { last_v = e->get_v0(); } // initialize it to something meaningful in case of a 1 edge loop
-                    const auto& component = *(e->get_weight());
+                    if (i == 0) { last_v = e.get_v0(); } // initialize it to something meaningful in case of a 1 edge loop
+                    const auto& component = *(e.get_weight());
                     equ.set_result(math::Complex{0.0, 0.0});
                     equ[2 * component.get_id() + equ_current_offset] = math::Complex{0.0, 0.0};
                     if (i < edges.size() - 1) {
                         const auto& next_e = edges[i + 1];
-                        if ((e->get_v0() == next_e->get_v0()) || (e->get_v0() == next_e->get_v1())) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->get_v1()); // TODO : cast?
-                            last_v = e->get_v0();
+                        if ((e.get_v0() == next_e.get_v0()) || (e.get_v0() == next_e.get_v1())) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v1()); // TODO : cast?
+                            last_v = e.get_v0();
                         }
-                        else if ((e->get_v1() == next_e->get_v0()) || (e->get_v1() == next_e->get_v1())) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->get_v0()); // TODO : cast?
-                            last_v = e->get_v1();
+                        else if ((e.get_v1() == next_e.get_v0()) || (e.get_v1() == next_e.get_v1())) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v0()); // TODO : cast?
+                            last_v = e.get_v1();
                         }
                         else {
                             throw std::runtime_error("unexpected edge in the cycle");
                         }
                     }
                     else {
-                        if (e->get_v0() == last_v) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->get_v0()); // TODO : cast?
+                        if (e.get_v0() == last_v) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v0()); // TODO : cast?
                         }
-                        else if (e->get_v1() == last_v) {
-                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e->get_v1()); // TODO : cast?
+                        else if (e.get_v1() == last_v) {
+                            equ[2 * component.get_id() + equ_voltage_offset] = component.kvl(e.get_v1()); // TODO : cast?
                         }
                         else {
                             throw std::runtime_error("unexpected edge in the cycle");

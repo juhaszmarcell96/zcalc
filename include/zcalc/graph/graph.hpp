@@ -20,15 +20,14 @@ private:
 
     void dfs (Vertex node, Vertex start, std::vector<bool>& visited, Path<T>& path, std::vector<Path<T>>& cycles) const {
         visited[node] = true;
-        path.push_back_v(node);
 
         for (const auto& edge : m_e) {
             if (edge.was_traversed()) { continue; }
+            if (!path.fits(edge)) { continue; }
             edge.traverse();
-            path.push_back_e(&edge);
+            path.push_back(edge);
             if ((edge.get_v0() == node) && ((edge.get_direction() == edge_direction::forward) || (edge.get_direction() == edge_direction::bidirectional))) {
                 if (edge.get_v1() == start) { // Cycle detected
-                    path.push_back_v(start);
                     bool found = false;
                     for (const auto& p : cycles) {
                         if (p == path) {
@@ -39,7 +38,6 @@ private:
                     if (!found) {
                         cycles.push_back(path);
                     }
-                    path.pop_back_v();
                 }
                 else if (!visited[edge.get_v1()]) {
                     dfs(edge.get_v1(), start, visited, path, cycles);
@@ -47,7 +45,6 @@ private:
             }
             else if ((edge.get_v1() == node) && ((edge.get_direction() == edge_direction::reverse) || (edge.get_direction() == edge_direction::bidirectional))) {
                 if (edge.get_v0() == start) { // Cycle detected
-                    path.push_back_v(start);
                     bool found = false;
                     for (const auto& p : cycles) {
                         if (p == path) {
@@ -58,17 +55,15 @@ private:
                     if (!found) {
                         cycles.push_back(path);
                     }
-                    path.pop_back_v();
                 }
                 else if (!visited[edge.get_v0()]) {
                     dfs(edge.get_v0(), start, visited, path, cycles);
                 }
             }
-            path.pop_back_e();
+            path.pop_back();
             edge.reset();
         }
         
-        path.pop_back_v();
         visited[node] = false;
     }
 
@@ -86,11 +81,10 @@ public:
 
     std::vector<Path<T>> find_cycles () const {
         std::vector<bool> visited ( m_v, false );
-        Path<T> path;
         std::vector<Path<T>> cycles;
         for (Vertex i = 0; i < m_v; ++i) {
+            Path<T> path { i };
             std::fill(visited.begin(), visited.end(), false);
-            path.clear();
             dfs(i, i, visited, path, cycles);
         }
         return cycles;

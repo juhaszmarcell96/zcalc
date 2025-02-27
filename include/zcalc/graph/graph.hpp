@@ -23,11 +23,11 @@ private:
         path.push_back_v(node);
 
         for (const auto& edge : m_e) {
-            if (edge.traversed) { continue; }
-            edge.traversed = true;
+            if (edge.was_traversed()) { continue; }
+            edge.traverse();
             path.push_back_e(&edge);
-            if ((edge.v0 == node) && ((edge.direction == edge_direction::forward) || (edge.direction == edge_direction::bidirectional))) {
-                if (edge.v1 == start) { // Cycle detected
+            if ((edge.get_v0() == node) && ((edge.get_direction() == edge_direction::forward) || (edge.get_direction() == edge_direction::bidirectional))) {
+                if (edge.get_v1() == start) { // Cycle detected
                     path.push_back_v(start);
                     bool found = false;
                     for (const auto& p : cycles) {
@@ -41,12 +41,12 @@ private:
                     }
                     path.pop_back_v();
                 }
-                else if (!visited[edge.v1]) {
-                    dfs(edge.v1, start, visited, path, cycles);
+                else if (!visited[edge.get_v1()]) {
+                    dfs(edge.get_v1(), start, visited, path, cycles);
                 }
             }
-            else if ((edge.v1 == node) && ((edge.direction == edge_direction::reverse) || (edge.direction == edge_direction::bidirectional))) {
-                if (edge.v0 == start) { // Cycle detected
+            else if ((edge.get_v1() == node) && ((edge.get_direction() == edge_direction::reverse) || (edge.get_direction() == edge_direction::bidirectional))) {
+                if (edge.get_v0() == start) { // Cycle detected
                     path.push_back_v(start);
                     bool found = false;
                     for (const auto& p : cycles) {
@@ -60,12 +60,12 @@ private:
                     }
                     path.pop_back_v();
                 }
-                else if (!visited[edge.v0]) {
-                    dfs(edge.v0, start, visited, path, cycles);
+                else if (!visited[edge.get_v0()]) {
+                    dfs(edge.get_v0(), start, visited, path, cycles);
                 }
             }
             path.pop_back_e();
-            edge.traversed = false;
+            edge.reset();
         }
         
         path.pop_back_v();

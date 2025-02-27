@@ -50,6 +50,14 @@ public:
 
     const std::vector<const Edge<T>*>& get_edges () const { return m_e; }
 
+    bool contains (Vertex v0, Vertex v1, T weight, edge_direction direction) {
+        Edge<T> e0 { v0, v1, weight, direction };
+        for (const auto e1 : m_e) {
+            if (e0 == *e1) { return true; }
+        }
+        return false;
+    }
+
     friend bool operator==(const Path<T>& p1, const Path<T>& p2) {
         if (p1.m_v.size() != p2.m_v.size()) { return false; }
         if (p1.m_e.size() != p2.m_e.size()) { return false; }
@@ -67,32 +75,8 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Path<T>& p) {
-        for (std::size_t i = 0; i < p.m_e.size(); ++i) {
-            Vertex v = p.m_v[i];
-            const auto& e = *(p.m_e[i]);
-            os << v;
-            if (e.v0 == v) {
-                if (e.direction == edge_direction::bidirectional) {
-                    os << " --(" << e.weight << ")-- ";
-                }
-                else if (e.direction == edge_direction::forward) {
-                    os << " --(" << e.weight << ")-> ";
-                }
-                else { // reverse
-                    os << " <-(" << e.weight << ")-- ";
-                }
-            }
-            else {
-                if (e.direction == edge_direction::bidirectional) {
-                    os << " --(" << e.weight << ")-- ";
-                }
-                else if (e.direction == edge_direction::forward) {
-                    os << " <-(" << e.weight << ")-- ";
-                }
-                else { // reverse
-                    os << " --(" << e.weight << ")-> ";
-                }
-            }
+        for (const auto e : p.m_e) {
+            os << *e << " ";
         }
         os << p.m_v.back();
         return os;

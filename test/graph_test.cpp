@@ -15,9 +15,7 @@ TEST(GraphTest, UndirectedGraphTest) {
 
     std::cerr << "Cycles in the graph:\n";
     auto cycles = g.find_cycles();
-    for (const auto &cycle : cycles) {
-        std::cerr << cycle << std::endl;
-    }
+    std::cerr << cycles << std::endl;
 
     // ASSERT_TRUE(cycles.contains({0, 1, 2}));
     // ASSERT_TRUE(cycles.contains({0, 2, 1}));
@@ -45,9 +43,7 @@ TEST(GraphTest, DirectedGraphTest) {
 
     std::cerr << "Cycles in the graph:\n";
     auto cycles = g.find_cycles();
-    for (const auto &cycle : cycles) {
-        std::cerr << cycle << std::endl;
-    }
+    std::cerr << cycles << std::endl;
     
     // ASSERT_TRUE(cycles.contains({0, 1, 2}));
     // ASSERT_TRUE(cycles.contains({0, 1, 3, 2}));

@@ -12,7 +12,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <memory>
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
@@ -36,7 +35,7 @@ public:
     static std::map<component::id_t, Result> compute (const Network& network) {
         // convert to graph
         auto g = network.to_graph_pointers();
-        std::vector<std::shared_ptr<zcalc::component::Component>> sources;
+        std::vector<std::shared_ptr<zcalc::component::IComponent>> sources;
         // collect the sources and eliminate all of them
         for (auto& e : g.get_edges()) {
             if (e.get_weight()->is_source()) {
@@ -97,7 +96,7 @@ public:
             }
             // Kirchhoff's voltage law -> one equation per loop
             const auto cycles = g.find_cycles();
-            for (const auto& c : cycles) {
+            for (const auto& c : cycles.get_cycles()) {
                 math::LinearEquation<math::Complex> equ { num_variables, "kvl" };
                 const auto& edges = c.get_edges();
                 graph::Vertex last_v = 0;

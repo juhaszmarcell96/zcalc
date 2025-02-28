@@ -26,7 +26,7 @@ namespace zcalc {
 class Network {
 private:
     std::map<std::string, component::Node> m_nodes;
-    std::map<std::string, std::shared_ptr<component::Component>> m_components;
+    std::map<std::string, std::shared_ptr<component::IComponent>> m_components;
 public:
     Network () {}
     ~Network () = default;
@@ -42,12 +42,12 @@ public:
         return m_components.at(designator)->get_id();
     }
 
-    std::shared_ptr<component::Component> get_component (std::string designator) {
+    std::shared_ptr<component::IComponent> get_component (std::string designator) {
         if (!m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " does not exists"); }
         return m_components.at(designator);
     }
 
-    const std::shared_ptr<component::Component> get_component (id_t id) const {
+    const std::shared_ptr<component::IComponent> get_component (id_t id) const {
         for (const auto& [des, val] : m_components) {
             if (val->get_id() == id) {
                 return val;
@@ -130,13 +130,13 @@ public:
         return g;
     }
 
-    graph::Graph<std::shared_ptr<component::Component>> to_graph_pointers () const {
+    graph::Graph<std::shared_ptr<component::IComponent>> to_graph_pointers () const {
         // nodes are the vertices, compnents are the edges
         const auto num_nodes = m_nodes.size();
         if (num_nodes > std::numeric_limits<graph::Vertex>::max()) {
             throw std::invalid_argument("too many nodes in the graph");
         }
-        graph::Graph<std::shared_ptr<component::Component>> g { static_cast<graph::Vertex>(num_nodes) };
+        graph::Graph<std::shared_ptr<component::IComponent>> g { static_cast<graph::Vertex>(num_nodes) };
         for (const auto& [des, val] : m_components) {
             g.add_edge(val->get_gate(0), val->get_gate(1), val);
         }

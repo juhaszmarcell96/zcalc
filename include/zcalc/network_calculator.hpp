@@ -96,7 +96,7 @@ public:
             }
             // Kirchhoff's voltage law -> one equation per loop
             const auto cycles = g.find_cycles();
-            for (const auto& c : cycles) {
+            for (const auto& c : cycles.get_cycles()) {
                 math::LinearEquation<math::Complex> equ { num_variables, "kvl" };
                 const auto& edges = c.get_edges();
                 graph::Vertex last_v = 0;

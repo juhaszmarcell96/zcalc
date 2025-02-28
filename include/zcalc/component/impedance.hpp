@@ -1,26 +1,16 @@
 #pragma once
 
-#include <zcalc/common.hpp>
-#include <zcalc/component/component.hpp>
-#include <zcalc/math/complex.hpp>
-
-#include <complex>
-#include <memory>
+#include <zcalc/component/two_pole.hpp>
 
 namespace zcalc {
 namespace component {
 
-class Impedance : public Component {
+class Impedance : public TwoPoleComponent {
 protected:
     math::Complex m_value { 0.0, 0.0 };
-    bool m_short { false };
-    bool m_open { false };
 public:
     Impedance () = delete;
-    Impedance (math::Complex value, Node node_0, Node node_1, id_t id) : Component(id), m_value(value) {
-        m_gates.push_back(node_0);
-        m_gates.push_back(node_1);
-    }
+    Impedance (math::Complex value, Node node_0, Node node_1, id_t id) : TwoPoleComponent(node_0, node_1, id), m_value(value) {}
     ~Impedance() = default;
 
     void set_rectangular (double resistance, double reactance) { m_value = math::Complex {resistance, reactance}; }
@@ -37,31 +27,9 @@ public:
         return os;
     }
 
-    std::size_t get_num_variables () const override {
-        return 2;
-    }
-
-    frequency_t get_frequency () const override {
-        throw std::runtime_error("why do you want the frequency of an impedance?");
-    }
-
-    math::Complex kcl (Node node) const override {
-        if (m_open) { return math::Complex { 0.0, 0.0 }; } // open circuit -> no current
-        if (m_gates[0] == node) { return math::Complex { -1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return math::Complex { 1.0, 0.0 }; }
-        else { return math::Complex { 0.0, 0.0 }; }
-    }
-
-    math::Complex kvl (Node node) const override {
-        if (m_short) { return math::Complex{ 0.0, 0.0 }; } // short circuit -> no voltage
-        if (m_gates[0] == node) { return math::Complex { 1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return math::Complex { -1.0, 0.0 }; }
-        else { return math::Complex { 0.0, 0.0 }; }
-    }
-
-    // U = Z * I -> 1 * U - Z * I = 0
-    // open -> 1 * I = 0
-    // short -> 1 * U = 0
+    // U = Z*I -> 1*U - Z*I = 0
+    // open    -> 0*U + 1*I = 0
+    // short   -> 1*U + 0*I = 0
     math::Complex own_i () const override {
         if (m_open) { return math::Complex{ 1.0, 0.0 }; }
         if (m_short) { return math::Complex{ 0.0, 0.0 }; }
@@ -74,6 +42,14 @@ public:
     }
     math::Complex own_r () const override {
         return math::Complex { 0.0, 0.0 };
+    }
+
+    frequency_t get_frequency () const override {
+        throw std::runtime_error("why do you want the frequency of an impedance?");
+    }
+
+    void set_frequency (frequency_t frequency) override {
+        throw std::runtime_error("impedance does not have an inherent frequency");
     }
 
     bool is_source () const override { return false; }

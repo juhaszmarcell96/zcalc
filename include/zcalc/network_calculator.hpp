@@ -12,7 +12,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <memory>
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
@@ -36,7 +35,7 @@ public:
     static std::map<component::id_t, Result> compute (const Network& network) {
         // convert to graph
         auto g = network.to_graph_pointers();
-        std::vector<std::shared_ptr<zcalc::component::Component>> sources;
+        std::vector<std::shared_ptr<zcalc::component::IComponent>> sources;
         // collect the sources and eliminate all of them
         for (auto& e : g.get_edges()) {
             if (e.get_weight()->is_source()) {

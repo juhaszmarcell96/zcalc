@@ -1,7 +1,7 @@
 #include <zcalc/common.hpp>
 #include <zcalc/network.hpp>
 
-#include <zcalc/plot/plotter.hpp>
+#include <zcalc/plot/html/plotter.hpp>
 
 #include <cmath>
 #include <fstream>
@@ -20,7 +20,7 @@ int main () {
     lc_filter.add_inductor("L", 10e-9, "in", "out");        /* 10nH */
     lc_filter.add_capacitor("C", 100e-9, "out", "gnd");     /* 100nF */
 
-    zcalc::Plotter plotter {};
+    zcalc::plot::html::Plotter plotter {};
     plotter.plot("lc_filter", lc_filter, "Us", "R_output");
 
     return 0;

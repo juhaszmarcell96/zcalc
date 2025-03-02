@@ -1,7 +1,7 @@
 #include <zcalc/common.hpp>
 #include <zcalc/network.hpp>
 
-#include <zcalc/plot/plotter.hpp>
+#include <zcalc/plot/html/plotter.hpp>
 
 #include <cmath>
 #include <fstream>
@@ -22,7 +22,7 @@ int main () {
     bandpass.add_resistor("R2", 10e3, "A", "out");
     bandpass.add_capacitor("C2", 560.0e-12, "out", "gnd");
 
-    zcalc::Plotter plotter {};
+    zcalc::plot::html::Plotter plotter {};
     plotter.plot("bandpass", bandpass, "Us", "R_output");
 
     return 0;

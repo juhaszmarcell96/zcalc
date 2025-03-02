@@ -12,6 +12,7 @@
 
 namespace zcalc {
 namespace plot {
+namespace html {
 
 class Plotter {
 public:
@@ -27,5 +28,6 @@ public:
     }
 };
 
+} /* namespace html */
 } /* namespace plot */
 } /* namespace zcalc */

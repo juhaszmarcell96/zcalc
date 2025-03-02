@@ -1,7 +1,7 @@
 #include <zcalc/common.hpp>
 #include <zcalc/network.hpp>
 
-#include <zcalc/plot/plotter.hpp>
+#include <zcalc/plot/html/plotter.hpp>
 
 #include <cmath>
 #include <fstream>
@@ -19,7 +19,7 @@ int main () {
     rc_net.add_resistor("R", 50.0, "in", "out");
     rc_net.add_capacitor("C", 100.0e-6, "out", "gnd");
 
-    zcalc::Plotter plotter {};
+    zcalc::plot::html::Plotter plotter {};
     plotter.plot("rc_element", rc_net, "Us", "R_output");
 
     return 0;

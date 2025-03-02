@@ -47,7 +47,8 @@ public:
         m_file << "<body>" << std::endl;
         m_file << "<svg x=\"" << m_x << "\" y=\"" << m_y << "\" height=\"" << m_h << "\" width=\"" << m_w << "\">" << std::endl;
 
-        for (const auto& figure : m_figures) {
+        for (auto& figure : m_figures) {
+            figure->fit();
             figure->plot(m_file);
         }
 

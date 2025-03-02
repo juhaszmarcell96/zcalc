@@ -3,93 +3,175 @@
 #include <string>
 #include <cstdint>
 
+#include "zcalc/plot/colors.hpp"
+
 namespace zcalc {
 namespace plot {
 
-class Point {
-private:
-    double m_x { 0.0 };
-    double m_y { 0.0 };
-public:
+struct IShape {
+    virtual ~IShape () = default;
+    virtual void offset (double x_offset, double y_offset) = 0;
+    virtual void scale (double scale_x, double scale_y) = 0;
+    virtual void translate (double height) = 0; // height to translate coordinates to the downward growing svg coordinate systemv
+    virtual void decorate (double stroke_width, colors stroke_color, colors fill_color) = 0;
+    virtual double get_min_x () const = 0;
+    virtual double get_max_x () const = 0;
+    virtual double get_min_y () const = 0;
+    virtual double get_max_y () const = 0;
+};
+
+struct ShapeBase : public IShape {
+    double stroke_width { 1.0 };
+    colors stroke_color { colors::black };
+    colors fill_color { colors::black };
+
+    void decorate (double stroke_width, colors stroke_color, colors fill_color) override {
+        this->stroke_width = stroke_width;
+        this->stroke_color = stroke_color;
+        this->fill_color = fill_color;
+    }
+};
+
+struct Point : public ShapeBase {
+    double x { 0.0 };
+    double y { 0.0 };
+
     Point () = default;
-    Point (double x, double y) : m_x(x), m_y(y) {}
-    
-    double get_x () const { return m_x; }
-    double get_y () const { return m_y; }
+    Point (double x, double y) : x(x), y(y) {}
 
-    void offset (double x_offset, double y_offset) {
-        m_x += x_offset;
-        m_y += y_offset;
+    void offset (double x_offset, double y_offset) override {
+        x += x_offset;
+        y += y_offset;
     }
-    void scale (double scale_x, double scale_y) {
-        m_x *= scale_x;
-        m_y *= scale_y;
+    void scale (double scale_x, double scale_y) override {
+        x *= scale_x;
+        y *= scale_y;
+    }
+    void translate (double height) override {
+        y = height - y;
+    }
+
+    double get_min_x () const override {
+        return x;
+    }
+    double get_max_x () const override {
+        return x;
+    }
+    double get_min_y () const override {
+        return y;
+    }
+    double get_max_y () const override {
+        return y;
     }
 };
 
-class Line {
-private:
-    Point m_p0 {};
-    Point m_p1 {};
-public:
+struct Line : public ShapeBase {
+    Point p0 {};
+    Point p1 {};
+    
     Line () = default;
-    Line (double x0, double y0, double x1, double y1) : m_p0(x0, y0), m_p1(x1, y1) {}
-    
-    const Point& get_p0 () const { return m_p0; }
-    const Point& get_p1 () const { return m_p1; }
+    Line (double x0, double y0, double x1, double y1) : p0(x0, y0), p1(x1, y1) {}
 
-    void offset (double x_offset, double y_offset) {
-        m_p0.offset(x_offset, y_offset);
-        m_p1.offset(x_offset, y_offset);
+    void offset (double x_offset, double y_offset) override {
+        p0.offset(x_offset, y_offset);
+        p1.offset(x_offset, y_offset);
     }
-    void scale (double scale_x, double scale_y) {
-        m_p0.scale(scale_x, scale_y);
-        m_p1.scale(scale_x, scale_y);
+    void scale (double scale_x, double scale_y) override {
+        p0.scale(scale_x, scale_y);
+        p1.scale(scale_x, scale_y);
+    }
+    void translate (double height) override {
+        p0.translate(height);
+        p1.translate(height);
+    }
+
+    double get_min_x () const override {
+        const double x0 = p0.get_min_x();
+        const double x1 = p1.get_min_x();
+        return x0 < x1 ? x0 : x1;
+    }
+    double get_max_x () const override {
+        const double x0 = p0.get_max_x();
+        const double x1 = p1.get_max_x();
+        return x0 > x1 ? x0 : x1;
+    }
+    double get_min_y () const override {
+        const double y0 = p0.get_min_y();
+        const double y1 = p1.get_min_y();
+        return y0 < y1 ? y0 : y1;
+    }
+    double get_max_y () const override {
+        const double y0 = p0.get_max_y();
+        const double y1 = p1.get_max_y();
+        return y0 > y1 ? y0 : y1;
     }
 };
 
-class Rectangle {
-private:
-    Point m_p {};
-    double m_w { 0.0 };
-    double m_h { 0.0 };
-public:
+struct Rectangle : public ShapeBase {
+    Point p {};
+    double w { 0.0 };
+    double h { 0.0 };
+    
     Rectangle () = default;
-    Rectangle (double x, double y, double w, double h) : m_p(x, y), m_w(w), m_h(h) {}
-    
-    const Point& get_p () const { return m_p; }
-    double get_w () const { return m_w; }
-    double get_h () const { return m_h; }
+    Rectangle (double x, double y, double w, double h) : p(x, y), w(w), h(h) {}
 
-    void offset (double x_offset, double y_offset) {
-        m_p.offset(x_offset, y_offset);
+    void offset (double x_offset, double y_offset) override {
+        p.offset(x_offset, y_offset);
     }
-    void scale (double scale_x, double scale_y) {
-        m_p.scale(scale_x, scale_y);
-        m_w *= scale_x;
-        m_h *= scale_y;
+    void scale (double scale_x, double scale_y) override {
+        p.scale(scale_x, scale_y);
+        w *= scale_x;
+        h *= scale_y;
+    }
+    void translate (double height) override {
+        p.translate(height);
+    }
+
+
+    double get_min_x () const override {
+        return p.get_min_x();
+    }
+    double get_max_x () const override {
+        return p.get_min_x() + w;
+    }
+    double get_min_y () const override {
+        return p.get_min_y();
+    }
+    double get_max_y () const override {
+        return p.get_min_y() + h;
     }
 };
 
-class Text {
-private:
-    Point m_anchor {};
-    std::string m_text;
-    double m_font_size;
-public:
+struct Text : public ShapeBase {
+    Point anchor {};
+    std::string text;
+    double font_size;
+    
     Text () = default;
-    Text (double x, double y, const std::string& text, double font_size) : m_anchor(x, y), m_text(text), m_font_size(font_size) {}
+    Text (double x, double y, const std::string& text, double font_size) : anchor(x, y), text(text), font_size(font_size) {}
 
-    const Point& get_anchor_point () const { return m_anchor; }
-    const std::string& get_text () const { return m_text; }
-    double get_font_size () const { return m_font_size; }
-
-    void offset (double x_offset, double y_offset) {
-        m_anchor.offset(x_offset, y_offset);
+    void offset (double x_offset, double y_offset) override {
+        anchor.offset(x_offset, y_offset);
     }
-    void scale (double scale_x, double scale_y) {
-        m_anchor.scale(scale_x, scale_y);
-        m_font_size *= scale_x; // TODO ?
+    void scale (double scale_x, double scale_y) override {
+        anchor.scale(scale_x, scale_y);
+        font_size *= scale_x; // TODO ?
+    }
+    void translate (double height) override {
+        anchor.translate(height);
+    }
+
+    double get_min_x () const override {
+        return anchor.get_min_x();
+    }
+    double get_max_x () const override {
+        return anchor.get_max_x();
+    }
+    double get_min_y () const override {
+        return anchor.get_min_y();
+    }
+    double get_max_y () const override {
+        return anchor.get_max_y();
     }
 };
 

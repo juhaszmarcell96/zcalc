@@ -6,9 +6,11 @@
 #include <vector>
 #include <memory>
 
-#include "zcalc/plot/figure.hpp"
+#include "zcalc/plot/html/figure.hpp"
 
 namespace zcalc {
+namespace plot {
+namespace html {
 
 class Canvas {
 private:
@@ -37,7 +39,7 @@ public:
     void plot () {
         m_file.open(m_filename, std::ios::out | std::ios::trunc);
         if (!m_file.is_open()) {
-            /* TODO : throw exception */
+            throw std::runtime_error("could not open HTML file");
         }
 
         m_file << "<!DOCTYPE html>" << std::endl;
@@ -46,7 +48,7 @@ public:
         m_file << "<svg x=\"" << m_x << "\" y=\"" << m_y << "\" height=\"" << m_h << "\" width=\"" << m_w << "\">" << std::endl;
 
         for (const auto& figure : m_figures) {
-            m_file << figure->get();
+            figure->plot(m_file);
         }
 
         m_file << "</svg>" << std::endl;
@@ -56,4 +58,6 @@ public:
     }
 };
 
+} /* namespace html */
+} /* namespace plot */
 } /* namespace zcalc */

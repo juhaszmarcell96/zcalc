@@ -4,16 +4,17 @@
 
 #include "zcalc/network.hpp"
 #include "zcalc/network_calculator.hpp"
-#include "zcalc/plot/plot.hpp"
-#include "zcalc/plot/figure.hpp"
+#include "zcalc/plot/html/plot.hpp"
+#include "zcalc/plot/html/figure.hpp"
 
 namespace zcalc {
+namespace plot {
 
 /* bode plot supports frequencies between 1Hz and 10 GHz -> 10 decades */
 class Bode {
 private:
-    Plot m_magnitude_plot;
-    Plot m_phase_plot;
+    html::Plot m_magnitude_plot;
+    html::Plot m_phase_plot;
 
     Network& m_network;
 
@@ -28,7 +29,9 @@ public:
         return std::log10(m_max_freq) - std::log10(m_min_freq);
     }
 
-    void plot (Figure* fig_magnitude, Figure* fig_phase, const std::string& input_source, const std::string& output_component) {
+    void plot (html::Figure* fig_magnitude, html::Figure* fig_phase, const std::string& input_source, const std::string& output_component) {
+        fig_magnitude->set_plot(&m_magnitude_plot);
+        fig_phase->set_plot(&m_phase_plot);
         double frequency = m_min_freq;
         component::id_t output_component_id = m_network.get_component_id(output_component);
         auto input_source_ptr = m_network.get_component(input_source);
@@ -108,7 +111,7 @@ public:
 
         /* perform calculations for the -3dB point */
         if (m_min_y < -3.0 && m_max_y > -3.0) {
-                m_magnitude_plot.add_line(m_min_x, -3.0, m_max_x, -3.0, 1.0, colors::blue);
+                m_magnitude_plot.add_line(m_min_x, -3.0, m_max_x, -3.0, 1.0, html::colors::blue);
         }
         for (std::size_t index = 1; index < m_magnitude_plot.get_points().size(); ++index) {
             const Point& curr = m_magnitude_plot.get_points()[index];
@@ -124,10 +127,8 @@ public:
                 m_phase_plot.add_line(curr.x - x_dist, p_min_y, curr.x - x_dist, p_max_y, 1.0, colors::blue);
             }
         }
-
-        fig_magnitude->plot(m_magnitude_plot);
-        fig_phase->plot(m_phase_plot);
     }
 };
 
+} /* namespace plot */
 } /* namespace zcalc */

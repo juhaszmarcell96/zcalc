@@ -7,11 +7,12 @@ set (CMAKE_BUILD_TYPE debug)
 set (
     EXAMPLES
     basic
-    filter
+    lora_filter
     rc_element
     bandpass
     lc_filter
     capacitor
+    bluetooth
 )
 
 include_directories("../include/")

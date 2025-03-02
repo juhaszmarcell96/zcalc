@@ -1,7 +1,7 @@
 #include <zcalc/common.hpp>
 #include <zcalc/network.hpp>
 
-#include <zcalc/plot/plotter.hpp>
+#include <zcalc/plot/html/plotter.hpp>
 
 #include <cmath>
 #include <fstream>
@@ -21,7 +21,7 @@ int main () {
     lora_filter.add_capacitor("C3", 1.8e-12, "out", "gnd");
     lora_filter.add_resistor("RL", 50.0, "out", "gnd");
 
-    zcalc::Plotter plotter {};
+    zcalc::plot::html::Plotter plotter {};
     plotter.plot("lora_filter", lora_filter, "Us", "R_output");
 
     return 0;

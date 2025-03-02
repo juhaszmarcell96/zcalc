@@ -1,7 +1,7 @@
 #include <zcalc/common.hpp>
 #include <zcalc/network.hpp>
 
-#include <zcalc/plot/plotter.hpp>
+#include <zcalc/plot/html/plotter.hpp>
 
 #include <cmath>
 #include <fstream>
@@ -24,7 +24,7 @@ int main () {
 
     capacitor.add_resistor("R_output", 10e9, "in", "gnd");
 
-    zcalc::Plotter plotter {};
+    zcalc::plot::html::Plotter plotter {};
     plotter.plot("capacitor", capacitor, "Is", "R_output");
 
     return 0;

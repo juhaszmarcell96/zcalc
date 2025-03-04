@@ -22,7 +22,7 @@ int main () {
     lora_filter.add_resistor("RL", 50.0, "out", "gnd");
 
     zcalc::plot::html::Plotter plotter {};
-    plotter.plot("lora_filter", lora_filter, "Us", "R_output");
+    plotter.plot("lora_filter", lora_filter, "Us", "R_output", 868.0e6);
 
     return 0;
 }

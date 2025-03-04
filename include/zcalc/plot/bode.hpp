@@ -67,6 +67,11 @@ public:
         m_phase_plot.set_3db_points(m_magnitude_plot.get_3db_points());
         m_phase_plot.process();
     }
+
+    void mark_frequency (double frequency) {
+        m_magnitude_plot.mark_frequency(frequency);
+        m_phase_plot.mark_frequency(frequency);
+    }
 };
 
 } /* namespace plot */

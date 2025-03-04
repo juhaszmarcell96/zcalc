@@ -35,6 +35,16 @@ public:
 
     void set_3db_points (const std::vector<Point>& points) { m_3db_points = points; }
 
+    void mark_frequency (double frequency) {
+        double min_x { 0.0 };
+        double max_x { 0.0 };
+        double min_y { 0.0 };
+        double max_y { 0.0 };
+        get_min_max(min_x, min_y, max_x, max_y);
+        m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
+        m_lines.back().decorate(2.0, colors::green, colors::green);
+    }
+
     void process () {
         m_lines.clear();
         m_texts.clear();

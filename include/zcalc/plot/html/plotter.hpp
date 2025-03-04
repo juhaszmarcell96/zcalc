@@ -26,6 +26,18 @@ public:
 
         canvas.plot();
     }
+
+    void plot (const std::string& filename, Network& network, const std::string& input_source, const std::string& output_component, double target_frequency) {
+        html::Canvas canvas { filename, 10, 10, 1000, 800 };
+        html::Figure* fig_magnitude = canvas.figure(5, 5, 990, 390);
+        html::Figure* fig_phase = canvas.figure(5, 405, 990, 390);
+
+        Bode bode { network };
+        bode.plot(fig_magnitude, fig_phase, input_source, output_component);
+        bode.mark_frequency(target_frequency);
+
+        canvas.plot();
+    }
 };
 
 } /* namespace html */

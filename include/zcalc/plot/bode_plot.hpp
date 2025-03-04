@@ -31,7 +31,6 @@ public:
     void clear_decoration () {
         m_lines.clear();
         m_texts.clear();
-        m_3db_points.clear();
     }
 
     void mark_frequency (double frequency) {

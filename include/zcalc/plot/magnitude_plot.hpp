@@ -27,6 +27,7 @@ public:
     void process () {
         if (m_data_points.empty()) { return; }
         clear_decoration();
+        m_3db_points.clear();
 
         // order the vector
         sort();
@@ -76,22 +77,22 @@ public:
         }
 
         // perform calculations for the -3dB point
-        if (min_y < -3.0 && max_y > -3.0) {
+        if ((min_y < -3.0) && (max_y > -3.0)) {
             m_lines.push_back(Line{min_x, -3.0, max_x, -3.0});
             m_lines.back().decorate(1.0, colors::blue, colors::blue);
-        }
-        for (std::size_t index = 1; index < m_data.size(); ++index) {
-            const auto& curr = m_data[index];
-            const auto& prev = m_data[index - 1];
-            if ((curr.y > -3.0 && prev.y < -3.0) || (curr.y < -3.0 && prev.y > -3.0)) {
-                /* interpolate with a straight line */
-                double slope = (curr.y - prev.y) / (curr.x - prev.x);
-                double y_dist = curr.y - (-3.0);
-                double x_dist = y_dist / slope;
-                m_lines.push_back(Line{curr.x - x_dist, min_y, curr.x - x_dist, max_y});
-                m_lines.back().decorate(1.0, colors::blue, colors::blue);
-                m_3db_points.push_back(Point{curr.x - x_dist, -3.0});
-                m_3db_points.back().decorate(2.0, colors::blue, colors::blue);
+            for (std::size_t index = 1; index < m_data.size(); ++index) {
+                const auto& curr = m_data[index];
+                const auto& prev = m_data[index - 1];
+                if ((curr.y > -3.0 && prev.y < -3.0) || (curr.y < -3.0 && prev.y > -3.0)) {
+                    /* interpolate with a straight line */
+                    double slope = (curr.y - prev.y) / (curr.x - prev.x);
+                    double y_dist = curr.y - (-3.0);
+                    double x_dist = y_dist / slope;
+                    m_lines.push_back(Line{curr.x - x_dist, min_y, curr.x - x_dist, max_y});
+                    m_lines.back().decorate(1.0, colors::blue, colors::blue);
+                    m_3db_points.push_back(Point{curr.x - x_dist, -3.0});
+                    m_3db_points.back().decorate(2.0, colors::blue, colors::blue);
+                }
             }
         }
     }

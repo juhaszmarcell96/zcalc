@@ -2,23 +2,15 @@
 
 #include <cmath>
 
-#include "zcalc/plot/scatter_plot.hpp"
+#include "zcalc/plot/bode_plot.hpp"
 
 namespace zcalc {
 namespace plot {
 
 /* bode plot supports frequencies between 1Hz and 10 GHz -> 10 decades */
-class MagnitudePlot : public ScatterPlot {
-private:
-    double m_min_freq { 1.0 };
-    double m_max_freq { 1e10 };
-
-    std::vector<Line> m_lines;
-    std::vector<Text> m_texts;
-    std::vector<Point> m_3db_points;
+class MagnitudePlot : public BodePlot {
 public:
-    MagnitudePlot () = delete;
-    MagnitudePlot (double min_freq = 1.0, double max_freq = 1e10) : m_min_freq(min_freq), m_max_freq(max_freq) {}
+    MagnitudePlot () = default;
     ~MagnitudePlot () = default;
 
     std::vector<IShape*> get_shapes () override {
@@ -30,30 +22,24 @@ public:
         return ret;
     }
 
-    std::size_t get_num_decades () const {
-        return std::log10(m_max_freq) - std::log10(m_min_freq);
-    }
-
     const auto& get_3db_points () const { return m_3db_points; }
 
-    void mark_frequency (double frequency) {
-        double min_x { 0.0 };
-        double max_x { 0.0 };
-        double min_y { 0.0 };
-        double max_y { 0.0 };
-        get_min_max(min_x, min_y, max_x, max_y);
-        m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
-        m_lines.back().decorate(2.0, colors::green, colors::green);
-    }
-
     void process () {
-        m_lines.clear();
-        m_texts.clear();
-        m_3db_points.clear();
+        if (m_data_points.empty()) { return; }
+        clear_decoration();
+
+        // order the vector
+        sort();
+        for (const auto& data : m_data_points) {
+            add_point(std::log10(data.frequency), 20.0 * std::log10(data.response.abs()));
+        }
 
         for (auto& point : m_data) {
-            point.decorate (1.0, colors::red, colors::red);
+            point.decorate(1.0, colors::red, colors::red);
         }
+
+        const auto min_freq = m_data_points.front().frequency;
+        const auto max_freq = m_data_points.back().frequency;
 
         double min_x { 0.0 };
         double max_x { 0.0 };
@@ -62,8 +48,8 @@ public:
         get_min_max(min_x, min_y, max_x, max_y);
         const double height = max_y - min_y;
         // add the vertical decade lines and text
-        double frequency = m_min_freq;
-        while (frequency < m_max_freq) {
+        double frequency = min_freq;
+        while (frequency < max_freq) {
             m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
             m_lines.back().decorate(1.0, colors::black, colors::black);
             m_texts.push_back(Text{std::log10(frequency), min_y + (height / 2.0), "10^" + std::to_string((int)std::log10(frequency)) + "Hz", 0.1});

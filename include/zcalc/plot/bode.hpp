@@ -22,8 +22,7 @@ private:
     double m_max_freq { 1e10 };
 public:
     Bode () = delete;
-    Bode (Network& network, double min_freq = 1.0, double max_freq = 1e10) :
-        m_network(network), m_min_freq(min_freq), m_max_freq(max_freq), m_magnitude_plot(min_freq, max_freq), m_phase_plot(min_freq, max_freq) {}
+    Bode (Network& network, double min_freq = 1.0, double max_freq = 1e10) : m_network(network), m_min_freq(min_freq), m_max_freq(max_freq) {}
     ~Bode () = default;
 
     std::size_t get_num_decades () const {
@@ -52,8 +51,8 @@ public:
                         break;
                     }
                 }
-                m_magnitude_plot.add_point(std::log10(frequency), 20.0 * std::log10(response.abs()));
-                m_phase_plot.add_point(std::log10(frequency), 180.0 + response.arg() * 180.0 / pi);
+                m_magnitude_plot.add(frequency, response);
+                m_phase_plot.add(frequency, response);
             }
             catch (const std::runtime_error& e) {
                 std::cerr << "could not solve network for frequency " << frequency << std::endl;

@@ -1,57 +1,80 @@
 #pragma once
 
-#include <cmath>
+#include <string>
+#include <array>
 
-#include "zcalc/plot/scatter_plot.hpp"
+#include "zcalc/plot/bode_plot.hpp"
 
 namespace zcalc {
 namespace plot {
 
 /* bode plot supports frequencies between 1Hz and 10 GHz -> 10 decades */
-class PhasePlot : public ScatterPlot {
+class PhasePlot : public BodePlot {
 private:
-    double m_min_freq { 1.0 };
-    double m_max_freq { 1e10 };
-
-    std::vector<Line> m_lines;
-    std::vector<Text> m_texts;
-    std::vector<Point> m_3db_points;
+    struct PhaseName {
+        double phase { 0.0 };
+        std::string name;
+    };
+    static inline const std::array<PhaseName, 17> phaseNames {
+        PhaseName { -8.0 * pi / 4.0, "-2pi" },
+        PhaseName { -7.0 * pi / 4.0, "-7/4pi" },
+        PhaseName { -6.0 * pi / 4.0, "-3/2pi" },
+        PhaseName { -5.0 * pi / 4.0, "-5/4pi" },
+        PhaseName { -4.0 * pi / 4.0, "-1pi" },
+        PhaseName { -3.0 * pi / 4.0, "-3/4pi" },
+        PhaseName { -2.0 * pi / 4.0, "-1/2pi" },
+        PhaseName { -1.0 * pi / 4.0, "-1/4pi" },
+        PhaseName {  0.0 * pi / 4.0, "0" },
+        PhaseName {  1.0 * pi / 4.0, "1/4pi" },
+        PhaseName {  2.0 * pi / 4.0, "1/2pi" },
+        PhaseName {  3.0 * pi / 4.0, "3/4pi" },
+        PhaseName {  4.0 * pi / 4.0, "1pi" },
+        PhaseName {  5.0 * pi / 4.0, "5/4pi" },
+        PhaseName {  6.0 * pi / 4.0, "3/2pi" },
+        PhaseName {  7.0 * pi / 4.0, "7/4pi" },
+        PhaseName {  8.0 * pi / 4.0, "2pi" }
+    };
 public:
-    PhasePlot () = delete;
-    PhasePlot (double min_freq = 1.0, double max_freq = 1e10) : m_min_freq(min_freq), m_max_freq(max_freq) {}
+    PhasePlot () = default;
     ~PhasePlot () = default;
-
-    std::size_t get_num_decades () const {
-        return std::log10(m_max_freq) - std::log10(m_min_freq);
-    }
 
     std::vector<IShape*> get_shapes () override {
         std::vector<IShape*> ret;
         for (auto & shape : m_data) { ret.push_back(&shape); }
         for (auto & shape : m_lines) { ret.push_back(&shape); }
         for (auto & shape : m_texts) { ret.push_back(&shape); }
+        // 3dB point is not part of this graph
         return ret;
     }
 
     void set_3db_points (const std::vector<Point>& points) { m_3db_points = points; }
 
-    void mark_frequency (double frequency) {
-        double min_x { 0.0 };
-        double max_x { 0.0 };
-        double min_y { 0.0 };
-        double max_y { 0.0 };
-        get_min_max(min_x, min_y, max_x, max_y);
-        m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
-        m_lines.back().decorate(2.0, colors::green, colors::green);
-    }
-
     void process () {
-        m_lines.clear();
-        m_texts.clear();
+        if (m_data_points.empty()) { return; }
+        clear_decoration();
+
+        // order the vector
+        sort();
+        for (const auto& data : m_data_points) {
+            double phase = data.response.arg();
+            if (!m_data.empty()) {
+                double diff = phase - m_data.back().y;
+                if (diff >= pi) {
+                    phase -= 2.0 * pi;
+                }
+                else if (diff <= -pi) {
+                    phase += 2.0 * pi;
+                }
+            }
+            add_point(std::log10(data.frequency), phase);
+        }
 
         for (auto& point : m_data) {
-            point.decorate (1.0, colors::red, colors::red);
+            point.decorate(1.0, colors::red, colors::red);
         }
+
+        const auto min_freq = m_data_points.front().frequency;
+        const auto max_freq = m_data_points.back().frequency;
 
         double min_x { 0.0 };
         double max_x { 0.0 };
@@ -60,8 +83,8 @@ public:
         get_min_max(min_x, min_y, max_x, max_y);
         const double height = max_y - min_y;
         // add the vertical decade lines and text
-        double frequency = m_min_freq;
-        while (frequency < m_max_freq) {
+        double frequency = min_freq;
+        while (frequency < max_freq) {
             m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
             m_lines.back().decorate(1.0, colors::black, colors::black);
             
@@ -73,16 +96,13 @@ public:
 
             frequency *= 10.0;
         }
-        // add horizontal 15 degree (°) lines and texts
-        int y_tmp = std::ceil(min_y);
-        while (y_tmp < max_y) {
-            if (y_tmp % 15 == 0) {
-                m_lines.push_back(Line{min_x, static_cast<double>(y_tmp), max_x, static_cast<double>(y_tmp)});
-                m_texts.push_back(Text{min_x, static_cast<double>(y_tmp), std::to_string(y_tmp - 180) + "°", 0.1});
-                y_tmp += 15;
-            }
-            else {
-                ++y_tmp;
+
+        // adding horizontal lines
+        for (const auto& phaseName : phaseNames) {
+            const auto phase = phaseName.phase;
+            if ((min_y <= phase) && (max_y >= phase)) {
+                m_lines.push_back(Line{min_x, phase, max_x, phase});
+                m_texts.push_back(Text{min_x, phase, phaseName.name, 0.1});
             }
         }
 

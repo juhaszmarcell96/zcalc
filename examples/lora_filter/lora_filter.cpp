@@ -26,9 +26,9 @@ int main () {
     config.input_source = "Us";
     config.output_component = "R_output";
     config.target_frequency = zcalc::math::Frequency::create_from_hz(868.0e6);
-    config.min_frequency = zcalc::math::Frequency::create_from_hz(1);
+    config.min_frequency = zcalc::math::Frequency::create_from_hz(1.0e8);
     config.max_frequency = zcalc::math::Frequency::create_from_hz(1.0e10);
-    config.granularity = 0.05;
+    config.num_points = 1.0e3;
 
     zcalc::plot::html::Plotter plotter {};
     plotter.plot(lora_filter, config);

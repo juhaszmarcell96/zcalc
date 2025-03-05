@@ -17,7 +17,7 @@ struct PlotterConfig {
     math::Frequency min_frequency;
     math::Frequency max_frequency;
     math::Frequency target_frequency;
-    double granularity { 1.0 };
+    double num_points { 1.0e3 };
 };
 
 } /* namespace plot */

@@ -28,9 +28,9 @@ int main () {
     config.filename = "capacitor";
     config.input_source = "Is";
     config.output_component = "R_output";
-    config.min_frequency = zcalc::math::Frequency::create_from_hz(1);
-    config.max_frequency = zcalc::math::Frequency::create_from_hz(1.0e10);
-    config.granularity = 0.05;
+    config.min_frequency = zcalc::math::Frequency::create_from_hz(1.0e6);
+    config.max_frequency = zcalc::math::Frequency::create_from_hz(2.0e7);
+    config.num_points = 1.0e3;
 
     zcalc::plot::html::Plotter plotter {};
     plotter.plot(capacitor, config);

@@ -29,6 +29,10 @@ public:
             throw std::invalid_argument("component " + config.input_source + " must be a source");
         }
         auto frequency = config.min_frequency;
+        if (config.num_points < 1.0) {
+            throw std::invalid_argument("invalid number of points");
+        }
+        double granularity = std::pow(config.max_frequency.as_hz() / config.min_frequency.as_hz(), 1.0 / config.num_points);
         while (frequency < config.max_frequency) {
             try {
                 input_source_ptr->set_frequency(frequency); // set the frequency of the input source
@@ -50,7 +54,7 @@ public:
                 network.print();
                 std::cerr << e.what() << std::endl;
             }
-            frequency *= 1.0 + config.granularity;
+            frequency *= granularity;
         }
 
         m_magnitude_plot.process();

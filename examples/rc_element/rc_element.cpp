@@ -24,8 +24,8 @@ int main () {
     config.input_source = "Us";
     config.output_component = "R_output";
     config.min_frequency = zcalc::math::Frequency::create_from_hz(1);
-    config.max_frequency = zcalc::math::Frequency::create_from_hz(1.0e10);
-    config.granularity = 0.05;
+    config.max_frequency = zcalc::math::Frequency::create_from_hz(1.0e3);
+    config.num_points = 1.0e3;
 
     zcalc::plot::html::Plotter plotter {};
     plotter.plot(rc_net, config);

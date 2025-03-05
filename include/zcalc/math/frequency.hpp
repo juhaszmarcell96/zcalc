@@ -66,7 +66,8 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Frequency& freq) {
-        os << freq.m_frequency << "rad/s";
+        os << freq.m_frequency;
+        //os << freq.m_frequency << "rad/s";
         return os;
     }
 };

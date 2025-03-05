@@ -38,7 +38,7 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Phasor& phasor) {
-        os << phasor.m_magnitude << "cos(" << phasor.m_frequency << "t+" << phasor.m_phase << ")" << std::endl;
+        os << phasor.m_magnitude << "cos(" << phasor.m_frequency << "t+" << phasor.m_phase << ")";
         return os;
     }
 };

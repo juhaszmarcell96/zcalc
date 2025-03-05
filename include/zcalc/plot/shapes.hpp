@@ -155,7 +155,7 @@ struct Text : public ShapeBase {
     }
     void scale (double scale_x, double scale_y) override {
         anchor.scale(scale_x, scale_y);
-        font_size *= scale_x; // TODO ?
+        //font_size *= scale_x; // TODO ?
     }
     void translate (double height) override {
         anchor.translate(height);

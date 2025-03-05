@@ -103,7 +103,7 @@ public:
             const auto phase = phaseName.phase.as_radians();
             if ((min_y <= phase) && (max_y >= phase)) {
                 m_lines.push_back(Line{min_x, phase, max_x, phase});
-                m_texts.push_back(Text{min_x, phase, phaseName.name, 0.1});
+                m_texts.push_back(Text{min_x, phase, phaseName.name, 12.0});
             }
         }
 

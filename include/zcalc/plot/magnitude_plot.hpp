@@ -54,7 +54,7 @@ public:
             const auto decade = frequency.decade();
             m_lines.push_back(Line{decade, min_y, decade, max_y});
             m_lines.back().decorate(1.0, colors::black, colors::black);
-            m_texts.push_back(Text{decade, min_y + (height / 2.0), "10^" + std::to_string((int)decade) + "Hz", 0.1});
+            m_texts.push_back(Text{decade, min_y + (height / 2.0), "10^" + std::to_string((int)decade) + "Hz", 12.0});
             
             for (int i = 1; i < 10; ++i) {
                 const double x = (frequency + i * frequency).decade();
@@ -69,7 +69,7 @@ public:
         while (y_tmp < max_y) {
             if (y_tmp % 20 == 0) {
                 m_lines.push_back(Line{min_x, static_cast<double>(y_tmp), max_x, static_cast<double>(y_tmp)});
-                m_texts.push_back(Text{min_x, static_cast<double>(y_tmp), std::to_string(y_tmp) + "dB", 0.1});
+                m_texts.push_back(Text{min_x, static_cast<double>(y_tmp), std::to_string(y_tmp) + "dB", 12.0});
                 y_tmp += 20;
             }
             else {

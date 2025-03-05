@@ -1,6 +1,7 @@
 #pragma once
 
 #include <complex>
+#include <numbers>
 
 #include "zcalc/common.hpp"
 
@@ -77,7 +78,7 @@ public:
                 break;
             }
             case Complex::print_format::trig_deg : {
-                const auto arg = (c.arg() * 360.0) / (2 * pi);
+                const auto arg = (c.arg() * 360.0) / (2 * std::numbers::pi);
                 os << c.abs() << "*(cos(" << arg << ")+j*sin(" << arg << "°))";
                 break;
             }
@@ -86,7 +87,7 @@ public:
                 break;
             }
             case Complex::print_format::euler_deg : {
-                os << c.abs() << "<" << (c.arg() * 360.0) / (2 * pi) << "°";
+                os << c.abs() << "<" << (c.arg() * 360.0) / (2 * std::numbers::pi) << "°";
                 break;
             }
         }

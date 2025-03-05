@@ -32,7 +32,7 @@ public:
         // order the vector
         sort();
         for (const auto& data : m_data_points) {
-            add_point(std::log10(data.frequency), 20.0 * std::log10(data.response.abs()));
+            add_point(data.frequency.decade(), 20.0 * std::log10(data.response.abs()));
         }
 
         for (auto& point : m_data) {
@@ -49,14 +49,15 @@ public:
         get_min_max(min_x, min_y, max_x, max_y);
         const double height = max_y - min_y;
         // add the vertical decade lines and text
-        double frequency = min_freq;
+        auto frequency = min_freq;
         while (frequency < max_freq) {
-            m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
+            const auto decade = frequency.decade();
+            m_lines.push_back(Line{decade, min_y, decade, max_y});
             m_lines.back().decorate(1.0, colors::black, colors::black);
-            m_texts.push_back(Text{std::log10(frequency), min_y + (height / 2.0), "10^" + std::to_string((int)std::log10(frequency)) + "Hz", 0.1});
+            m_texts.push_back(Text{decade, min_y + (height / 2.0), "10^" + std::to_string((int)decade) + "Hz", 0.1});
             
             for (int i = 1; i < 10; ++i) {
-                const double x = std::log10(frequency + i * frequency);
+                const double x = (frequency + i * frequency).decade();
                 m_lines.push_back(Line{x, min_y, x, max_y});
                 m_lines.back().decorate(0.2, colors::black, colors::black);
             }

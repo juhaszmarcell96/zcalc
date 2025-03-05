@@ -16,7 +16,7 @@ int main () {
     capacitor.add_node ("A");
     capacitor.add_node ("B");
 
-    capacitor.add_current_source ("Is", 1.0, 0.0, "in", "gnd");
+    capacitor.add_current_source ("Is", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
 
     capacitor.add_capacitor("C", 100.0e-9, "in", "A"); // 100nF
     capacitor.add_resistor("R_esr", 0.01, "A", "B"); // 10mohm
@@ -24,8 +24,16 @@ int main () {
 
     capacitor.add_resistor("R_output", 10e9, "in", "gnd");
 
+    zcalc::plot::PlotterConfig config {};
+    config.filename = "capacitor";
+    config.input_source = "Is";
+    config.output_component = "R_output";
+    config.min_frequency = zcalc::math::Frequency::create_from_hz(1);
+    config.max_frequency = zcalc::math::Frequency::create_from_hz(1.0e10);
+    config.granularity = 0.05;
+
     zcalc::plot::html::Plotter plotter {};
-    plotter.plot("capacitor", capacitor, "Is", "R_output");
+    plotter.plot(capacitor, config);
 
     return 0;
 }

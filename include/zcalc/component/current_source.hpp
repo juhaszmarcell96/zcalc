@@ -9,7 +9,7 @@ class CurrentSource : public Source {
 public:
     CurrentSource () = delete;
     CurrentSource (math::Complex current, Node node_0, Node node_1, std::size_t id) : Source(current, node_0, node_1, id) {}
-    CurrentSource (math::Complex current, frequency_t frequency, Node node_0, Node node_1, std::size_t id) : Source(current, frequency, node_0, node_1, id) {}
+    CurrentSource (math::Complex current, const math::Frequency& frequency, Node node_0, Node node_1, std::size_t id) : Source(current, frequency, node_0, node_1, id) {}
     ~CurrentSource () = default;
 
     // normal operation -> 1*I + 0*U = current

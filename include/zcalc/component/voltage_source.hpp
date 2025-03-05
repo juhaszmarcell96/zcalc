@@ -9,7 +9,7 @@ class VoltageSource : public Source {
 public:
     VoltageSource () = delete;
     VoltageSource (math::Complex voltage, Node node_0, Node node_1, std::size_t id) : Source(voltage, node_0, node_1, id) {}
-    VoltageSource (math::Complex voltage, frequency_t frequency, Node node_0, Node node_1, std::size_t id) : Source(voltage, frequency, node_0, node_1, id) {}
+    VoltageSource (math::Complex voltage, const math::Frequency& frequency, Node node_0, Node node_1, std::size_t id) : Source(voltage, frequency, node_0, node_1, id) {}
     ~VoltageSource () = default;
 
     // normal operation -> 0*I + 1*U = voltage

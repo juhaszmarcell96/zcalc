@@ -12,27 +12,27 @@ namespace plot {
 class PhasePlot : public BodePlot {
 private:
     struct PhaseName {
-        double phase { 0.0 };
+        math::Phase phase {};
         std::string name;
     };
     static inline const std::array<PhaseName, 17> phaseNames {
-        PhaseName { -8.0 * pi / 4.0, "-2pi" },
-        PhaseName { -7.0 * pi / 4.0, "-7/4pi" },
-        PhaseName { -6.0 * pi / 4.0, "-3/2pi" },
-        PhaseName { -5.0 * pi / 4.0, "-5/4pi" },
-        PhaseName { -4.0 * pi / 4.0, "-1pi" },
-        PhaseName { -3.0 * pi / 4.0, "-3/4pi" },
-        PhaseName { -2.0 * pi / 4.0, "-1/2pi" },
-        PhaseName { -1.0 * pi / 4.0, "-1/4pi" },
-        PhaseName {  0.0 * pi / 4.0, "0" },
-        PhaseName {  1.0 * pi / 4.0, "1/4pi" },
-        PhaseName {  2.0 * pi / 4.0, "1/2pi" },
-        PhaseName {  3.0 * pi / 4.0, "3/4pi" },
-        PhaseName {  4.0 * pi / 4.0, "1pi" },
-        PhaseName {  5.0 * pi / 4.0, "5/4pi" },
-        PhaseName {  6.0 * pi / 4.0, "3/2pi" },
-        PhaseName {  7.0 * pi / 4.0, "7/4pi" },
-        PhaseName {  8.0 * pi / 4.0, "2pi" }
+        PhaseName { math::Phase::create_from_radians(-8.0 * std::numbers::pi / 4.0), "-2pi" },
+        PhaseName { math::Phase::create_from_radians(-7.0 * std::numbers::pi / 4.0), "-7/4pi" },
+        PhaseName { math::Phase::create_from_radians(-6.0 * std::numbers::pi / 4.0), "-3/2pi" },
+        PhaseName { math::Phase::create_from_radians(-5.0 * std::numbers::pi / 4.0), "-5/4pi" },
+        PhaseName { math::Phase::create_from_radians(-4.0 * std::numbers::pi / 4.0), "-1pi" },
+        PhaseName { math::Phase::create_from_radians(-3.0 * std::numbers::pi / 4.0), "-3/4pi" },
+        PhaseName { math::Phase::create_from_radians(-2.0 * std::numbers::pi / 4.0), "-1/2pi" },
+        PhaseName { math::Phase::create_from_radians(-1.0 * std::numbers::pi / 4.0), "-1/4pi" },
+        PhaseName { math::Phase::create_from_radians( 0.0 * std::numbers::pi / 4.0), "0" },
+        PhaseName { math::Phase::create_from_radians( 1.0 * std::numbers::pi / 4.0), "1/4pi" },
+        PhaseName { math::Phase::create_from_radians( 2.0 * std::numbers::pi / 4.0), "1/2pi" },
+        PhaseName { math::Phase::create_from_radians( 3.0 * std::numbers::pi / 4.0), "3/4pi" },
+        PhaseName { math::Phase::create_from_radians( 4.0 * std::numbers::pi / 4.0), "1pi" },
+        PhaseName { math::Phase::create_from_radians( 5.0 * std::numbers::pi / 4.0), "5/4pi" },
+        PhaseName { math::Phase::create_from_radians( 6.0 * std::numbers::pi / 4.0), "3/2pi" },
+        PhaseName { math::Phase::create_from_radians( 7.0 * std::numbers::pi / 4.0), "7/4pi" },
+        PhaseName { math::Phase::create_from_radians( 8.0 * std::numbers::pi / 4.0), "2pi" }
     };
 public:
     PhasePlot () = default;
@@ -59,14 +59,14 @@ public:
             double phase = data.response.arg();
             if (!m_data.empty()) {
                 double diff = phase - m_data.back().y;
-                if (diff >= pi) {
-                    phase -= 2.0 * pi;
+                if (diff >= std::numbers::pi) {
+                    phase -= 2.0 * std::numbers::pi;
                 }
-                else if (diff <= -pi) {
-                    phase += 2.0 * pi;
+                else if (diff <= -std::numbers::pi) {
+                    phase += 2.0 * std::numbers::pi;
                 }
             }
-            add_point(std::log10(data.frequency), phase);
+            add_point(data.frequency.decade(), phase);
         }
 
         for (auto& point : m_data) {
@@ -83,13 +83,14 @@ public:
         get_min_max(min_x, min_y, max_x, max_y);
         const double height = max_y - min_y;
         // add the vertical decade lines and text
-        double frequency = min_freq;
+        auto frequency = min_freq;
         while (frequency < max_freq) {
-            m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
+            const auto decade = frequency.decade();
+            m_lines.push_back(Line{decade, min_y, decade, max_y});
             m_lines.back().decorate(1.0, colors::black, colors::black);
             
             for (int i = 1; i < 10; ++i) {
-                const double x = std::log10(frequency + i * frequency);
+                const double x = (frequency + i * frequency).decade();
                 m_lines.push_back(Line{x, min_y, x, max_y});
                 m_lines.back().decorate(0.2, colors::black, colors::black);
             }
@@ -99,7 +100,7 @@ public:
 
         // adding horizontal lines
         for (const auto& phaseName : phaseNames) {
-            const auto phase = phaseName.phase;
+            const auto phase = phaseName.phase.as_radians();
             if ((min_y <= phase) && (max_y >= phase)) {
                 m_lines.push_back(Line{min_x, phase, max_x, phase});
                 m_texts.push_back(Text{min_x, phase, phaseName.name, 0.1});

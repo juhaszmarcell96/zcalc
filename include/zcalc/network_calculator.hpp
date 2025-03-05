@@ -73,7 +73,7 @@ public:
         for (auto source : sources) {
             source->reactivate(); // reactive this single source
             // set the frequency of the network
-            frequency_t frequency = source->get_frequency();
+            const auto& frequency = source->get_frequency();
             for (auto& e : g.get_edges()) {
                 auto& component = *(e.get_weight());
                 if (!component.is_source()) {

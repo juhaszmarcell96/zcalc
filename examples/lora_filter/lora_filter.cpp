@@ -13,7 +13,7 @@ int main () {
     lora_filter.add_node ("gnd");
     lora_filter.add_node ("in");
     lora_filter.add_node ("out");
-    lora_filter.add_voltage_source ("Us", 1.0, 868.0e6, "in", "gnd");
+    lora_filter.add_voltage_source ("Us", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
     lora_filter.add_resistor("R_output", 10e9, "out", "gnd");
     lora_filter.add_capacitor("C1", 4.7e-12, "in", "gnd");
     lora_filter.add_capacitor("C2", 1.2e-12, "in", "out");
@@ -21,8 +21,17 @@ int main () {
     lora_filter.add_capacitor("C3", 1.8e-12, "out", "gnd");
     lora_filter.add_resistor("RL", 50.0, "out", "gnd");
 
+    zcalc::plot::PlotterConfig config {};
+    config.filename = "lora_filter";
+    config.input_source = "Us";
+    config.output_component = "R_output";
+    config.target_frequency = zcalc::math::Frequency::create_from_hz(868.0e6);
+    config.min_frequency = zcalc::math::Frequency::create_from_hz(1);
+    config.max_frequency = zcalc::math::Frequency::create_from_hz(1.0e10);
+    config.granularity = 0.05;
+
     zcalc::plot::html::Plotter plotter {};
-    plotter.plot("lora_filter", lora_filter, "Us", "R_output", 868.0e6);
+    plotter.plot(lora_filter, config);
 
     return 0;
 }

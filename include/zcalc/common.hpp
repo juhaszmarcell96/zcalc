@@ -4,14 +4,11 @@
 
 namespace zcalc {
 
-typedef double frequency_t;
 typedef double magnitude_t;
-typedef double phase_t;
 
 static constexpr double epsilon = 1e-4;
 
 static constexpr bool log_enabled = true;
-static constexpr double pi = 3.14159265358979323846;
 
 static constexpr std::size_t equ_current_offset = 0;
 static constexpr std::size_t equ_voltage_offset = 1;

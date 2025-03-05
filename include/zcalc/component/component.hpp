@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include <zcalc/math/complex.hpp>
+#include <zcalc/math/frequency.hpp>
 
 namespace zcalc {
 namespace component {
@@ -15,8 +16,8 @@ class IComponent {
 public:
     virtual ~IComponent() = default;
 
-    virtual void set_frequency (frequency_t frequency) = 0;
-    virtual frequency_t get_frequency () const = 0;
+    virtual void set_frequency (const math::Frequency& frequency) = 0;
+    virtual const math::Frequency& get_frequency () const = 0;
 
     virtual id_t get_id () const = 0;
     virtual Node get_gate (std::size_t index) const = 0;

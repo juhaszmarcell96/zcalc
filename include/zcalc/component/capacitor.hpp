@@ -16,11 +16,11 @@ public:
     }
     ~Capacitor () = default;
 
-    void set_frequency (double frequency) override {
-        if (frequency == 0.0) { m_open = true; }
+    void set_frequency (const math::Frequency& frequency) override {
+        if (frequency.is_dc()) { m_open = true; }
         else {
             m_open = false;
-            m_value = std::polar(1.0 / (2.0 * pi * frequency * m_capacitance), -pi / 2.0);
+            m_value = std::polar(1.0 / (frequency.as_rad_per_sec() * m_capacitance), -std::numbers::pi / 2.0);
         }
     }
 };

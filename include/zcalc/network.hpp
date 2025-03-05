@@ -42,7 +42,7 @@ public:
         return m_components.at(designator)->get_id();
     }
 
-    std::shared_ptr<component::IComponent> get_component (std::string designator) {
+    std::shared_ptr<component::IComponent> get_component (const std::string& designator) {
         if (!m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " does not exists"); }
         return m_components.at(designator);
     }
@@ -66,7 +66,7 @@ public:
     }
 
     /* add a voltage source to the network */
-    id_t add_voltage_source (const std::string& designator, double voltage, frequency_t frequency, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_voltage_source (const std::string& designator, double voltage, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::VoltageSource>(voltage, frequency, get_node(node_0_des), get_node(node_1_des), id);
@@ -74,7 +74,7 @@ public:
     }
 
     /* add a current source to the network */
-    id_t add_current_source (const std::string& designator, double current, frequency_t frequency, const std::string& node_0_des, const std::string& node_1_des) {
+    id_t add_current_source (const std::string& designator, double current, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::CurrentSource>(current, frequency, get_node(node_0_des), get_node(node_1_des), id);
@@ -143,7 +143,7 @@ public:
         return g;
     }
 
-    void print () {
+    void print () const {
         std::cout << "nodes" << std::endl;
         for (const auto& [des, val] : m_nodes) {
             std::cout << "    " << des << " : " << val << std::endl;

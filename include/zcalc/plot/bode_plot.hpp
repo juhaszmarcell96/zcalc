@@ -3,13 +3,14 @@
 #include <algorithm>
 
 #include "zcalc/math/complex.hpp"
+#include "zcalc/math/frequency.hpp"
 #include "zcalc/plot/scatter_plot.hpp"
 
 namespace zcalc {
 namespace plot {
 
 struct BodeDataPoint {
-    double frequency { 0.0 };
+    math::Frequency frequency;
     math::Complex response { 0.0, 0.0 };
 };
 
@@ -24,7 +25,7 @@ public:
     BodePlot () = default;
     ~BodePlot () = default;
 
-    void add(double frequency, math::Complex response) {
+    void add(const math::Frequency& frequency, math::Complex response) {
         m_data_points.push_back(BodeDataPoint{frequency, response});
     }
 
@@ -33,13 +34,13 @@ public:
         m_texts.clear();
     }
 
-    void mark_frequency (double frequency) {
+    void mark_frequency (const math::Frequency& frequency) {
         double min_x { 0.0 };
         double max_x { 0.0 };
         double min_y { 0.0 };
         double max_y { 0.0 };
         get_min_max(min_x, min_y, max_x, max_y);
-        m_lines.push_back(Line{std::log10(frequency), min_y, std::log10(frequency), max_y});
+        m_lines.push_back(Line{frequency.decade(), min_y, frequency.decade(), max_y});
         m_lines.back().decorate(2.0, colors::green, colors::green);
     }
 

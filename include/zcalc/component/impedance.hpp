@@ -1,5 +1,7 @@
 #pragma once
 
+#include <numbers>
+
 #include <zcalc/component/two_pole.hpp>
 
 namespace zcalc {
@@ -23,7 +25,7 @@ public:
     double get_reactance () const { return std::imag(m_value.get()); }
 
     friend std::ostream& operator<<(std::ostream& os, const Impedance& z) {
-        os << "[(" << z.get_resistance() << ") + j(" << z.get_reactance() << ")] ohm     / " << z.get_modulus() << "<" << z.get_argument() * 180.0 / pi << "° /";
+        os << "[(" << z.get_resistance() << ") + j(" << z.get_reactance() << ")] ohm     / " << z.get_modulus() << "<" << z.get_argument() * 180.0 / std::numbers::pi << "° /";
         return os;
     }
 
@@ -44,11 +46,11 @@ public:
         return math::Complex { 0.0, 0.0 };
     }
 
-    frequency_t get_frequency () const override {
+    const math::Frequency& get_frequency () const override {
         throw std::runtime_error("why do you want the frequency of an impedance?");
     }
 
-    void set_frequency (frequency_t frequency) override {
+    void set_frequency (const math::Frequency& frequency) override {
         throw std::runtime_error("impedance does not have an inherent frequency");
     }
 

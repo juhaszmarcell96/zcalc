@@ -16,11 +16,11 @@ public:
     }
     ~Inductor () = default;
 
-    void set_frequency (frequency_t frequency) override {
-        if (frequency == 0.0) { m_short = true; }
+    void set_frequency (const math::Frequency& frequency) override {
+        if (frequency.is_dc()) { m_short = true; }
         else {
             m_short = false;
-            m_value = std::polar(2.0 * pi * frequency * m_inductance, pi / 2.0);
+            m_value = std::polar(frequency.as_rad_per_sec() * m_inductance, std::numbers::pi / 2.0);
         }
     }
 };

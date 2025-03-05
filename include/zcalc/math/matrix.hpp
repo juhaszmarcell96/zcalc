@@ -113,7 +113,7 @@ public:
         return *this;
     }
 
-    friend bool operator== (const Matrix<T>& matrix_1, const Matrix<T>& matrix_2) {
+    friend bool operator==(const Matrix<T>& matrix_1, const Matrix<T>& matrix_2) {
         if (matrix_1.get_num_rows() != matrix_2.get_num_rows()) return false;
         if (matrix_1.get_num_cols() != matrix_2.get_num_cols()) return false;
         for (std::size_t i = 0; i < matrix_1.get_num_rows(); ++i) {
@@ -124,7 +124,7 @@ public:
         return true;
     }
 
-    friend bool operator!= (const Matrix<T>& matrix_1, const Matrix<T>& matrix_2) {
+    friend bool operator!=(const Matrix<T>& matrix_1, const Matrix<T>& matrix_2) {
         if (matrix_1.get_num_rows() != matrix_2.get_num_rows()) return true;
         if (matrix_1.get_num_cols() != matrix_2.get_num_cols()) return true;
         for (std::size_t i = 0; i < matrix_1.get_num_rows(); ++i) {

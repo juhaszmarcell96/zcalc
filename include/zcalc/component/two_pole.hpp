@@ -32,6 +32,10 @@ public:
         else if (m_gates[1] == node) { return math::Complex { -1.0, 0.0 }; }
         else { return math::Complex { 0.0, 0.0 }; }
     }
+
+    void add_to_graph (graph::Graph<component::IComponent*>& graph) override {
+        graph.add_edge(m_gates[0], m_gates[1], this);
+    }
 };
 
 } /* namespace component */

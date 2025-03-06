@@ -5,6 +5,7 @@
 
 #include <zcalc/math/complex.hpp>
 #include <zcalc/math/frequency.hpp>
+#include <zcalc/graph/graph.hpp>
 
 namespace zcalc {
 namespace component {
@@ -33,6 +34,8 @@ public:
     virtual bool is_source () const = 0;
     virtual void eliminate () = 0;
     virtual void reactivate () = 0;
+
+    virtual void add_to_graph (graph::Graph<component::IComponent*>& graph) = 0;
 };
 
 class ComponentBase : public IComponent {

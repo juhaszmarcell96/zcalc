@@ -148,15 +148,15 @@ public:
         return g;
     }
 
-    graph::Graph<std::shared_ptr<component::IComponent>> to_graph_pointers () const {
+    graph::Graph<component::IComponent*> to_graph_pointers () const {
         // nodes are the vertices, compnents are the edges
         const auto num_nodes = m_nodes.size();
         if (num_nodes > std::numeric_limits<graph::Vertex>::max()) {
             throw std::invalid_argument("too many nodes in the graph");
         }
-        graph::Graph<std::shared_ptr<component::IComponent>> g { static_cast<graph::Vertex>(num_nodes) };
+        graph::Graph<component::IComponent*> g { static_cast<graph::Vertex>(num_nodes) };
         for (const auto& [des, val] : m_components) {
-            g.add_edge(val->get_gate(0), val->get_gate(1), val);
+            val->add_to_graph(g);
         }
         return g;
     }

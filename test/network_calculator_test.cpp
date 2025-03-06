@@ -55,12 +55,12 @@ TEST(NetworkCalculatorTest, VoltageResponse) {
     network.add_capacitor("C2", 1.0e-6, "out", "gnd"); // 1uF
     network.add_resistor("R", 40, "out", "A"); // 40ohm
     network.add_inductor("L", 8.0e-3, "A", "gnd"); // 8mH
-    const auto osci_id = network.add_resistor("osci", 10e9, "out", "gnd");
+    const auto voltmeter = network.add_voltmeter("voltmeter", "out", "gnd");
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at(osci_id).voltages.size(), 1);
-    ASSERT_EQ(results.at(osci_id).voltages[0].to_complex(), zcalc::math::Complex(1.53888, 7.69266));
-    ASSERT_EQ(results.at(osci_id).voltages[0].get_frequency().as_rad_per_sec(), 5000.0);
+    ASSERT_EQ(results.at(voltmeter).voltages.size(), 1);
+    ASSERT_EQ(results.at(voltmeter).voltages[0].to_complex(), zcalc::math::Complex(1.53846, 7.69231));
+    ASSERT_EQ(results.at(voltmeter).voltages[0].get_frequency().as_rad_per_sec(), 5000.0);
 }
 
 TEST(NetworkCalculatorTest, VoltageAndCurrentResponse) {

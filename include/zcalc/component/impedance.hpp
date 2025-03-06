@@ -50,10 +50,6 @@ public:
         throw std::runtime_error("why do you want the frequency of an impedance?");
     }
 
-    void set_frequency (const math::Frequency& frequency) override {
-        throw std::runtime_error("impedance does not have an inherent frequency");
-    }
-
     bool is_source () const override { return false; }
 
     void eliminate () override {

@@ -5,6 +5,7 @@
 #include <zcalc/math/linear_equation.hpp>
 #include <zcalc/math/linear_equation_system.hpp>
 #include <zcalc/math/symbolic_linear_equation.hpp>
+#include <zcalc/math/symbolic_linear_equation_system.hpp>
 
 #include <zcalc/graph/vertex.hpp>
 #include <zcalc/graph/edge.hpp>
@@ -33,7 +34,7 @@ public:
     NetworkCalculator () = default;
     ~NetworkCalculator () = default;
 
-    static std::map<component::id_t, Result> compute (const Network& network) {
+    static std::map<std::string, std::vector<math::Phasor>> compute (const Network& network) {
         // convert to graph
         auto g = network.to_graph_pointers();
         std::vector<zcalc::component::IComponent*> sources;
@@ -44,24 +45,14 @@ public:
                 sources.push_back(e.get_weight());
             }
         }
-        // count the number of variables
-        std::size_t num_variables { 0 };
-        for (const auto& e : g.get_edges()) {
-            num_variables += e.get_weight()->get_num_variables();
-        }
-        if ((num_variables % 2) != 0) {
-            throw std::runtime_error("cannot deal with an odd number of variables");
-        }
         // define the results
-        std::map<component::id_t, Result> results {};
-        for (auto& e : g.get_edges()) {
-            auto& component = *(e.get_weight());
-            results[component.get_id()] = Result {};
-        }
-
+        std::map<std::string, std::vector<math::Phasor>> results {};
         // go over the sources, reactivate them one by one, add the result at the end -> supoerposition
         for (auto source : sources) {
-            source->reactivate(); // reactive this single source
+            // create the equation system
+            math::SymbolicLinearEquationSystem<math::Complex> equation_system {};
+            // reactive this single source
+            source->reactivate();
             // set the frequency of the network
             const auto& frequency = source->get_frequency();
             for (auto& e : g.get_edges()) {
@@ -78,7 +69,7 @@ public:
                     const auto& component = *(e.get_weight());
                     equ.merge(component.kcl(v));
                 }
-                std::cout << equ << std::endl;
+                equation_system.add(equ);
             }
             // Kirchhoff's voltage law -> one equation per loop
             const auto cycles = g.find_cycles();
@@ -90,12 +81,20 @@ public:
                     const auto& component = *(e.get_weight());
                     equ.merge(component.kvl(e.get_v0()));
                 }
-                std::cout << equ << std::endl;
+                equation_system.add(equ);
             }
             // equation for every component -> one equation per component
             for (const auto& e : g.get_edges()) {
                 const auto& component = *(e.get_weight());
-                std::cout << component.own() << std::endl;
+                equation_system.add(component.own());
+            }
+            // solve the equation
+            const auto solutions = equation_system.solve();
+            if (!solutions.has_value()) {
+                throw std::runtime_error("could not solve equation system");
+            }
+            for (const auto& [var, val] : solutions.value()) {
+                results[var].push_back(math::Phasor{val, frequency});
             }
             source->eliminate(); // eliminate the source again
         }

@@ -17,31 +17,28 @@ TEST(NetworkCalculatorTest, VoltageDivider) {
     const auto r2_id = test_network.add_resistor("R2", 10, "out", "gnd");
 
     const auto results = zcalc::NetworkCalculator::compute(test_network);
-    ASSERT_EQ(results.size(), 3);
+    ASSERT_EQ(results.size(), 6);
 
-    ASSERT_EQ(results.at(us_id).currents.size(), 1);
-    ASSERT_EQ(results.at(us_id).currents[0].to_complex(), zcalc::math::Complex(-0.05, 0.0));
-    ASSERT_EQ(results.at(us_id).currents[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at("Us_i").size(), 1);
+    ASSERT_EQ(results.at("Us_i")[0].to_complex(), zcalc::math::Complex(-0.05, 0.0));
+    ASSERT_EQ(results.at("Us_i")[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at("Us_u").size(), 1);
+    ASSERT_EQ(results.at("Us_u")[0].to_complex(), zcalc::math::Complex(1.0, 0.0));
+    ASSERT_EQ(results.at("Us_u")[0].get_frequency().as_rad_per_sec(), 0.0);
 
-    ASSERT_EQ(results.at(us_id).voltages.size(), 1);
-    ASSERT_EQ(results.at(us_id).voltages[0].to_complex(), zcalc::math::Complex(1.0, 0.0));
-    ASSERT_EQ(results.at(us_id).voltages[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at("R1_i").size(), 1);
+    ASSERT_EQ(results.at("R1_i")[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
+    ASSERT_EQ(results.at("R1_i")[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at("R1_u").size(), 1);
+    ASSERT_EQ(results.at("R1_u")[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
+    ASSERT_EQ(results.at("R1_u")[0].get_frequency().as_rad_per_sec(), 0.0);
 
-    ASSERT_EQ(results.at(r1_id).currents.size(), 1);
-    ASSERT_EQ(results.at(r1_id).currents[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
-    ASSERT_EQ(results.at(r1_id).currents[0].get_frequency().as_rad_per_sec(), 0.0);
-
-    ASSERT_EQ(results.at(r1_id).voltages.size(), 1);
-    ASSERT_EQ(results.at(r1_id).voltages[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
-    ASSERT_EQ(results.at(r1_id).voltages[0].get_frequency().as_rad_per_sec(), 0.0);
-
-    ASSERT_EQ(results.at(r2_id).currents.size(), 1);
-    ASSERT_EQ(results.at(r2_id).currents[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
-    ASSERT_EQ(results.at(r2_id).currents[0].get_frequency().as_rad_per_sec(), 0.0);
-
-    ASSERT_EQ(results.at(r2_id).voltages.size(), 1);
-    ASSERT_EQ(results.at(r2_id).voltages[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
-    ASSERT_EQ(results.at(r2_id).voltages[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at("R2_i").size(), 1);
+    ASSERT_EQ(results.at("R2_i")[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
+    ASSERT_EQ(results.at("R2_i")[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at("R2_u").size(), 1);
+    ASSERT_EQ(results.at("R2_u")[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
+    ASSERT_EQ(results.at("R2_u")[0].get_frequency().as_rad_per_sec(), 0.0);
 }
 
 TEST(NetworkCalculatorTest, VoltageResponse) {
@@ -58,9 +55,9 @@ TEST(NetworkCalculatorTest, VoltageResponse) {
     const auto voltmeter = network.add_voltmeter("voltmeter", "out", "gnd");
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at(voltmeter).voltages.size(), 1);
-    ASSERT_EQ(results.at(voltmeter).voltages[0].to_complex(), zcalc::math::Complex(1.53846, 7.69231));
-    ASSERT_EQ(results.at(voltmeter).voltages[0].get_frequency().as_rad_per_sec(), 5000.0);
+    ASSERT_EQ(results.at("voltmeter_u").size(), 1);
+    ASSERT_EQ(results.at("voltmeter_u")[0].to_complex(), zcalc::math::Complex(1.53846, 7.69231));
+    ASSERT_EQ(results.at("voltmeter_u")[0].get_frequency().as_rad_per_sec(), 5000.0);
 }
 
 TEST(NetworkCalculatorTest, VoltageAndCurrentResponse) {
@@ -92,13 +89,13 @@ TEST(NetworkCalculatorTest, VoltageAndCurrentResponse) {
     const auto c_id = network.add_capacitor("C", 120.0e-9, "out", "gnd"); // 120nF
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at(c_id).voltages.size(), 1);
-    ASSERT_EQ(results.at(c_id).voltages[0].to_complex(), zcalc::math::Complex(0.830672, -2.89235));
-    ASSERT_EQ(results.at(c_id).voltages[0].get_frequency().as_hz(), 5000.0);
+    ASSERT_EQ(results.at("C_u").size(), 1);
+    ASSERT_EQ(results.at("C_u")[0].to_complex(), zcalc::math::Complex(0.830672, -2.89235));
+    ASSERT_EQ(results.at("C_u")[0].get_frequency().as_hz(), 5000.0);
 
-    ASSERT_EQ(results.at(r_id).currents.size(), 1);
-    ASSERT_EQ(results.at(r_id).currents[0].to_complex(), zcalc::math::Complex(0.0122884, -0.00168902));
-    ASSERT_EQ(results.at(r_id).currents[0].get_frequency().as_hz(), 5000.0);
+    ASSERT_EQ(results.at("R3_i").size(), 1);
+    ASSERT_EQ(results.at("R3_i")[0].to_complex(), zcalc::math::Complex(0.0122884, -0.00168902));
+    ASSERT_EQ(results.at("R3_i")[0].get_frequency().as_hz(), 5000.0);
 }
 
 TEST(NetworkCalculatorTest, SuperpositionTest) {
@@ -137,10 +134,10 @@ TEST(NetworkCalculatorTest, SuperpositionTest) {
     network.add_inductor("L", 1.0e-3, "C", "D"); // 1mH
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at(r_id).currents.size(), 2);
-    ASSERT_EQ(results.at(r_id).currents[0].to_complex(), zcalc::math::Complex(0.025, 0.0));
-    ASSERT_EQ(results.at(r_id).currents[0].get_frequency().as_hz(), 0.0);
-    ASSERT_NEAR(results.at(r_id).currents[1].to_complex().real(), 0.0678555, 0.0001);
-    ASSERT_NEAR(results.at(r_id).currents[1].to_complex().imag(), -0.0509473, 0.0001);
-    ASSERT_EQ(results.at(r_id).currents[1].get_frequency().as_rad_per_sec(), 10.0e3);
+    ASSERT_EQ(results.at("R2_i").size(), 2);
+    ASSERT_EQ(results.at("R2_i")[0].to_complex(), zcalc::math::Complex(0.025, 0.0));
+    ASSERT_EQ(results.at("R2_i")[0].get_frequency().as_hz(), 0.0);
+    ASSERT_NEAR(results.at("R2_i")[1].to_complex().real(), 0.0678555, 0.0001);
+    ASSERT_NEAR(results.at("R2_i")[1].to_complex().imag(), -0.0509473, 0.0001);
+    ASSERT_EQ(results.at("R2_i")[1].get_frequency().as_rad_per_sec(), 10.0e3);
 }

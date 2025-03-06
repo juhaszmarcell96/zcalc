@@ -23,7 +23,6 @@ public:
     void plot (html::Figure* fig_magnitude, html::Figure* fig_phase, Network& network, const PlotterConfig& config) {
         fig_magnitude->set_plot(&m_magnitude_plot);
         fig_phase->set_plot(&m_phase_plot);
-        component::id_t output_component_id = network.get_component_id(config.output_component);
         auto input_source_ptr = network.get_component(config.input_source);
         if (!input_source_ptr->is_source()) {
             throw std::invalid_argument("component " + config.input_source + " must be a source");
@@ -38,7 +37,7 @@ public:
                 input_source_ptr->set_frequency(frequency); // set the frequency of the input source
                 const auto results = NetworkCalculator::compute(network);
                 math::Complex response { 0.0, 0.0 };
-                for (const auto& voltage : results.at(output_component_id).voltages)
+                for (const auto& voltage : results.at(config.output_component + "_u"))
                 {
                     // response is the voltage accross the output component at the given frequency -> TODO : check for source component ID rather than frequency
                     if (voltage.get_frequency() == frequency) {

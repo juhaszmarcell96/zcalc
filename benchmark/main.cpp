@@ -51,7 +51,7 @@ int main () {
         const auto results = zcalc::NetworkCalculator::compute(network);
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> elapsed = end - start;
-        std::cout << "\r #" << i << " - result : " << results.at(r_id).currents[0] << " computation time: " << elapsed.count() << " ms                   " << std::flush;
+        std::cout << "\r #" << i << " - result : " << results.at("R2_i")[0] << " computation time: " << elapsed.count() << " ms                   " << std::flush;
         durations.push_back(elapsed.count());
     }
 

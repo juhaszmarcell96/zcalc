@@ -14,5 +14,6 @@ add_executable (
     path_test.cpp
     graph_test.cpp
     network_calculator_test.cpp
+    symbolic_linear_equation_test.cpp
 )
 target_link_libraries (tests ${GTEST_LIBRARIES} pthread)

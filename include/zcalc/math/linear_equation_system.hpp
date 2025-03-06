@@ -12,6 +12,7 @@
 #include <stdexcept>
 
 #include <zcalc/math/linear_equation.hpp>
+#include <zcalc/math/complex.hpp>
 
 namespace zcalc {
 namespace math {

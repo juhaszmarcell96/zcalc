@@ -11,7 +11,7 @@ protected:
     bool m_open { false };
 public:
     TwoPoleComponent () = delete;
-    TwoPoleComponent (Node node_0, Node node_1, id_t id) : ComponentBase(id) {
+    TwoPoleComponent (Node node_0, Node node_1, id_t id, const std::string& designator) : ComponentBase(id, designator) {
         m_gates.push_back(node_0);
         m_gates.push_back(node_1);
     }
@@ -19,18 +19,52 @@ public:
 
     std::size_t get_num_variables () const override { return 2; }
 
-    math::Complex kcl (Node node) const override {
-        if (m_open) { return math::Complex { 0.0, 0.0 }; } // open circuit -> no current
-        if (m_gates[0] == node) { return math::Complex { -1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return math::Complex { 1.0, 0.0 }; }
-        else { return math::Complex { 0.0, 0.0 }; }
+    math::SymbolicLinearEquation<math::Complex> kcl (Node node) const override {
+        const std::string current_var = get_designator() + "_i";
+        math::SymbolicLinearEquation<math::Complex> equation {};
+        if (m_open) {
+            // open circuit -> no current
+            equation.add_term(current_var, math::Complex { 0.0, 0.0 });
+        }
+        else {
+            if (m_gates[0] == node) {
+                // current flowing out of the node
+                equation.add_term(current_var, math::Complex { -1.0, 0.0 });
+            }
+            else if (m_gates[1] == node) {
+                // current flowing into the node
+                equation.add_term(current_var, math::Complex { 1.0, 0.0 });
+            }
+            else {
+                // not my node
+                equation.add_term(current_var, math::Complex { 0.0, 0.0 });
+            }
+        }
+        return equation;
     }
 
-    math::Complex kvl (Node node) const override {
-        if (m_short) { return math::Complex{ 0.0, 0.0 }; } // short circuit -> no voltage
-        if (m_gates[0] == node) { return math::Complex { 1.0, 0.0 }; }
-        else if (m_gates[1] == node) { return math::Complex { -1.0, 0.0 }; }
-        else { return math::Complex { 0.0, 0.0 }; }
+    math::SymbolicLinearEquation<math::Complex> kvl (Node node) const override {
+        const std::string voltage_var = get_designator() + "_u";
+        math::SymbolicLinearEquation<math::Complex> equation {};
+        if (m_short) {
+            // short circuit -> no voltage
+            equation.add_term(voltage_var, math::Complex { 0.0, 0.0 });
+        }
+        else {
+            if (m_gates[0] == node) {
+                // loop direction aligns with the voltage drop direction
+                equation.add_term(voltage_var, math::Complex { 1.0, 0.0 });
+            }
+            else if (m_gates[1] == node) {
+                // loop direction is opposite to the voltage drop direction
+                equation.add_term(voltage_var, math::Complex { -1.0, 0.0 });
+            }
+            else {
+                // not my node
+                equation.add_term(voltage_var, math::Complex { 0.0, 0.0 });
+            }
+        }
+        return equation;
     }
 
     void add_to_graph (graph::Graph<component::IComponent*>& graph) override {

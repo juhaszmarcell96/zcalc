@@ -22,6 +22,10 @@ public:
     SymbolicLinearEquation (const std::string& label) : m_label(label) { }
     ~SymbolicLinearEquation () = default;
 
+    void set_label (const std::string& label) {
+        m_label = label;
+    }
+
     void add_term (const std::string& variable, const T& coefficient) {
         for (auto& term : m_terms) {
             if (term.get_variable() == variable) {
@@ -34,6 +38,9 @@ public:
     void set_result (const T& value) {
         m_result = value;
     }
+    void add_result (const T& value) {
+        m_result += value;
+    }
     T get_coefficient (const std::string& variable) const {
         for (const auto& term : m_terms) {
             if (term.get_variable() == variable) {
@@ -44,6 +51,13 @@ public:
     }
     T get_result () const {
         return m_result;
+    }
+
+    void merge (const SymbolicLinearEquation<T>& equ) {
+        for (const auto& term : equ.m_terms) {
+            add_term(term.get_variable(), term.get_coefficient());
+        }
+        add_result(equ.get_result());
     }
 
     friend std::ostream& operator<<(std::ostream& os, const SymbolicLinearEquation<T>& equation) {

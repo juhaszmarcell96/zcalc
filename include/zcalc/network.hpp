@@ -71,7 +71,7 @@ public:
     id_t add_voltage_source (const std::string& designator, double voltage, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::VoltageSource>(voltage, frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::VoltageSource>(voltage, frequency, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -79,7 +79,7 @@ public:
     id_t add_current_source (const std::string& designator, double current, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::CurrentSource>(current, frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::CurrentSource>(current, frequency, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
     
@@ -95,7 +95,7 @@ public:
     id_t add_resistor (const std::string& designator, double resistance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -103,7 +103,7 @@ public:
     id_t add_inductor (const std::string& designator, double inductance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Inductor>(inductance, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Inductor>(inductance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -111,7 +111,7 @@ public:
     id_t add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Capacitor>(capacitance, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Capacitor>(capacitance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -119,7 +119,7 @@ public:
     id_t add_voltmeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Voltmeter>(get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Voltmeter>(get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -127,7 +127,7 @@ public:
     id_t add_ammeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Ammeter>(get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Ammeter>(get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 

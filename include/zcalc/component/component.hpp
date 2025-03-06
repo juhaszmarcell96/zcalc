@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <cstdint>
+#include <string>
 
 #include <zcalc/math/complex.hpp>
+#include <zcalc/math/symbolic_linear_equation.hpp>
 #include <zcalc/math/frequency.hpp>
 #include <zcalc/graph/graph.hpp>
 
@@ -21,13 +23,12 @@ public:
     virtual const math::Frequency& get_frequency () const = 0;
 
     virtual id_t get_id () const = 0;
+    virtual const std::string& get_designator () const = 0;
     virtual Node get_gate (std::size_t index) const = 0;
 
-    virtual math::Complex kcl (Node node) const = 0;
-    virtual math::Complex kvl (Node node) const = 0;
-    virtual math::Complex own_i () const = 0;
-    virtual math::Complex own_u () const = 0;
-    virtual math::Complex own_r () const = 0;
+    virtual math::SymbolicLinearEquation<math::Complex> kcl (Node node) const = 0;
+    virtual math::SymbolicLinearEquation<math::Complex> kvl (Node node) const = 0;
+    virtual math::SymbolicLinearEquation<math::Complex> own () const = 0;
 
     virtual std::size_t get_num_variables () const = 0;
 
@@ -41,14 +42,16 @@ public:
 class ComponentBase : public IComponent {
 private:
     id_t m_id;
+    std::string m_designator;
 protected:
     std::vector<Node> m_gates;
 public:
     ComponentBase () = delete;
-    ComponentBase (id_t id) : m_id(id) {}
+    ComponentBase (id_t id, const std::string& designator) : m_id(id), m_designator(designator) {}
     virtual ~ComponentBase() = default;
 
     id_t get_id () const override { return m_id; }
+    const std::string& get_designator () const override { return m_designator; }
 
     Node get_gate (std::size_t index) const override {
         return m_gates[index];

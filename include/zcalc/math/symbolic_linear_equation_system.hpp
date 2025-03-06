@@ -23,6 +23,10 @@ public:
         m_equations.push_back(equ);
     }
 
+    void add (SymbolicLinearEquation<T>&& equ) {
+        m_equations.push_back(std::move(equ));
+    }
+
     std::optional<std::map<std::string, T>> solve () const {
         std::map<std::string, T> variables;
         // get the number of variables by assempling the result
@@ -43,7 +47,7 @@ public:
                 ++variable_index;
             }
             linEqu.set_result(equ.get_result());
-            lin_equ_system.append_equation(linEqu);
+            lin_equ_system.append_equation(std::move(linEqu));
         }
         // solve the equation system
         const auto solutions = lin_equ_system.solve();

@@ -11,7 +11,6 @@
 namespace zcalc {
 namespace plot {
 
-/* bode plot supports frequencies between 1Hz and 10 GHz -> 10 decades */
 class Bode {
 private:
     MagnitudePlot m_magnitude_plot;

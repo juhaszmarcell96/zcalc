@@ -141,6 +141,12 @@ public:
         return true;
     }
 
+    bool append_equation (LinearEquation<Complex>&& equation) {
+        if (equation.get_num_variables() != m_num_variables) { return false; }
+        m_linear_equation_system.push_back(std::move(equation));
+        return true;
+    }
+
     bool set_label (const std::string& label, std::size_t index) {
         if (index >= m_labels.size()) { return false; }
         m_labels[index] = label;

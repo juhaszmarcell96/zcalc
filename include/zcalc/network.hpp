@@ -7,6 +7,8 @@
 #include <zcalc/component/inductor.hpp>
 #include <zcalc/component/voltage_source.hpp>
 #include <zcalc/component/current_source.hpp>
+#include <zcalc/component/voltmeter.hpp>
+#include <zcalc/component/ammeter.hpp>
 
 #include <zcalc/math/complex.hpp>
 
@@ -110,6 +112,22 @@ public:
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::Capacitor>(capacitance, get_node(node_0_des), get_node(node_1_des), id);
+        return id;
+    }
+
+    /* add a voltmeter to the network */
+    id_t add_voltmeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::Voltmeter>(get_node(node_0_des), get_node(node_1_des), id);
+        return id;
+    }
+
+    /* add an ammeter to the network */
+    id_t add_ammeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::Ammeter>(get_node(node_0_des), get_node(node_1_des), id);
         return id;
     }
 

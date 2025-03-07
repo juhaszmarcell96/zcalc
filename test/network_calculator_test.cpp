@@ -235,3 +235,40 @@ TEST(NetworkCalculatorTest, VoltageControlledVoltageSourceTest) {
     ASSERT_EQ(results.at(R4->current()).size(), 3);
     ASSERT_EQ(results.at(R4->current())[0].to_complex() + results.at(R4->current())[1].to_complex() + results.at(R4->current())[2].to_complex(), zcalc::math::Complex(0.00115, 0.0));
 }
+
+TEST(NetworkCalculatorTest, IdealTransformerTest) {
+    //
+    //                        Iprim    Isec
+    //             prim     1   ->     <-   3      sec
+    //     ┌────────────────o─────┐   ┌─────o─────────────┐
+    //     │                     o│n:1│o                  │
+    //     │                      /   /                   │
+    //  ┌──┼──┐ |                 \   \                 ┌─┴─┐
+    //  │  │  │ | Us              /   /                 │ R │
+    //  │  │  │ |                 \   \                 │   │
+    //  └──┼──┘ v                 │   │                 └─┬─┘
+    //     │              gnd1    │   │    gnd2           │
+    //     └────────────────o─────┘   └─────o─────────────┘
+    //                      2               4
+    zcalc::Network network {};
+    network.add_node ("gnd1");
+    network.add_node ("gnd2");
+    network.add_node ("prim");
+    network.add_node ("sec");
+    const auto Us = network.add_voltage_source ("Us", 5.0, zcalc::math::Frequency::create_dc(), "prim", "gnd1"); // 5Vdc
+    network.add_ideal_transformer("T", "prim", "gnd1", "sec", "gnd2", 2.0); // 2:1 -> V_sec = 2.5V
+    const auto R = network.add_resistor("R", 100.0, "sec", "gnd2"); // 100ohm
+
+    // 2:1 -> V_sec = 2.5V -> I_R = 25mA -> Isec = -25mA -> Iprim = 12.5mA -> I_Us = -12.5mA
+
+    auto results = zcalc::NetworkCalculator::compute(network);
+    ASSERT_EQ(results.at(R->voltage()).size(), 1);
+    ASSERT_EQ(results.at(R->voltage())[0].to_complex(), zcalc::math::Complex(2.5, 0.0)); // 2.5V
+    ASSERT_EQ(results.at(R->voltage())[0].get_frequency().as_hz(), 0.0);
+    ASSERT_EQ(results.at(R->current()).size(), 1);
+    ASSERT_EQ(results.at(R->current())[0].to_complex(), zcalc::math::Complex(0.025, 0.0)); // 25mA
+    ASSERT_EQ(results.at(R->current())[0].get_frequency().as_hz(), 0.0);
+    ASSERT_EQ(results.at(Us->current()).size(), 1);
+    ASSERT_EQ(results.at(Us->current())[0].to_complex(), zcalc::math::Complex(-0.0125, 0.0)); // -12.5mA
+    ASSERT_EQ(results.at(Us->current())[0].get_frequency().as_hz(), 0.0);
+}

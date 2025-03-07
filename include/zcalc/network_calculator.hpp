@@ -84,6 +84,7 @@ public:
                 const auto& component = *(e.get_weight());
                 equation_system.add(std::move(component.own()));
             }
+            //std::cout << equation_system << std::endl;
             // solve the equation
             const auto solutions = equation_system.solve();
             if (!solutions.has_value()) {

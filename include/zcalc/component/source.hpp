@@ -11,10 +11,10 @@ protected:
     math::Phasor m_value { 1.0, math::Phase::create_from_degrees(0.0), math::Frequency::create_from_hz(0.0) };
 public:
     Source () = delete;
-    Source (math::Complex value, Node node_0, Node node_1, std::size_t id) : TwoPoleComponent(node_0, node_1, id) {
+    Source (math::Complex value, Node node_0, Node node_1, std::size_t id, const std::string& designator) : TwoPoleComponent(node_0, node_1, id, designator) {
         m_value = math::Phasor::from_complex(value);
     }
-    Source (math::Complex value, const math::Frequency& frequency, Node node_0, Node node_1, std::size_t id) : TwoPoleComponent(node_0, node_1, id) {
+    Source (math::Complex value, const math::Frequency& frequency, Node node_0, Node node_1, std::size_t id, const std::string& designator) : TwoPoleComponent(node_0, node_1, id, designator) {
         m_value = math::Phasor::from_complex(value, frequency);
     }
 

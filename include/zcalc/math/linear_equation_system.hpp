@@ -10,6 +10,7 @@
 #include <memory>
 #include <numbers>
 #include <stdexcept>
+#include <optional>
 
 #include <zcalc/math/linear_equation.hpp>
 #include <zcalc/math/complex.hpp>
@@ -140,6 +141,12 @@ public:
         return true;
     }
 
+    bool append_equation (LinearEquation<Complex>&& equation) {
+        if (equation.get_num_variables() != m_num_variables) { return false; }
+        m_linear_equation_system.push_back(std::move(equation));
+        return true;
+    }
+
     bool set_label (const std::string& label, std::size_t index) {
         if (index >= m_labels.size()) { return false; }
         m_labels[index] = label;
@@ -149,20 +156,20 @@ public:
     std::size_t get_num_variables () const { return m_num_variables; }
     std::size_t get_num_equations () const { return m_linear_equation_system.size(); }
     
-    bool solve(std::vector<Complex>& solution) const {
+    std::optional<std::vector<Complex>> solve() const {
         /* there must be at least as many equations as independent variables */
         if (get_num_variables() > get_num_equations()) {
             std::cerr << "more variables than equations -> unable to solve" << std::endl;
-            return false;
+            return std::nullopt;
         }
         LinearEquationSystem equation_system = *this;
         equation_system.forward_elimination();
         equation_system.back_substitution();
         if (!equation_system.is_solvable()) {
             std::cerr << "equation system is not solvable" << std::endl;
-            return false;
+            return std::nullopt;
         }
-        solution = std::vector<Complex>(get_num_variables());
+        auto solution = std::vector<Complex>(get_num_variables());
         for (size_t i = 0; i < equation_system.get_num_equations(); ++i) {
             for (size_t j = 0; j < equation_system.get_num_variables(); ++j) {
                 if (equation_system.m_linear_equation_system[i][j] != Complex{0.0, 0.0}) {
@@ -171,7 +178,7 @@ public:
                 }
             }
         }
-        return true;
+        return solution;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const LinearEquationSystem& system) {

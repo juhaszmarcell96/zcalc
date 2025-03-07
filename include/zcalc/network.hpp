@@ -11,6 +11,8 @@
 #include <zcalc/component/ammeter.hpp>
 #include <zcalc/component/voltage_controlled_current_source.hpp>
 #include <zcalc/component/voltage_controlled_voltage_source.hpp>
+#include <zcalc/component/current_controlled_current_source.hpp>
+#include <zcalc/component/current_controlled_voltage_source.hpp>
 
 #include <zcalc/math/complex.hpp>
 
@@ -133,7 +135,7 @@ public:
         return id;
     }
 
-    /* voltage controlled voltage source */
+    /* voltage-controlled voltage source */
     id_t add_voltage_controlled_voltage_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double voltage_gain) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
@@ -141,11 +143,27 @@ public:
         return id;
     }
 
-    /* voltage controlled current source */
+    /* voltage-controlled current source */
     id_t add_voltage_controlled_current_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double transconductance) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::VoltageControlledCurrentSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, transconductance);
+        return id;
+    }
+
+    /* current-controlled voltage source */
+    id_t add_current_controlled_voltage_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double transresistance) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::CurrentControlledVoltageSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, transresistance);
+        return id;
+    }
+
+    /* current-controlled current source */
+    id_t add_current_controlled_current_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double current_gain) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::CurrentControlledCurrentSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, current_gain);
         return id;
     }
 

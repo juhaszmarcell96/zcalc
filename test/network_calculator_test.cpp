@@ -141,3 +141,45 @@ TEST(NetworkCalculatorTest, SuperpositionTest) {
     ASSERT_NEAR(results.at("R2_i")[1].to_complex().imag(), -0.0509473, 0.0001);
     ASSERT_EQ(results.at("R2_i")[1].get_frequency().as_rad_per_sec(), 10.0e3);
 }
+
+TEST(NetworkCalculatorTest, VoltageControlledCurrentSourceTest) {
+    //
+    //                                    ┌──────┐  
+    //                            ┌───────┤  R2  ├───────┐
+    //                            │       └──────┘       │
+    //                            │                      │
+    //                            │                      │
+    //      in     ┌──────┐   A   │        ┌┐┌┐┌┐        │      out
+    //     ┌───────┤  R1  ├───────o────────┘└┘└┘└────────o───────────────────┐
+    //     │       └──────┘       │           L          │                   │
+    //     │                      │                      │                   │
+    //  ┌──┼──┐ |                 |  C                 ┌─┴─┐                 │
+    //  │  │  │ | Us           ───┴───                 │R3 │                / \   |
+    //  │  │  │ |              ───┬───                 │   │               /___\  | U
+    //  └──┼──┘ v                 │                    └─┬─┘               \   /  V
+    //     │                      │                      │                  \ /
+    //     │              gnd     │                      │                   │
+    //     └──────────────────────o──────────────────────o───────────────────┘
+    //
+    zcalc::Network network {};
+    network.add_node ("gnd");
+    network.add_node ("in");
+    network.add_node ("out");
+    network.add_node ("A");
+    network.add_voltage_source ("Us", 10.0, zcalc::math::Frequency::create_from_rad_per_sec(5e3), "in", "gnd"); // 10V, 5krad/s
+    network.add_resistor("R1", 1000, "in", "A"); // 1kohm
+    network.add_resistor("R2", 1000, "A", "out"); // 1kohm
+    network.add_resistor("R3", 1000, "out", "gnd"); // 1kohm
+    network.add_inductor("L", 1.0, "A", "out"); // 1H
+    network.add_capacitor("C", 1.0e-6, "A", "gnd"); // 1uF
+    network.add_voltage_controlled_current_source("DU", "out", "gnd", "C", 0.5e-3); // 0.5mS
+
+    auto results = zcalc::NetworkCalculator::compute(network);
+    ASSERT_EQ(results.at("DU_u").size(), 1);
+    auto res = results.at("DU_u")[0].to_complex();
+    res.set_print_format(zcalc::math::Complex::print_format::basic);
+    auto expected = zcalc::math::Complex(0.0316742, -0.511312);
+    expected.set_print_format(zcalc::math::Complex::print_format::basic);
+    ASSERT_EQ(res, expected);
+    ASSERT_EQ(results.at("DU_u")[0].get_frequency().as_rad_per_sec(), 5000.0);
+}

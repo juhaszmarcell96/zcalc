@@ -40,14 +40,15 @@ public:
         LinearEquationSystem lin_equ_system { num_variables };
         // populate the linear equation system
         for (const auto& equ : m_equations) {
-            LinearEquation<T> linEqu { num_variables, equ.get_label() };
+            LinearEquation<T> lin_equ { num_variables, equ.get_label() };
             std::size_t variable_index { 0 };
             for (const auto& [var, val] : variables) {
-                linEqu[variable_index] = equ.get_coefficient(var);
+                lin_equ[variable_index] = equ.get_coefficient(var);
+                lin_equ_system.set_label(var, variable_index);
                 ++variable_index;
             }
-            linEqu.set_result(equ.get_result());
-            lin_equ_system.append_equation(std::move(linEqu));
+            lin_equ.set_result(equ.get_result());
+            lin_equ_system.append_equation(std::move(lin_equ));
         }
         // solve the equation system
         const auto solutions = lin_equ_system.solve();

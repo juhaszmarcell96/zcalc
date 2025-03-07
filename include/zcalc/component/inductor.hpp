@@ -20,7 +20,7 @@ public:
         if (frequency.is_dc()) { m_short = true; }
         else {
             m_short = false;
-            m_value = std::polar(frequency.as_rad_per_sec() * m_inductance, std::numbers::pi / 2.0);
+            m_value = math::Complex { 0.0, frequency.as_rad_per_sec() * m_inductance };
         }
     }
 };

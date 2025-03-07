@@ -20,8 +20,8 @@ public:
         const std::string voltage_var = get_designator() + "_u";
         const std::string other_voltage_var = m_dependency + "_u";
         math::SymbolicLinearEquation<math::Complex> equation { get_designator() };
-        equation.add_term(current_var, math::Complex { 1.0, 0.0 });
-        equation.add_term(voltage_var, math::Complex { 0.0, 0.0 });
+        equation.add_term(current_var, math::Complex { 0.0, 0.0 });
+        equation.add_term(voltage_var, math::Complex { 1.0, 0.0 });
         equation.add_term(other_voltage_var, math::Complex { -m_voltage_gain, 0.0 });
         equation.set_result(math::Complex { 0.0, 0.0 });
         return equation;

@@ -45,6 +45,7 @@ public:
         // go over the sources, reactivate them one by one, add the result at the end -> supoerposition
         for (auto source : sources) {
             // create the equation system
+            //const auto num_equations = g.get_vertices() + 
             math::SymbolicLinearEquationSystem<math::Complex> equation_system {};
             // reactive this single source
             source->reactivate();
@@ -89,6 +90,7 @@ public:
                 throw std::runtime_error("could not solve equation system");
             }
             for (const auto& [var, val] : solutions.value()) {
+                val.set_print_format(math::Complex::print_format::euler_deg);
                 results[var].push_back(math::Phasor{val, frequency});
             }
             source->eliminate(); // eliminate the source again

@@ -15,15 +15,15 @@ int main () {
     lc_filter.add_node ("gnd");
     lc_filter.add_node ("in");
     lc_filter.add_node ("out");
-    lc_filter.add_voltage_source ("Us", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
-    lc_filter.add_resistor("R_output", 10e9, "out", "gnd");
+    auto Us = lc_filter.add_voltage_source ("Us", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
+    auto Rout = lc_filter.add_resistor("R_output", 10e9, "out", "gnd");
     lc_filter.add_inductor("L", 10e-9, "in", "out");        /* 10nH */
     lc_filter.add_capacitor("C", 100e-9, "out", "gnd");     /* 100nF */
 
     zcalc::plot::PlotterConfig config {};
     config.filename = "lc_filter";
-    config.input_source = "Us";
-    config.output_component = "R_output";
+    config.input_source = Us;
+    config.output_component = Rout;
     config.min_frequency = zcalc::math::Frequency::create_from_hz(1.0e6);
     config.max_frequency = zcalc::math::Frequency::create_from_hz(1.1e7);
     config.num_points = 1.0e3;

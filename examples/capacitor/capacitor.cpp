@@ -16,18 +16,18 @@ int main () {
     capacitor.add_node ("A");
     capacitor.add_node ("B");
 
-    capacitor.add_current_source ("Is", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
+    auto Is = capacitor.add_current_source ("Is", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
 
     capacitor.add_capacitor("C", 100.0e-9, "in", "A"); // 100nF
     capacitor.add_resistor("R_esr", 0.01, "A", "B"); // 10mohm
     capacitor.add_inductor("L_esl", 10.0e-9, "B", "gnd"); // 10nH
 
-    capacitor.add_resistor("R_output", 10e9, "in", "gnd");
+    auto Rout = capacitor.add_resistor("R_output", 10e9, "in", "gnd");
 
     zcalc::plot::PlotterConfig config {};
     config.filename = "capacitor";
-    config.input_source = "Is";
-    config.output_component = "R_output";
+    config.input_source = Is;
+    config.output_component = Rout;
     config.min_frequency = zcalc::math::Frequency::create_from_hz(1.0e6);
     config.max_frequency = zcalc::math::Frequency::create_from_hz(2.0e7);
     config.num_points = 1.0e3;

@@ -15,11 +15,9 @@ public:
     // normal operation -> 0*I + 1*U = voltage
     // eliminated       -> 0*I + 1*U = 0
     math::SymbolicLinearEquation<math::Complex> own () const override {
-        const std::string current_var = get_designator() + "_i";
-        const std::string voltage_var = get_designator() + "_u";
         math::SymbolicLinearEquation<math::Complex> equation { get_designator() };
-        equation.add_term(current_var, math::Complex { 0.0, 0.0 });
-        equation.add_term(voltage_var, math::Complex { 1.0, 0.0 });
+        equation.add_term(current(), math::Complex { 0.0, 0.0 });
+        equation.add_term(voltage(), math::Complex { 1.0, 0.0 });
         if (m_short) {
             equation.set_result(math::Complex { 0.0, 0.0 });
         }

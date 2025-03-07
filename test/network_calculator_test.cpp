@@ -12,33 +12,33 @@ TEST(NetworkCalculatorTest, VoltageDivider) {
     test_network.add_node ("gnd");
     test_network.add_node ("in");
     test_network.add_node ("out");
-    const auto us_id = test_network.add_voltage_source ("Us", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
-    const auto r1_id = test_network.add_resistor("R1", 10, "in", "out");
-    const auto r2_id = test_network.add_resistor("R2", 10, "out", "gnd");
+    const auto Us = test_network.add_voltage_source ("Us", 1.0, zcalc::math::Frequency::create_from_hz(0.0), "in", "gnd");
+    const auto R1 = test_network.add_resistor("R1", 10, "in", "out");
+    const auto R2 = test_network.add_resistor("R2", 10, "out", "gnd");
 
     const auto results = zcalc::NetworkCalculator::compute(test_network);
     ASSERT_EQ(results.size(), 6);
 
-    ASSERT_EQ(results.at("Us_i").size(), 1);
-    ASSERT_EQ(results.at("Us_i")[0].to_complex(), zcalc::math::Complex(-0.05, 0.0));
-    ASSERT_EQ(results.at("Us_i")[0].get_frequency().as_rad_per_sec(), 0.0);
-    ASSERT_EQ(results.at("Us_u").size(), 1);
-    ASSERT_EQ(results.at("Us_u")[0].to_complex(), zcalc::math::Complex(1.0, 0.0));
-    ASSERT_EQ(results.at("Us_u")[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at(Us->current()).size(), 1);
+    ASSERT_EQ(results.at(Us->current())[0].to_complex(), zcalc::math::Complex(-0.05, 0.0));
+    ASSERT_EQ(results.at(Us->current())[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at(Us->voltage()).size(), 1);
+    ASSERT_EQ(results.at(Us->voltage())[0].to_complex(), zcalc::math::Complex(1.0, 0.0));
+    ASSERT_EQ(results.at(Us->voltage())[0].get_frequency().as_rad_per_sec(), 0.0);
 
-    ASSERT_EQ(results.at("R1_i").size(), 1);
-    ASSERT_EQ(results.at("R1_i")[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
-    ASSERT_EQ(results.at("R1_i")[0].get_frequency().as_rad_per_sec(), 0.0);
-    ASSERT_EQ(results.at("R1_u").size(), 1);
-    ASSERT_EQ(results.at("R1_u")[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
-    ASSERT_EQ(results.at("R1_u")[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at(R1->current()).size(), 1);
+    ASSERT_EQ(results.at(R1->current())[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
+    ASSERT_EQ(results.at(R1->current())[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at(R1->voltage()).size(), 1);
+    ASSERT_EQ(results.at(R1->voltage())[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
+    ASSERT_EQ(results.at(R1->voltage())[0].get_frequency().as_rad_per_sec(), 0.0);
 
-    ASSERT_EQ(results.at("R2_i").size(), 1);
-    ASSERT_EQ(results.at("R2_i")[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
-    ASSERT_EQ(results.at("R2_i")[0].get_frequency().as_rad_per_sec(), 0.0);
-    ASSERT_EQ(results.at("R2_u").size(), 1);
-    ASSERT_EQ(results.at("R2_u")[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
-    ASSERT_EQ(results.at("R2_u")[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at(R2->current()).size(), 1);
+    ASSERT_EQ(results.at(R2->current())[0].to_complex(), zcalc::math::Complex(0.05, 0.0));
+    ASSERT_EQ(results.at(R2->current())[0].get_frequency().as_rad_per_sec(), 0.0);
+    ASSERT_EQ(results.at(R2->voltage()).size(), 1);
+    ASSERT_EQ(results.at(R2->voltage())[0].to_complex(), zcalc::math::Complex(0.5, 0.0));
+    ASSERT_EQ(results.at(R2->voltage())[0].get_frequency().as_rad_per_sec(), 0.0);
 }
 
 TEST(NetworkCalculatorTest, VoltageResponse) {
@@ -52,12 +52,12 @@ TEST(NetworkCalculatorTest, VoltageResponse) {
     network.add_capacitor("C2", 1.0e-6, "out", "gnd"); // 1uF
     network.add_resistor("R", 40, "out", "A"); // 40ohm
     network.add_inductor("L", 8.0e-3, "A", "gnd"); // 8mH
-    const auto voltmeter = network.add_voltmeter("voltmeter", "out", "gnd");
+    const auto vmeter = network.add_voltmeter("voltmeter", "out", "gnd");
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at("voltmeter_u").size(), 1);
-    ASSERT_EQ(results.at("voltmeter_u")[0].to_complex(), zcalc::math::Complex(1.53846, 7.69231));
-    ASSERT_EQ(results.at("voltmeter_u")[0].get_frequency().as_rad_per_sec(), 5000.0);
+    ASSERT_EQ(results.at(vmeter->voltage()).size(), 1);
+    ASSERT_EQ(results.at(vmeter->voltage())[0].to_complex(), zcalc::math::Complex(1.53846, 7.69231));
+    ASSERT_EQ(results.at(vmeter->voltage())[0].get_frequency().as_rad_per_sec(), 5000.0);
 }
 
 TEST(NetworkCalculatorTest, VoltageAndCurrentResponse) {
@@ -84,18 +84,18 @@ TEST(NetworkCalculatorTest, VoltageAndCurrentResponse) {
     network.add_resistor("R1", 500, "in", "A"); // 500ohm
     network.add_inductor("L", 10.0e-3, "A", "B"); // 10mH
     network.add_resistor("R2", 1000, "B", "gnd"); // 1kohm
-    const auto r_id = network.add_resistor("R3", 800, "B", "out"); // 800ohm
+    const auto R3 = network.add_resistor("R3", 800, "B", "out"); // 800ohm
     network.add_resistor("R4", 600, "out", "gnd"); // 600ohm
-    const auto c_id = network.add_capacitor("C", 120.0e-9, "out", "gnd"); // 120nF
+    const auto C = network.add_capacitor("C", 120.0e-9, "out", "gnd"); // 120nF
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at("C_u").size(), 1);
-    ASSERT_EQ(results.at("C_u")[0].to_complex(), zcalc::math::Complex(0.830672, -2.89235));
-    ASSERT_EQ(results.at("C_u")[0].get_frequency().as_hz(), 5000.0);
+    ASSERT_EQ(results.at(C->voltage()).size(), 1);
+    ASSERT_EQ(results.at(C->voltage())[0].to_complex(), zcalc::math::Complex(0.830672, -2.89235));
+    ASSERT_EQ(results.at(C->voltage())[0].get_frequency().as_hz(), 5000.0);
 
-    ASSERT_EQ(results.at("R3_i").size(), 1);
-    ASSERT_EQ(results.at("R3_i")[0].to_complex(), zcalc::math::Complex(0.0122884, -0.00168902));
-    ASSERT_EQ(results.at("R3_i")[0].get_frequency().as_hz(), 5000.0);
+    ASSERT_EQ(results.at(R3->current()).size(), 1);
+    ASSERT_EQ(results.at(R3->current())[0].to_complex(), zcalc::math::Complex(0.0122884, -0.00168902));
+    ASSERT_EQ(results.at(R3->current())[0].get_frequency().as_hz(), 5000.0);
 }
 
 TEST(NetworkCalculatorTest, SuperpositionTest) {
@@ -129,17 +129,17 @@ TEST(NetworkCalculatorTest, SuperpositionTest) {
     network.add_voltage_source ("U2", std::sqrt(2.0) * 6.0, zcalc::math::Frequency::create_from_rad_per_sec(10.0e3), "D", "gnd"); // sqrt(2)* 6V, 10krad/s (1591.5Hz)
 
     network.add_resistor("R1", 10, "B", "A"); // 10ohm
-    const auto r_id = network.add_resistor("R2", 50, "B", "gnd"); // 50ohm
+    const auto R2 = network.add_resistor("R2", 50, "B", "gnd"); // 50ohm
     network.add_resistor("R3", 5, "B", "C"); // 5ohm
     network.add_inductor("L", 1.0e-3, "C", "D"); // 1mH
 
     const auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at("R2_i").size(), 2);
-    ASSERT_EQ(results.at("R2_i")[0].to_complex(), zcalc::math::Complex(0.025, 0.0));
-    ASSERT_EQ(results.at("R2_i")[0].get_frequency().as_hz(), 0.0);
-    ASSERT_NEAR(results.at("R2_i")[1].to_complex().real(), 0.0678555, 0.0001);
-    ASSERT_NEAR(results.at("R2_i")[1].to_complex().imag(), -0.0509473, 0.0001);
-    ASSERT_EQ(results.at("R2_i")[1].get_frequency().as_rad_per_sec(), 10.0e3);
+    ASSERT_EQ(results.at(R2->current()).size(), 2);
+    ASSERT_EQ(results.at(R2->current())[0].to_complex(), zcalc::math::Complex(0.025, 0.0));
+    ASSERT_EQ(results.at(R2->current())[0].get_frequency().as_hz(), 0.0);
+    ASSERT_NEAR(results.at(R2->current())[1].to_complex().real(), 0.0678555, 0.0001);
+    ASSERT_NEAR(results.at(R2->current())[1].to_complex().imag(), -0.0509473, 0.0001);
+    ASSERT_EQ(results.at(R2->current())[1].get_frequency().as_rad_per_sec(), 10.0e3);
 }
 
 TEST(NetworkCalculatorTest, VoltageControlledCurrentSourceTest) {
@@ -155,7 +155,7 @@ TEST(NetworkCalculatorTest, VoltageControlledCurrentSourceTest) {
     //     │                      │                      │                   │
     //  ┌──┼──┐ |                 |  C                 ┌─┴─┐                 │
     //  │  │  │ | Us           ───┴───                 │R3 │                / \   |
-    //  │  │  │ |              ───┬───                 │   │               /___\  | U
+    //  │  │  │ |              ───┬───                 │   │               /___\  | DU
     //  └──┼──┘ v                 │                    └─┬─┘               \   /  V
     //     │                      │                      │                  \ /
     //     │              gnd     │                      │                   │
@@ -171,17 +171,17 @@ TEST(NetworkCalculatorTest, VoltageControlledCurrentSourceTest) {
     network.add_resistor("R2", 1000, "A", "out"); // 1kohm
     network.add_resistor("R3", 1000, "out", "gnd"); // 1kohm
     network.add_inductor("L", 1.0, "A", "out"); // 1H
-    network.add_capacitor("C", 1.0e-6, "A", "gnd"); // 1uF
-    network.add_voltage_controlled_current_source("DU", "out", "gnd", "C", 0.5e-3); // 0.5mS
+    const auto C = network.add_capacitor("C", 1.0e-6, "A", "gnd"); // 1uF
+    const auto DU = network.add_voltage_controlled_current_source("DU", "out", "gnd", C, 0.5e-3); // 0.5mS
 
     auto results = zcalc::NetworkCalculator::compute(network);
-    ASSERT_EQ(results.at("DU_u").size(), 1);
-    auto res = results.at("DU_u")[0].to_complex();
+    ASSERT_EQ(results.at(DU->voltage()).size(), 1);
+    auto res = results.at(DU->voltage())[0].to_complex();
     res.set_print_format(zcalc::math::Complex::print_format::basic);
     auto expected = zcalc::math::Complex(0.0316742, -0.511312);
     expected.set_print_format(zcalc::math::Complex::print_format::basic);
     ASSERT_EQ(res, expected);
-    ASSERT_EQ(results.at("DU_u")[0].get_frequency().as_rad_per_sec(), 5000.0);
+    ASSERT_EQ(results.at(DU->voltage())[0].get_frequency().as_rad_per_sec(), 5000.0);
 }
 
 TEST(NetworkCalculatorTest, VoltageControlledVoltageSourceTest) {
@@ -216,11 +216,11 @@ TEST(NetworkCalculatorTest, VoltageControlledVoltageSourceTest) {
     network.add_current_source("I1", 2.0e-3, zcalc::math::Frequency::create_dc(), "gnd", "V1"); // 2mA !!! pay attention to the direction (either rotate or -4mA)
     network.add_current_source("I2", 2.0e-3, zcalc::math::Frequency::create_dc(), "gnd", "V3"); // 2mA !!! pay attention to the direction (either rotate or -4mA)
     network.add_voltage_source("E2", 4.0, zcalc::math::Frequency::create_dc(), "V4", "gnd"); // 4V
-    network.add_resistor("R1", 1000, "V2", "gnd"); // 1kohm
+    const auto R1 = network.add_resistor("R1", 1000, "V2", "gnd"); // 1kohm
     network.add_resistor("R2", 2000, "V2", "V3"); // 2kohm
-    network.add_resistor("R3", 3000, "V1", "V3"); // 3kohm
-    network.add_resistor("R4", 4000, "V1", "V4"); // 4kohm
-    network.add_voltage_controlled_voltage_source("E1", "V1", "V2", "R1", 2.0);
+    const auto R3 = network.add_resistor("R3", 3000, "V1", "V3"); // 3kohm
+    const auto R4 = network.add_resistor("R4", 4000, "V1", "V4"); // 4kohm
+    network.add_voltage_controlled_voltage_source("E1", "V1", "V2", R1, 2.0);
 
     const auto results = zcalc::NetworkCalculator::compute(network);
 
@@ -228,10 +228,10 @@ TEST(NetworkCalculatorTest, VoltageControlledVoltageSourceTest) {
     // R1_u -> 2.86V
     // R4_i -> 1.15mA
 
-    ASSERT_EQ(results.at("R1_u").size(), 3);
-    ASSERT_EQ(results.at("R1_u")[0].to_complex() + results.at("R1_u")[1].to_complex() + results.at("R1_u")[2].to_complex(), zcalc::math::Complex(2.85714, 0.0));
-    ASSERT_EQ(results.at("R3_u").size(), 3);
-    ASSERT_EQ(results.at("R3_u")[0].to_complex() + results.at("R3_u")[1].to_complex() + results.at("R3_u")[2].to_complex(), zcalc::math::Complex(1.02857, 0.0));
-    ASSERT_EQ(results.at("R4_i").size(), 3);
-    ASSERT_EQ(results.at("R4_i")[0].to_complex() + results.at("R4_i")[1].to_complex() + results.at("R4_i")[2].to_complex(), zcalc::math::Complex(0.00115, 0.0));
+    ASSERT_EQ(results.at(R1->voltage()).size(), 3);
+    ASSERT_EQ(results.at(R1->voltage())[0].to_complex() + results.at(R1->voltage())[1].to_complex() + results.at(R1->voltage())[2].to_complex(), zcalc::math::Complex(2.85714, 0.0));
+    ASSERT_EQ(results.at(R3->voltage()).size(), 3);
+    ASSERT_EQ(results.at(R3->voltage())[0].to_complex() + results.at(R3->voltage())[1].to_complex() + results.at(R3->voltage())[2].to_complex(), zcalc::math::Complex(1.02857, 0.0));
+    ASSERT_EQ(results.at(R4->current()).size(), 3);
+    ASSERT_EQ(results.at(R4->current())[0].to_complex() + results.at(R4->current())[1].to_complex() + results.at(R4->current())[2].to_complex(), zcalc::math::Complex(0.00115, 0.0));
 }

@@ -37,6 +37,9 @@ public:
     virtual void reactivate () = 0;
 
     virtual void add_to_graph (graph::Graph<component::IComponent*>& graph) = 0;
+
+    virtual std::string voltage () const = 0;
+    virtual std::string current () const = 0;
 };
 
 class ComponentBase : public IComponent {
@@ -55,6 +58,13 @@ public:
 
     Node get_gate (std::size_t index) const override {
         return m_gates[index];
+    }
+
+    std::string voltage () const override {
+        return m_designator + "_u";
+    }
+    std::string current () const override {
+        return m_designator + "_i";
     }
 };
 

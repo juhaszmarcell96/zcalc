@@ -20,7 +20,7 @@ public:
     std::size_t get_num_variables () const override { return 2; }
 
     math::SymbolicLinearEquation<math::Complex> kcl (Node node) const override {
-        const std::string current_var = get_designator() + "_i";
+        const std::string current_var = current();
         math::SymbolicLinearEquation<math::Complex> equation {};
         if (m_open) {
             // open circuit -> no current
@@ -44,7 +44,7 @@ public:
     }
 
     math::SymbolicLinearEquation<math::Complex> kvl (Node node) const override {
-        const std::string voltage_var = get_designator() + "_u";
+        const std::string voltage_var = voltage();
         math::SymbolicLinearEquation<math::Complex> equation {};
         if (m_short) {
             // short circuit -> no voltage

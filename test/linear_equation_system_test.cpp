@@ -6,8 +6,6 @@
 
 TEST(LinearEquationSystemTest, EliminationTest1) {
 
-    bool success = false;
-
     /*  2x + 0y + 1z =  3 */
     zcalc::math::LinearEquation<zcalc::math::Complex> eq_0 {3};
     eq_0.set_coefficient(0, zcalc::math::Complex{2.0, 0.0});
@@ -34,20 +32,16 @@ TEST(LinearEquationSystemTest, EliminationTest1) {
     lin_equ_sys.append_equation(eq_1);
     lin_equ_sys.append_equation(eq_2);
 
-    std::vector<zcalc::math::Complex> solution;
+    const auto solution = lin_equ_sys.solve();
 
-    success = lin_equ_sys.solve(solution);
-
-    ASSERT_EQ(success, true);
-    ASSERT_EQ(solution[0], zcalc::math::Complex(1.0, 0.0));
-    ASSERT_EQ(solution[1], zcalc::math::Complex(-1.0, 0.0));
-    ASSERT_EQ(solution[2], zcalc::math::Complex(1.0, 0.0));
+    ASSERT_TRUE(solution.has_value());
+    ASSERT_EQ((*solution)[0], zcalc::math::Complex(1.0, 0.0));
+    ASSERT_EQ((*solution)[1], zcalc::math::Complex(-1.0, 0.0));
+    ASSERT_EQ((*solution)[2], zcalc::math::Complex(1.0, 0.0));
     
 }
 
 TEST(LinearEquationSystemTest, EliminationTest2) {
-
-    bool success = false;
 
     zcalc::math::LinearEquation<zcalc::math::Complex> eq_0 {4};
     eq_0[0] = zcalc::math::Complex{1.0, 0.0};
@@ -79,11 +73,9 @@ TEST(LinearEquationSystemTest, EliminationTest2) {
     lin_equ_sys.append_equation(eq_2);
     lin_equ_sys.append_equation(eq_3);
 
-    std::vector<zcalc::math::Complex> solution;
+    const auto solution = lin_equ_sys.solve();
 
-    success = lin_equ_sys.solve(solution);
-
-    ASSERT_EQ(success, false);
+    ASSERT_FALSE(solution.has_value());
 }
 
 TEST(LinearEquationSystemTest, EliminationTest3) {
@@ -92,8 +84,6 @@ TEST(LinearEquationSystemTest, EliminationTest3) {
     /*  1x + 1y +   2z =  3 */
     /*  2x + 2y +   5z = -4 */
     /*  5x + 5y + -11z =  6 */
-
-    bool success = false;
 
     zcalc::math::LinearEquation<zcalc::math::Complex> eq_0 {3};
     eq_0[0] = zcalc::math::Complex{1.0, 0.0};
@@ -118,11 +108,9 @@ TEST(LinearEquationSystemTest, EliminationTest3) {
     lin_equ_sys.append_equation(eq_1);
     lin_equ_sys.append_equation(eq_2);
 
-    std::vector<zcalc::math::Complex> solution;
+    const auto solution = lin_equ_sys.solve();
 
-    success = lin_equ_sys.solve(solution);
-
-    ASSERT_EQ(success, false);
+    ASSERT_FALSE(solution.has_value());
 }
 
 TEST(LinearEquationSystemTest, EliminationTest4) {
@@ -154,11 +142,9 @@ TEST(LinearEquationSystemTest, EliminationTest4) {
     lin_equ_sys.append_equation(eq_1);
     lin_equ_sys.append_equation(eq_2);
 
-    std::vector<zcalc::math::Complex> solution;
-
-    success = lin_equ_sys.solve(solution);
-
-    ASSERT_EQ(success, false);
+    const auto solution = lin_equ_sys.solve();
+    
+    ASSERT_FALSE(solution.has_value());
 }
 
 TEST(LinearEquationSystemTest, EliminationTest5) {
@@ -167,8 +153,6 @@ TEST(LinearEquationSystemTest, EliminationTest5) {
     /*  2x + 1y +  3z =  1 */
     /*  2x + 6y +  8z =  3 */
     /*  6x + 8y + 18z =  5 */
-
-    bool success = false;
 
     zcalc::math::LinearEquation<zcalc::math::Complex> eq_0 {3};
     eq_0.set_coefficient(0, zcalc::math::Complex{2.0, 0.0});
@@ -193,14 +177,12 @@ TEST(LinearEquationSystemTest, EliminationTest5) {
     lin_equ_sys.append_equation(eq_1);
     lin_equ_sys.append_equation(eq_2);
 
-    std::vector<zcalc::math::Complex> solution;
-
-    success = lin_equ_sys.solve(solution);
-
-    ASSERT_EQ(success, true);
-    ASSERT_EQ(solution[0], zcalc::math::Complex(3.0/10.0, 0.0));
-    ASSERT_EQ(solution[1], zcalc::math::Complex(2.0/5.0, 0.0));
-    ASSERT_EQ(solution[2], zcalc::math::Complex(0.0, 0.0));
+    const auto solution = lin_equ_sys.solve();
+    
+    ASSERT_TRUE(solution.has_value());
+    ASSERT_EQ((*solution)[0], zcalc::math::Complex(3.0/10.0, 0.0));
+    ASSERT_EQ((*solution)[1], zcalc::math::Complex(2.0/5.0, 0.0));
+    ASSERT_EQ((*solution)[2], zcalc::math::Complex(0.0, 0.0));
     
 }
 
@@ -227,9 +209,6 @@ TEST(LinearEquationSystemTest, SimpleCircuitTest1) {
      * 
      *  Solution for Us=5V and R1=10ohm R2=10ohm -> is=i1=i2=5V/20ohm=0.25A (is has opposite direction, so it is negative), u1=u2=2.5V
     **/
-
-    std::vector<zcalc::math::Complex> result;
-    bool success = false;
 
     zcalc::math::LinearEquation<zcalc::math::Complex> eq_0 {6};
     eq_0[3] = zcalc::math::Complex{-1.0, 0.0};
@@ -263,22 +242,19 @@ TEST(LinearEquationSystemTest, SimpleCircuitTest1) {
     lin_equ_sys.append_equation(eq_5);
     lin_equ_sys.append_equation(eq_6);
 
-    success = lin_equ_sys.solve(result);
-
-    ASSERT_EQ(true, success);
+    const auto solution = lin_equ_sys.solve();
     
-    ASSERT_EQ(result[0], zcalc::math::Complex(5.0, 0.0));
-    ASSERT_EQ(result[1], zcalc::math::Complex(5.0/2.0, 0.0));
-    ASSERT_EQ(result[2], zcalc::math::Complex(5.0/2.0, 0.0));
-    ASSERT_EQ(result[3], zcalc::math::Complex(-1.0/4.0, 0.0));
-    ASSERT_EQ(result[4], zcalc::math::Complex(1.0/4.0, 0.0));
-    ASSERT_EQ(result[5], zcalc::math::Complex(1.0/4.0, 0.0));
+    ASSERT_TRUE(solution.has_value());
+    
+    ASSERT_EQ((*solution)[0], zcalc::math::Complex(5.0, 0.0));
+    ASSERT_EQ((*solution)[1], zcalc::math::Complex(5.0/2.0, 0.0));
+    ASSERT_EQ((*solution)[2], zcalc::math::Complex(5.0/2.0, 0.0));
+    ASSERT_EQ((*solution)[3], zcalc::math::Complex(-1.0/4.0, 0.0));
+    ASSERT_EQ((*solution)[4], zcalc::math::Complex(1.0/4.0, 0.0));
+    ASSERT_EQ((*solution)[5], zcalc::math::Complex(1.0/4.0, 0.0));
 }
 
 TEST(LinearEquationSystemTest, SimpleCircuitTest2) {
-
-    std::vector<zcalc::math::Complex> result;
-    bool success = false;
 
     zcalc::math::LinearEquation<zcalc::math::Complex> eq_0 {6};
     eq_0[3] = zcalc::math::Complex{-1.0, 0.0};
@@ -312,14 +288,14 @@ TEST(LinearEquationSystemTest, SimpleCircuitTest2) {
     lin_equ_sys.append_equation(eq_5);
     lin_equ_sys.append_equation(eq_6);
 
-    success = lin_equ_sys.solve(result);
-
-    ASSERT_EQ(true, success);
+    const auto solution = lin_equ_sys.solve();
     
-    ASSERT_EQ(result[0], zcalc::math::Complex(5.0, 0.0));
-    ASSERT_EQ(result[1], zcalc::math::Complex(10.0/3.0, 0.0));
-    ASSERT_EQ(result[2], zcalc::math::Complex(5.0/3.0, 0.0));
-    ASSERT_EQ(result[3], zcalc::math::Complex(-1.0/3.0, 0.0));
-    ASSERT_EQ(result[4], zcalc::math::Complex(1.0/3.0, 0.0));
-    ASSERT_EQ(result[5], zcalc::math::Complex(1.0/3.0, 0.0));
+    ASSERT_TRUE(solution.has_value());
+    
+    ASSERT_EQ((*solution)[0], zcalc::math::Complex(5.0, 0.0));
+    ASSERT_EQ((*solution)[1], zcalc::math::Complex(10.0/3.0, 0.0));
+    ASSERT_EQ((*solution)[2], zcalc::math::Complex(5.0/3.0, 0.0));
+    ASSERT_EQ((*solution)[3], zcalc::math::Complex(-1.0/3.0, 0.0));
+    ASSERT_EQ((*solution)[4], zcalc::math::Complex(1.0/3.0, 0.0));
+    ASSERT_EQ((*solution)[5], zcalc::math::Complex(1.0/3.0, 0.0));
 }

@@ -12,7 +12,7 @@ protected:
     math::Complex m_value { 0.0, 0.0 };
 public:
     Impedance () = delete;
-    Impedance (math::Complex value, Node node_0, Node node_1, id_t id) : TwoPoleComponent(node_0, node_1, id), m_value(value) {}
+    Impedance (math::Complex value, Node node_0, Node node_1, id_t id, const std::string& designator) : TwoPoleComponent(node_0, node_1, id, designator), m_value(value) {}
     ~Impedance() = default;
 
     void set_rectangular (double resistance, double reactance) { m_value = math::Complex {resistance, reactance}; }
@@ -32,18 +32,24 @@ public:
     // U = Z*I -> 1*U - Z*I = 0
     // open    -> 0*U + 1*I = 0
     // short   -> 1*U + 0*I = 0
-    math::Complex own_i () const override {
-        if (m_open) { return math::Complex{ 1.0, 0.0 }; }
-        if (m_short) { return math::Complex{ 0.0, 0.0 }; }
-        return m_value * math::Complex{ -1.0, 0.0 };
-    }
-    math::Complex own_u () const override {
-        if (m_open) { return math::Complex{ 0.0, 0.0 }; }
-        if (m_short) { return math::Complex{ 1.0, 0.0 }; }
-        return math::Complex { 1.0, 0.0 };
-    }
-    math::Complex own_r () const override {
-        return math::Complex { 0.0, 0.0 };
+    math::SymbolicLinearEquation<math::Complex> own () const override {
+        const std::string current_var = get_designator() + "_i";
+        const std::string voltage_var = get_designator() + "_u";
+        math::SymbolicLinearEquation<math::Complex> equation { get_designator() };
+        if (m_open) {
+            equation.add_term(current_var, math::Complex { 1.0, 0.0 });
+            equation.add_term(voltage_var, math::Complex { 0.0, 0.0 });
+        }
+        else if (m_short) {
+            equation.add_term(current_var, math::Complex { 0.0, 0.0 });
+            equation.add_term(voltage_var, math::Complex { 1.0, 0.0 });
+        }
+        else {
+            equation.add_term(current_var, m_value * math::Complex{ -1.0, 0.0 });
+            equation.add_term(voltage_var, math::Complex { 1.0, 0.0 });
+        }
+        equation.set_result(math::Complex { 0.0, 0.0 });
+        return equation;
     }
 
     const math::Frequency& get_frequency () const override {

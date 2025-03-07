@@ -6,8 +6,6 @@
 #include <vector>
 #include <string>
 
-#include <zcalc/math/complex.hpp>
-
 namespace zcalc {
 namespace math {
 

@@ -9,6 +9,10 @@
 #include <zcalc/component/current_source.hpp>
 #include <zcalc/component/voltmeter.hpp>
 #include <zcalc/component/ammeter.hpp>
+#include <zcalc/component/voltage_controlled_current_source.hpp>
+#include <zcalc/component/voltage_controlled_voltage_source.hpp>
+#include <zcalc/component/current_controlled_current_source.hpp>
+#include <zcalc/component/current_controlled_voltage_source.hpp>
 
 #include <zcalc/math/complex.hpp>
 
@@ -71,7 +75,7 @@ public:
     id_t add_voltage_source (const std::string& designator, double voltage, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::VoltageSource>(voltage, frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::VoltageSource>(voltage, frequency, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -79,7 +83,7 @@ public:
     id_t add_current_source (const std::string& designator, double current, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::CurrentSource>(current, frequency, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::CurrentSource>(current, frequency, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
     
@@ -95,7 +99,7 @@ public:
     id_t add_resistor (const std::string& designator, double resistance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -103,7 +107,7 @@ public:
     id_t add_inductor (const std::string& designator, double inductance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Inductor>(inductance, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Inductor>(inductance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -111,7 +115,7 @@ public:
     id_t add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Capacitor>(capacitance, get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Capacitor>(capacitance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -119,7 +123,7 @@ public:
     id_t add_voltmeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Voltmeter>(get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Voltmeter>(get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
     }
 
@@ -127,7 +131,39 @@ public:
     id_t add_ammeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
         const auto id = m_components.size();
-        m_components[designator] = std::make_shared<component::Ammeter>(get_node(node_0_des), get_node(node_1_des), id);
+        m_components[designator] = std::make_shared<component::Ammeter>(get_node(node_0_des), get_node(node_1_des), id, designator);
+        return id;
+    }
+
+    /* voltage-controlled voltage source */
+    id_t add_voltage_controlled_voltage_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double voltage_gain) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::VoltageControlledVoltageSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, voltage_gain);
+        return id;
+    }
+
+    /* voltage-controlled current source */
+    id_t add_voltage_controlled_current_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double transconductance) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::VoltageControlledCurrentSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, transconductance);
+        return id;
+    }
+
+    /* current-controlled voltage source */
+    id_t add_current_controlled_voltage_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double transresistance) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::CurrentControlledVoltageSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, transresistance);
+        return id;
+    }
+
+    /* current-controlled current source */
+    id_t add_current_controlled_current_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double current_gain) {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        const auto id = m_components.size();
+        m_components[designator] = std::make_shared<component::CurrentControlledCurrentSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, current_gain);
         return id;
     }
 
@@ -148,15 +184,15 @@ public:
         return g;
     }
 
-    graph::Graph<std::shared_ptr<component::IComponent>> to_graph_pointers () const {
+    graph::Graph<component::IComponent*> to_graph_pointers () const {
         // nodes are the vertices, compnents are the edges
         const auto num_nodes = m_nodes.size();
         if (num_nodes > std::numeric_limits<graph::Vertex>::max()) {
             throw std::invalid_argument("too many nodes in the graph");
         }
-        graph::Graph<std::shared_ptr<component::IComponent>> g { static_cast<graph::Vertex>(num_nodes) };
+        graph::Graph<component::IComponent*> g { static_cast<graph::Vertex>(num_nodes) };
         for (const auto& [des, val] : m_components) {
-            g.add_edge(val->get_gate(0), val->get_gate(1), val);
+            val->add_to_graph(g);
         }
         return g;
     }

@@ -33,6 +33,10 @@ class Network {
 private:
     std::map<std::string, component::Node> m_nodes;
     std::map<std::string, std::shared_ptr<component::IComponent>> m_components;
+
+    void component_must_not_exist (const std::string& designator) const {
+        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+    }
 public:
     Network () {}
     ~Network () = default;
@@ -73,7 +77,7 @@ public:
 
     /* add a voltage source to the network */
     id_t add_voltage_source (const std::string& designator, double voltage, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::VoltageSource>(voltage, frequency, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
@@ -81,7 +85,7 @@ public:
 
     /* add a current source to the network */
     id_t add_current_source (const std::string& designator, double current, const math::Frequency& frequency, const std::string& node_0_des, const std::string& node_1_des) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::CurrentSource>(current, frequency, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
@@ -97,7 +101,7 @@ public:
 
     /* add a resistor to the network */
     id_t add_resistor (const std::string& designator, double resistance, const std::string& node_0_des, const std::string& node_1_des) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::Resistor>(resistance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
@@ -105,7 +109,7 @@ public:
 
     /* add an inductor to the network */
     id_t add_inductor (const std::string& designator, double inductance, const std::string& node_0_des, const std::string& node_1_des) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::Inductor>(inductance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
@@ -113,7 +117,7 @@ public:
 
     /* add a capacitor to the network */
     id_t add_capacitor (const std::string& designator, double capacitance, const std::string& node_0_des, const std::string& node_1_des) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::Capacitor>(capacitance, get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
@@ -121,7 +125,7 @@ public:
 
     /* add a voltmeter to the network */
     id_t add_voltmeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::Voltmeter>(get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
@@ -129,7 +133,7 @@ public:
 
     /* add an ammeter to the network */
     id_t add_ammeter (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::Ammeter>(get_node(node_0_des), get_node(node_1_des), id, designator);
         return id;
@@ -137,7 +141,7 @@ public:
 
     /* voltage-controlled voltage source */
     id_t add_voltage_controlled_voltage_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double voltage_gain) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::VoltageControlledVoltageSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, voltage_gain);
         return id;
@@ -145,7 +149,7 @@ public:
 
     /* voltage-controlled current source */
     id_t add_voltage_controlled_current_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double transconductance) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::VoltageControlledCurrentSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, transconductance);
         return id;
@@ -153,7 +157,7 @@ public:
 
     /* current-controlled voltage source */
     id_t add_current_controlled_voltage_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double transresistance) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::CurrentControlledVoltageSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, transresistance);
         return id;
@@ -161,7 +165,7 @@ public:
 
     /* current-controlled current source */
     id_t add_current_controlled_current_source (const std::string& designator, const std::string& node_0_des, const std::string& node_1_des, const std::string& dependency, double current_gain) {
-        if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
+        component_must_not_exist(designator);
         const auto id = m_components.size();
         m_components[designator] = std::make_shared<component::CurrentControlledCurrentSource>(get_node(node_0_des), get_node(node_1_des), id, designator, dependency, current_gain);
         return id;

@@ -22,9 +22,8 @@ public:
     void plot (html::Figure* fig_magnitude, html::Figure* fig_phase, Network& network, const PlotterConfig& config) {
         fig_magnitude->set_plot(&m_magnitude_plot);
         fig_phase->set_plot(&m_phase_plot);
-        auto input_source_ptr = network.get_component(config.input_source);
-        if (!input_source_ptr->is_source()) {
-            throw std::invalid_argument("component " + config.input_source + " must be a source");
+        if (!config.input_source->is_source()) {
+            throw std::invalid_argument("component " + config.input_source->get_designator() + " must be a source");
         }
         auto frequency = config.min_frequency;
         if (config.num_points < 1.0) {
@@ -33,10 +32,10 @@ public:
         double granularity = std::pow(config.max_frequency.as_hz() / config.min_frequency.as_hz(), 1.0 / config.num_points);
         while (frequency < config.max_frequency) {
             try {
-                input_source_ptr->set_frequency(frequency); // set the frequency of the input source
+                config.input_source->set_frequency(frequency); // set the frequency of the input source
                 const auto results = NetworkCalculator::compute(network);
                 math::Complex response { 0.0, 0.0 };
-                for (const auto& voltage : results.at(config.output_component + "_u")) // TODO
+                for (const auto& voltage : results.at(config.output_component->voltage()))
                 {
                     // response is the voltage accross the output component at the given frequency -> TODO : check for source component ID rather than frequency
                     if (voltage.get_frequency() == frequency) {

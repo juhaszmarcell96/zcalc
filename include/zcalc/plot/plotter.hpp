@@ -6,14 +6,15 @@
 #include <cmath>
 
 #include "zcalc/math/frequency.hpp"
+#include "zcalc/component/component.hpp"
 
 namespace zcalc {
 namespace plot {
 
 struct PlotterConfig {
     std::string filename;
-    std::string input_source;
-    std::string output_component;
+    component::IComponent* input_source { nullptr };
+    component::IComponent* output_component { nullptr };
     math::Frequency min_frequency;
     math::Frequency max_frequency;
     math::Frequency target_frequency;

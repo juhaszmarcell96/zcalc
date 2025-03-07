@@ -185,6 +185,28 @@ TEST(NetworkCalculatorTest, VoltageControlledCurrentSourceTest) {
 }
 
 TEST(NetworkCalculatorTest, VoltageControlledVoltageSourceTest) {
+    //
+    //                     V1
+    //     ┌──────────────────────o──────────────────────o───────────────────┐
+    //     │                      │                      │                   │
+    //     │                      │                      │                   │
+    //     │                     /│\   |               ┌─┴─┐               ┌─┴─┐ │
+    //     │                    / │ \  | E1            │R3 │ │             │R4 │ │ IR4
+    //     │                    \ │ /  V               │   │ │ UR3         │   │ V
+    //     │                     \│/                   └─┬─┘ V             └─┬─┘
+    //     │                      │                      │                   │
+    //  ┌──┴──┐ ^                 |       ┌──────┐       │                   │
+    //  │_____│ | I1          V2  o───────┤  R2  ├───────o V3                │ V4
+    //  │     │ |                 |       └──────┘       │                   │
+    //  └──┬──┘                   │                      │                ┌──┼──┐ |
+    //     │                    ┌─┴─┐                 ┌──┴──┐ ^           │  │  │ | E2
+    //     │                 │  │R1 │                 │_____│ | I2        │  │  │ |
+    //     │             UR1 │  │   │                 │     │ |           └──┼──┘ v
+    //     │                 V  └─┬─┘                 └──┬──┘                │
+    //     │                      │                      │                   │
+    //     │             gnd      │                      │                   │
+    //     └──────────────────────o──────────────────────o───────────────────┘
+    //
     zcalc::Network network {};
     network.add_node ("gnd");
     network.add_node ("V1");

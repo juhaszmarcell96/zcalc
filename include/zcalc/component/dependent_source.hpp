@@ -7,10 +7,10 @@ namespace component {
 
 class DependentSource : public TwoPoleComponent {
 protected:
-    const std::string m_dependency;
+    const IComponent* m_dependency { nullptr };
 public:
     DependentSource () = delete;
-    DependentSource (Node node_0, Node node_1, std::size_t id, const std::string& designator, const std::string& dependency)
+    DependentSource (Node node_0, Node node_1, std::size_t id, const std::string& designator, const IComponent* dependency)
         : TwoPoleComponent(node_0, node_1, id, designator), m_dependency(dependency) {}
 
     const math::Frequency& get_frequency () const override {

@@ -33,8 +33,8 @@ public:
     // open    -> 0*U + 1*I = 0
     // short   -> 1*U + 0*I = 0
     math::SymbolicLinearEquation<math::Complex> own () const override {
-        const std::string current_var = get_designator() + "_i";
-        const std::string voltage_var = get_designator() + "_u";
+        const std::string current_var = current();
+        const std::string voltage_var = voltage();
         math::SymbolicLinearEquation<math::Complex> equation { get_designator() };
         if (m_open) {
             equation.add_term(current_var, math::Complex { 1.0, 0.0 });

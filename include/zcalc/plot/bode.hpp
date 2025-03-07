@@ -36,7 +36,7 @@ public:
                 input_source_ptr->set_frequency(frequency); // set the frequency of the input source
                 const auto results = NetworkCalculator::compute(network);
                 math::Complex response { 0.0, 0.0 };
-                for (const auto& voltage : results.at(config.output_component + "_u"))
+                for (const auto& voltage : results.at(config.output_component + "_u")) // TODO
                 {
                     // response is the voltage accross the output component at the given frequency -> TODO : check for source component ID rather than frequency
                     if (voltage.get_frequency() == frequency) {

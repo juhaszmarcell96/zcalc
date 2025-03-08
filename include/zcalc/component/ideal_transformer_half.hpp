@@ -7,6 +7,22 @@ namespace component {
 
 // only half of an ideal transformer
 
+//      
+//           Iprim    Isec
+//      1      ->     <-      3     
+//      o────────┐   ┌────────o
+//               │   │           
+//      │       o│n:1│o       │  
+//      │        /   /        │  
+//   U1 │        \   \        │ U2
+//      │        /   /        │  
+//      │        \   \        │  
+//      V        │   │        V  
+//               │   │     
+//      o────────┘   └────────o
+//      2                     4
+//
+
 class IdealTransformerHalf : public TwoPoleComponent {
 protected:
     const IdealTransformerHalf* m_other_half { nullptr };

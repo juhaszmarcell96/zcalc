@@ -5,6 +5,18 @@
 namespace zcalc {
 namespace component {
 
+//
+//     o 0
+//     │
+//     │   │
+//    +-+  │
+//    │ │  │ U, I
+//    +-+  │
+//     │   V
+//     │
+//     o 1
+//
+
 class TwoPoleComponent : public ComponentBase {
 protected:
     bool m_short { false };

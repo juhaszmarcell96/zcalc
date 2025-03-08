@@ -13,6 +13,10 @@
 #include <zcalc/component/voltage_controlled_voltage_source.hpp>
 #include <zcalc/component/current_controlled_current_source.hpp>
 #include <zcalc/component/current_controlled_voltage_source.hpp>
+#include <zcalc/component/ideal_transformer_half.hpp>
+#include <zcalc/component/gyrator_half.hpp>
+#include <zcalc/component/open_circuit.hpp>
+#include <zcalc/component/short_circuit.hpp>
 
 #include <zcalc/math/complex.hpp>
 
@@ -180,6 +184,50 @@ public:
         auto component = std::make_shared<component::CurrentControlledCurrentSource>(get_node(node_0), get_node(node_1), id, designator, dependency, current_gain);
         m_components[designator] = component;
         return component.get();
+    }
+
+    /* ideal transformer */
+    void add_ideal_transformer (const std::string& designator, const std::string& node_0, const std::string& node_1, const std::string& node_2, const std::string& node_3, double transfer_value) {
+        const std::string first_half_des = designator + "_1";
+        const std::string second_half_des = designator + "_2";
+        component_must_not_exist(first_half_des);
+        component_must_not_exist(second_half_des);
+        const auto id_1 = m_components.size();
+        auto first_half = std::make_shared<component::IdealTransformerHalf>(get_node(node_0), get_node(node_1), id_1, first_half_des, transfer_value, true);
+        m_components[first_half_des] = first_half;
+        const auto id_2 = m_components.size();
+        auto second_half = std::make_shared<component::IdealTransformerHalf>(get_node(node_2), get_node(node_3), id_2, second_half_des, transfer_value, false);
+        m_components[second_half_des] = second_half;
+        first_half->set_other_half(second_half.get());
+        second_half->set_other_half(first_half.get());
+    }
+
+    /* gyrator */
+    void add_gyrator (const std::string& designator, const std::string& node_0, const std::string& node_1, const std::string& node_2, const std::string& node_3, double gyration_resistance) {
+        const std::string first_half_des = designator + "_1";
+        const std::string second_half_des = designator + "_2";
+        component_must_not_exist(first_half_des);
+        component_must_not_exist(second_half_des);
+        const auto id_1 = m_components.size();
+        auto first_half = std::make_shared<component::GyratorHalf>(get_node(node_0), get_node(node_1), id_1, first_half_des, gyration_resistance, true);
+        m_components[first_half_des] = first_half;
+        const auto id_2 = m_components.size();
+        auto second_half = std::make_shared<component::GyratorHalf>(get_node(node_2), get_node(node_3), id_2, second_half_des, gyration_resistance, false);
+        m_components[second_half_des] = second_half;
+        first_half->set_other_half(second_half.get());
+        second_half->set_other_half(first_half.get());
+    }
+
+    /* ideal amplifier */
+    void add_ideal_amplifier (const std::string& designator, const std::string& node_0, const std::string& node_1, const std::string& node_2, const std::string& node_3, double gain) {
+        const std::string open_circuit_des = designator + "_1";
+        const std::string dependent_source_des = designator + "_2";
+        component_must_not_exist(open_circuit_des);
+        component_must_not_exist(dependent_source_des);
+        const auto id = m_components.size();
+        auto open_circuit = std::make_shared<component::OpenCircuit>(get_node(node_0), get_node(node_1), id, open_circuit_des);
+        m_components[open_circuit_des] = open_circuit;
+        add_voltage_controlled_voltage_source(dependent_source_des, node_2, node_3, open_circuit.get(), gain);
     }
 
     std::size_t get_num_nodes () const {

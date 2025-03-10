@@ -331,3 +331,22 @@ TEST(NetworkCalculatorTest, VoltageFollowerTestTest) {
     ASSERT_EQ(results.at(RL->voltage())[0].to_complex(), zcalc::math::Complex(5.0, 0.0)); // 5.0V
     ASSERT_EQ(results.at(RL->voltage())[0].get_frequency().as_hz(), 0.0);
 }
+
+TEST(NetworkCalculatorTest, CoupledInductorTest) {
+    zcalc::Network network {};
+    network.add_node ("gnd");
+    network.add_node ("A");
+    network.add_node ("B");
+    network.add_node ("C");
+    network.add_voltage_source ("Us", 10.0, zcalc::math::Frequency::create_from_rad_per_sec(5000.0), "A", "gnd"); // 10V, 5krad/s
+    network.add_coupled_inductor("M", "B", "gnd", "C", "gnd", 0.4, 0.2, 0.2); // w_0*L1 = 2kohm, w_0*L2 = 1kohm, w_0*M = 1kohm
+    network.add_resistor("R1", 1000.0, "A", "B");
+    const auto R = network.add_resistor("R2", 2000.0, "B", "C");
+
+    auto results = zcalc::NetworkCalculator::compute(network);
+    ASSERT_EQ(results.at(R->current()).size(), 1);
+    auto res = results.at(R->current())[0].to_complex();
+    res.set_print_format(zcalc::math::Complex::print_format::euler_deg);
+    ASSERT_EQ(res, zcalc::math::Complex(0.00192308, 0.000384615));
+    ASSERT_EQ(results.at(R->current())[0].get_frequency().as_rad_per_sec(), 5000.0);
+}

@@ -17,6 +17,7 @@
 #include <zcalc/component/gyrator_half.hpp>
 #include <zcalc/component/open_circuit.hpp>
 #include <zcalc/component/short_circuit.hpp>
+#include <zcalc/component/coupled_inductor_half.hpp>
 
 #include <zcalc/math/complex.hpp>
 
@@ -228,6 +229,22 @@ public:
         auto open_circuit = std::make_shared<component::OpenCircuit>(get_node(node_0), get_node(node_1), id, open_circuit_des);
         m_components[open_circuit_des] = open_circuit;
         add_voltage_controlled_voltage_source(dependent_source_des, node_2, node_3, open_circuit.get(), gain);
+    }
+
+    /* coupled inductor */
+    void add_coupled_inductor (const std::string& designator, const std::string& node_0, const std::string& node_1, const std::string& node_2, const std::string& node_3, double self_inductance_1, double self_inductance_2, double mutual_inductance) {
+        const std::string first_half_des = designator + "_1";
+        const std::string second_half_des = designator + "_2";
+        component_must_not_exist(first_half_des);
+        component_must_not_exist(second_half_des);
+        const auto id_1 = m_components.size();
+        auto first_half = std::make_shared<component::CoupledInductorHalf>(get_node(node_0), get_node(node_1), id_1, first_half_des, self_inductance_1, mutual_inductance);
+        m_components[first_half_des] = first_half;
+        const auto id_2 = m_components.size();
+        auto second_half = std::make_shared<component::CoupledInductorHalf>(get_node(node_2), get_node(node_3), id_2, second_half_des, self_inductance_2, mutual_inductance);
+        m_components[second_half_des] = second_half;
+        first_half->set_other_half(second_half.get());
+        second_half->set_other_half(first_half.get());
     }
 
     std::size_t get_num_nodes () const {

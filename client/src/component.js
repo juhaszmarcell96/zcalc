@@ -4,9 +4,11 @@ class IComponent {
         this.y = y - (y % grid_size);
         this.w = w
         this.h = h
+        this.lineWidth = (grid_size / 5) * 2;
         this.terminals = {};
         this.move_offset_x = 0;
         this.move_offset_y = 0;
+        this.zoomed_g = grid_size;
     }
 
     draw_terminals(context, zoom) {
@@ -15,7 +17,19 @@ class IComponent {
         }
     }
 
-    draw (context, zoom) {
+    zoom (zoom) {
+        this.x *= zoom;
+        this.y *= zoom;
+        this.w *= zoom;
+        this.h *= zoom;
+        this.lineWidth *= zoom;
+        this.zoomed_g *= zoom;
+        for (const [key, value] of Object.entries(this.terminals)) {
+            value.zoom(zoom);
+        }
+    }
+
+    draw (context) {
         console.log('ERROR : "draw" function not overloaded');
     }
 

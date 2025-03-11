@@ -13,15 +13,10 @@ class CLamp extends IComponent {
     }
 
     draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
         context.beginPath();
-        let middle_x = zoomed_x + zoomed_w / 2;
-        let middle_y = zoomed_y + zoomed_h / 2;
-        let radius = zoomed_w / 2;
+        let middle_x = this.x + this.w / 2;
+        let middle_y = this.y + this.h / 2;
+        let radius = this.w / 2;
         context.arc(middle_x, middle_y, radius, 0, 2 * Math.PI);
         if (this.on == false) {
             context.fillStyle = 'rgba(192, 192, 192, 1)'; /* grey */
@@ -30,11 +25,11 @@ class CLamp extends IComponent {
             context.fillStyle = 'rgba(255, 215,   0, 1)'; /* yellow */
         }
         context.fill();
-        context.moveTo(middle_x - 4 * zoomed_g, middle_y - 4 * zoomed_g);
-        context.lineTo(middle_x + 4 * zoomed_g, middle_y + 4 * zoomed_g);
-        context.moveTo(middle_x - 4 * zoomed_g, middle_y + 4 * zoomed_g);
-        context.lineTo(middle_x + 4 * zoomed_g, middle_y - 4 * zoomed_g);
-        context.lineWidth = (zoomed_g / 5) * 2;
+        //context.moveTo(middle_x - 4 * this.zoomed_g, middle_y - 4 * this.zoomed_g);
+        //context.lineTo(middle_x + 4 * this.zoomed_g, middle_y + 4 * this.zoomed_g);
+        //context.moveTo(middle_x - 4 * this.zoomed_g, middle_y + 4 * this.zoomed_g);
+        //context.lineTo(middle_x + 4 * this.zoomed_g, middle_y - 4 * this.zoomed_g);
+        //context.lineWidth = (this.zoomed_g / 5) * 2;
         context.strokeStyle = '#000000';
         context.stroke();
         context.closePath();

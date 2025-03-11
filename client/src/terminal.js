@@ -1,9 +1,10 @@
 class CTerminal {
     constructor (x, y, fillStyle) {
-        this.x = x - (x % grid_size);;
-        this.y = y - (y % grid_size);;
+        this.x = x - (x % grid_size);
+        this.y = y - (y % grid_size);
         this.w = 4 * grid_size;
         this.h = 4 * grid_size;
+        this.lineWidth = (grid_size / 5) * 2;
         this.fillStyle = fillStyle;
         this.selected = false;
         this.state = TerminalState.None;
@@ -18,17 +19,20 @@ class CTerminal {
         this.y += dy;
     }
 
-    draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
+    zoom (zoom) {
+        this.x *= zoom;
+        this.y *= zoom;
+        this.w *= zoom;
+        this.h *= zoom;
+        this.lineWidth *= zoom;
+    }
+
+    draw (context) {
         context.beginPath();
-        context.rect(zoomed_x,zoomed_y, zoomed_w, zoomed_h);
+        context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = this.fillStyle;
         context.fill();
-        context.lineWidth = (zoomed_g / 5) * 2;
+        context.lineWidth = this.lineWidth;
         if (this.selected == true) {
             context.strokeStyle = '#DC143C';
         }

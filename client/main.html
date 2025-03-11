@@ -265,10 +265,10 @@
             this.context.fillStyle = '#000000';
             this.context.fillText(this.mode, 2 * grid_size, 9 * grid_size);
             for (let i = 0; i < this.components.length; i++) {
-                this.components[i].draw(this.context, this.zoom);
+                this.components[i].draw(this.context);
             }
             for (let i = 0; i < this.wires.length; i++) {
-                this.wires[i].draw(this.context, this.zoom);
+                this.wires[i].draw(this.context);
             }
 
             this.escButton.draw(this.context);
@@ -277,6 +277,26 @@
             this.peWireButton.draw(this.context);
             this.delButton.draw(this.context);
             this.moveButton.draw(this.context);
+        }
+
+        zoom_in () {
+            for (let i = 0; i < this.wires.length; i++) {
+                this.wires[i].zoom(1.1);
+            }
+            for (let i = 0; i < this.components.length; i++) {
+                this.components[i].zoom(1.1);
+            }
+            this.redraw();
+        }
+
+        zoom_out () {
+            for (let i = 0; i < this.wires.length; i++) {
+                this.wires[i].zoom(0.9);
+            }
+            for (let i = 0; i < this.components.length; i++) {
+                this.components[i].zoom(0.9);
+            }
+            this.redraw();
         }
 
     };
@@ -360,11 +380,10 @@
     playground.addEventListener("wheel", (event) => {
         event.preventDefault();
         if (event.deltaY < 0) {
-            scene.zoom *= zoomFactor; // Zoom in
+            scene.zoom_in();
         } else {
-            scene.zoom /= zoomFactor; // Zoom out
+            scene.zoom_out();
         }
-        scene.redraw();
     });
 /*
     document.addEventListener('keydown', (event) => {

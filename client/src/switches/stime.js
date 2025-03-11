@@ -14,41 +14,36 @@ class CTimeSwitch extends IComponent {
     }
 
     draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
         context.beginPath();
-        context.rect(zoomed_x, zoomed_y, zoomed_w, zoomed_h);
+        context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = 'rgba(230, 230, 230, 1)'; /* grey */
         context.fill();
-        context.moveTo(zoomed_x + 7 * zoomed_g, zoomed_y + 0 * zoomed_g);
-        context.lineTo(zoomed_x + 7 * zoomed_g, zoomed_y + 8 * zoomed_g);
-        context.moveTo(zoomed_x + 6 * zoomed_g, zoomed_y + 6 * zoomed_g);
-        context.lineTo(zoomed_x + 7 * zoomed_g, zoomed_y + 8 * zoomed_g);
-        context.moveTo(zoomed_x + 8 * zoomed_g, zoomed_y + 6 * zoomed_g);
-        context.lineTo(zoomed_x + 7 * zoomed_g, zoomed_y + 8 * zoomed_g);
+        context.moveTo(this.x + 7 * this.zoomed_g, this.y + 0 * this.zoomed_g);
+        context.lineTo(this.x + 7 * this.zoomed_g, this.y + 8 * this.zoomed_g);
+        context.moveTo(this.x + 6 * this.zoomed_g, this.y + 6 * this.zoomed_g);
+        context.lineTo(this.x + 7 * this.zoomed_g, this.y + 8 * this.zoomed_g);
+        context.moveTo(this.x + 8 * this.zoomed_g, this.y + 6 * this.zoomed_g);
+        context.lineTo(this.x + 7 * this.zoomed_g, this.y + 8 * this.zoomed_g);
         
-        context.moveTo(zoomed_x + 2 * zoomed_g, zoomed_y + 20 * zoomed_g);
-        context.lineTo(zoomed_x + 2 * zoomed_g, zoomed_y + 11 * zoomed_g);
-        context.moveTo(zoomed_x + 2 * zoomed_g, zoomed_y + 11 * zoomed_g);
-        context.lineTo(zoomed_x + 4 * zoomed_g, zoomed_y + 11 * zoomed_g);
+        context.moveTo(this.x + 2 * this.zoomed_g, this.y + 20 * this.zoomed_g);
+        context.lineTo(this.x + 2 * this.zoomed_g, this.y + 11 * this.zoomed_g);
+        context.moveTo(this.x + 2 * this.zoomed_g, this.y + 11 * this.zoomed_g);
+        context.lineTo(this.x + 4 * this.zoomed_g, this.y + 11 * this.zoomed_g);
         if (this.closed == true) {
-            context.moveTo(zoomed_x +  4 * zoomed_g, zoomed_y + 11 * zoomed_g);
-            context.lineTo(zoomed_x +  8 * zoomed_g, zoomed_y +  8 * zoomed_g);
+            context.moveTo(this.x +  4 * this.zoomed_g, this.y + 11 * this.zoomed_g);
+            context.lineTo(this.x +  8 * this.zoomed_g, this.y +  8 * this.zoomed_g);
         }
         else {
-            context.moveTo(zoomed_x +  4 * zoomed_g, zoomed_y + 11 * zoomed_g);
-            context.lineTo(zoomed_x +  8 * zoomed_g, zoomed_y + 14 * zoomed_g);
+            context.moveTo(this.x +  4 * this.zoomed_g, this.y + 11 * this.zoomed_g);
+            context.lineTo(this.x +  8 * this.zoomed_g, this.y + 14 * this.zoomed_g);
         }
-        context.moveTo(zoomed_x +  7 * zoomed_g, zoomed_y + 20 * zoomed_g);
-        context.lineTo(zoomed_x +  7 * zoomed_g, zoomed_y + 13 * zoomed_g);
-        context.moveTo(zoomed_x + 12 * zoomed_g, zoomed_y + 20 * zoomed_g);
-        context.lineTo(zoomed_x + 12 * zoomed_g, zoomed_y +  8 * zoomed_g);
-        context.moveTo(zoomed_x +  8 * zoomed_g, zoomed_y +  8 * zoomed_g);
-        context.lineTo(zoomed_x + 12 * zoomed_g, zoomed_y +  8 * zoomed_g);
-        context.lineWidth = (zoomed_g / 5) * 2;
+        context.moveTo(this.x +  7 * this.zoomed_g, this.y + 20 * this.zoomed_g);
+        context.lineTo(this.x +  7 * this.zoomed_g, this.y + 13 * this.zoomed_g);
+        context.moveTo(this.x + 12 * this.zoomed_g, this.y + 20 * this.zoomed_g);
+        context.lineTo(this.x + 12 * this.zoomed_g, this.y +  8 * this.zoomed_g);
+        context.moveTo(this.x +  8 * this.zoomed_g, this.y +  8 * this.zoomed_g);
+        context.lineTo(this.x + 12 * this.zoomed_g, this.y +  8 * this.zoomed_g);
+        context.lineWidth = this.lineWidth;
         context.strokeStyle = '#000000';
         context.stroke();
         context.closePath();

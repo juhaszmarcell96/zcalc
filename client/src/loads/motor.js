@@ -19,44 +19,39 @@ class C3PhaseMotor extends IComponent {
     }
 
     draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
         context.beginPath();
-        context.rect(zoomed_x, zoomed_y, zoomed_w, zoomed_h);
+        context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = 'rgba(230, 230, 230, 1)'; /* grey */
         context.fill();
-        context.lineWidth = (zoomed_g / 5) * 2;
+        context.lineWidth = this.lineWidth;
         context.strokeStyle = '#000000';
         context.font = '14pt Kremlin Pro Web';
         context.fillStyle = '#000000';
-        context.fillText("U1", zoomed_x +  4 * zoomed_g - context.measureText("U1").width / 2, zoomed_y +  4 * zoomed_g);
-        context.fillText("V1", zoomed_x + 10 * zoomed_g - context.measureText("V1").width / 2, zoomed_y +  4 * zoomed_g);
-        context.fillText("W1", zoomed_x + 16 * zoomed_g - context.measureText("W1").width / 2, zoomed_y +  4 * zoomed_g);
-        context.fillText("W2", zoomed_x +  4 * zoomed_g - context.measureText("W2").width / 2, zoomed_y + 15 * zoomed_g);
-        context.fillText("U2", zoomed_x + 10 * zoomed_g - context.measureText("U2").width / 2, zoomed_y + 15 * zoomed_g);
-        context.fillText("V2", zoomed_x + 16 * zoomed_g - context.measureText("V2").width / 2, zoomed_y + 15 * zoomed_g);
+        context.fillText("U1", this.x +  4 * this.zoomed_g - context.measureText("U1").width / 2, this.y +  4 * this.zoomed_g);
+        context.fillText("V1", this.x + 10 * this.zoomed_g - context.measureText("V1").width / 2, this.y +  4 * this.zoomed_g);
+        context.fillText("W1", this.x + 16 * this.zoomed_g - context.measureText("W1").width / 2, this.y +  4 * this.zoomed_g);
+        context.fillText("W2", this.x +  4 * this.zoomed_g - context.measureText("W2").width / 2, this.y + 15 * this.zoomed_g);
+        context.fillText("U2", this.x + 10 * this.zoomed_g - context.measureText("U2").width / 2, this.y + 15 * this.zoomed_g);
+        context.fillText("V2", this.x + 16 * this.zoomed_g - context.measureText("V2").width / 2, this.y + 15 * this.zoomed_g);
         if (this.error == true) {
-                context.fillText("error", zoomed_x + 26 * zoomed_g - context.measureText("error").width / 2, zoomed_y + 9 * zoomed_g);
+                context.fillText("error", this.x + 26 * this.zoomed_g - context.measureText("error").width / 2, this.y + 9 * this.zoomed_g);
         }
         else {
             if (this.on == false) {
-                context.fillText("off", zoomed_x + 26 * zoomed_g - context.measureText("off").width / 2, zoomed_y + 9 * zoomed_g);
+                context.fillText("off", this.x + 26 * this.zoomed_g - context.measureText("off").width / 2, this.y + 9 * this.zoomed_g);
             }
             else {
                 if (this.forward == false) {
-                    context.fillText("rev", zoomed_x + 26 * zoomed_g - context.measureText("rev").width / 2, zoomed_y + 6 * zoomed_g);
+                    context.fillText("rev", this.x + 26 * this.zoomed_g - context.measureText("rev").width / 2, this.y + 6 * this.zoomed_g);
                 }
                 else {
-                    context.fillText("fwd", zoomed_x + 26 * zoomed_g - context.measureText("fwd").width / 2, zoomed_y + 6 * zoomed_g);
+                    context.fillText("fwd", this.x + 26 * this.zoomed_g - context.measureText("fwd").width / 2, this.y + 6 * this.zoomed_g);
                 }
                 if (this.delta == false) {
-                    context.fillText("star", zoomed_x + 26 * zoomed_g - context.measureText("star").width / 2, zoomed_y + 13 * zoomed_g);
+                    context.fillText("star", this.x + 26 * this.zoomed_g - context.measureText("star").width / 2, this.y + 13 * this.zoomed_g);
                 }
                 else {
-                    context.fillText("delta", zoomed_x + 26 * zoomed_g - context.measureText("delta").width / 2, zoomed_y + 13 * zoomed_g);
+                    context.fillText("delta", this.x + 26 * this.zoomed_g - context.measureText("delta").width / 2, this.y + 13 * this.zoomed_g);
                 }
             }
         }

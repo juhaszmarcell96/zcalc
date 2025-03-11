@@ -18,19 +18,21 @@ class CWire {
         this.points = []
         this.points.push(new Point(super.x, super.y));
         this.type = type;
+        this.lineWidth = (grid_size / 5) * 2;
+        this.zoomed_g = grid_size;
 
         this.T1 = null;
         this.T2 = null;
     }
     
-    draw (context, zoom) {
+    draw (context) {
         context.beginPath();
-        context.lineWidth = (grid_size / 5) * 2;
-        context.arc(this.x, this.y, (grid_size / 5) * 2, 0, 2 * Math.PI);
+        context.lineWidth = this.lineWidth;
+        context.arc(this.x, this.y, (this.zoomed_g / 5) * 2, 0, 2 * Math.PI);
         context.moveTo(this.x, this.y);
         for (let i = 0; i < this.points.length; i++) {
             context.lineTo(this.points[i].x, this.points[i].y);
-            context.arc(this.points[i].x, this.points[i].y, (grid_size / 5) * 2, 0, 2 * Math.PI);
+            context.arc(this.points[i].x, this.points[i].y, (this.zoomed_g / 5) * 2, 0, 2 * Math.PI);
             context.moveTo(this.points[i].x, this.points[i].y);
         }
         if (this.type == WireType.L) context.strokeStyle = color_l1;
@@ -38,6 +40,19 @@ class CWire {
         else context.strokeStyle = color_pe;
         context.stroke();
         context.closePath();
+    }
+
+    zoom (zoom) {
+        this.x *= zoom;
+        this.y *= zoom;
+        this.w *= zoom;
+        this.h *= zoom;
+        this.lineWidth *= zoom;
+        this.zoomed_g *= zoom;
+        for (let i = 0; i < this.points.length; i++) {
+            this.points[i].x *= zoom;
+            this.points[i].y *= zoom;
+        }
     }
 
     set_last_pos (pos_x, pos_y) {

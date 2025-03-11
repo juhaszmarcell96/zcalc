@@ -1,19 +1,48 @@
 class IComponent {
-    constructor (x, y) {
+    constructor (x, y, w, h) {
         this.x = x - (x % grid_size);
         this.y = y - (y % grid_size);
+        this.w = w
+        this.h = h
+        this.terminals = {};
+        this.move_offset_x = 0;
+        this.move_offset_y = 0;
     }
 
-    draw (context) {
+    draw_terminals(context, zoom) {
+        for (const [key, value] of Object.entries(this.terminals)) {
+            value.draw(context, zoom);
+        }
+    }
+
+    draw (context, zoom) {
         console.log('ERROR : "draw" function not overloaded');
     }
 
     is_inside(pos_x, pos_y) {
-        console.log('ERROR : "is_inside" function not overloaded');
+        return pos_x > this.x && pos_x < this.x + this.w && pos_y < this.y + this.h && pos_y > this.y;
+    }
+
+    start_move(pos_x, pos_y) {
+        this.move_offset_x = pos_x - (pos_x % grid_size) - this.x;
+        this.move_offset_y = pos_y - (pos_y % grid_size) - this.y;
+    }
+
+    move(pos_x, pos_y) {
+        let prev_x = this.x;
+        let prev_y = this.y;
+        this.x = pos_x - (pos_x % grid_size) - this.move_offset_x;
+        this.y = pos_y - (pos_y % grid_size) - this.move_offset_y;
+        for (const [key, value] of Object.entries(this.terminals)) {
+            value.move(this.x - prev_x, this.y - prev_y);
+        }
     }
 
     get_terminal_at (pos_x, pos_y) {
-        console.log('ERROR : "get_terminal_at" function not overloaded');
+        for (const [key, value] of Object.entries(this.terminals)) {
+            if (value.is_inside(pos_x, pos_y)) { return value; }
+        }
+        return null;
     }
 
     do_stuff () {
@@ -21,25 +50,6 @@ class IComponent {
     }
 
     get_terminals () {
-        console.log('ERROR : "get_terminals" function not overloaded');
-    }
-
-    /* propagate the states of the terminals to each other based on the internal logic of the component */
-    /* the function should return true if the state of any of its terminals changes during the process, false otherwise */
-    propagate () {
-        console.log('ERROR : "propagate" function not overloaded');
-    }
-
-    /* reset the states of the terminals */
-    reset_terminals () {
-        console.log('ERROR : "reset_terminals" function not overloaded');
-    }
-
-    /* the component should check the states of its terminals and perform an appropriate action */
-    /* e.g.: for a lamp, if terminal L and N have the states L2 and N respectively, it should turn on */
-    /*       and it should show some error message if the terminals are not connected the way they should be */
-    /* the function should return whether the component changed in a way that new connections appeared */
-    check_terminals () {
-        console.log('ERROR : "check_terminals" function not overloaded');
+        return this.terminals;
     }
 };

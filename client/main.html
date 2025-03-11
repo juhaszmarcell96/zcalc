@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Prevent scrollbars */
+        width: 100%;
+        height: 100%;
+    }
+    
+    canvas {
+        display: block; /* Prevents extra space below canvas */
+    }
+</style>
 <body>
 
 
-<canvas id="playground" width="1800" height="1000" style="border:1px solid #d3d3d3;">
-Your browser does not support the HTML5 canvas tag.</canvas>
+<canvas id="playground" width="1800" height="1000" style="border:1px solid #d3d3d3;">no canvas support</canvas>
+<canvas id="menu" width="1800" height="1000" style="border:1px solid #d3d3d3;">no canvas support</canvas>
 
 <script src="./src/defines.js"></script>
 <script src="./src/button.js"></script>
@@ -19,128 +32,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <script src="./src/switches/stime.js"></script>
 <script src="./src/switches/scontactor.js"></script>
 <script src="./src/jbox.js"></script>
+<script src="./src/wire.js"></script>
 <script>
-    class Point {
-        constructor (x, y) {
-            this.x = x;
-            this.y = y;
-        }
-    };
-
-    const WireType = {
-        L: 0,
-        N: 1,
-        PE: 2
-    };
-
-    class CWire {
-        constructor (x, y, type) {
-            this.x = x;
-            this.y = y;
-            this.points = []
-            this.points.push(new Point(super.x, super.y));
-            this.type = type;
-
-            this.T1 = null;
-            this.T1 = null;
-        }
-        
-        draw (context) {
-            context.beginPath();
-            context.lineWidth = (grid_size / 5) * 2;
-            context.arc(this.x, this.y, (grid_size / 5) * 2, 0, 2 * Math.PI);
-            context.moveTo(this.x, this.y);
-            for (let i = 0; i < this.points.length; i++) {
-                context.lineTo(this.points[i].x, this.points[i].y);
-                context.arc(this.points[i].x, this.points[i].y, (grid_size / 5) * 2, 0, 2 * Math.PI);
-                context.moveTo(this.points[i].x, this.points[i].y);
-            }
-            if (this.type == WireType.L) context.strokeStyle = color_l1;
-            else if (this.type == WireType.N) context.strokeStyle = color_n;
-            else context.strokeStyle = color_pe;
-            context.stroke();
-            context.closePath();
-        }
-
-        set_last_pos (pos_x, pos_y) {
-            if (this.points.length == 1) {
-                if (Math.abs(this.x - pos_x) < Math.abs(this.y - pos_y)) pos_x = this.x;
-                else pos_y = this.y;
-            }
-            else {
-                if (Math.abs(this.points[this.points.length - 2].x - pos_x) < Math.abs(this.points[this.points.length - 2].y - pos_y)) pos_x = this.points[this.points.length - 2].x;
-                else pos_y = this.points[this.points.length - 2].y;
-            }
-            this.points[this.points.length - 1].x = pos_x - (pos_x % grid_size);
-            this.points[this.points.length - 1].y = pos_y - (pos_y % grid_size);
-        }
-
-        fix_last_pos (pos_x, pos_y) {
-            pos_x = pos_x - (pos_x % grid_size);
-            pos_y = pos_y - (pos_y % grid_size);
-            this.points.push(new Point(pos_x, pos_y));
-        }
-
-        get_last_pos_x () {
-            return this.points[this.points.length - 1].x;
-        }
-
-        get_last_pos_y () {
-            return this.points[this.points.length - 1].y;
-        }
-
-        propagate () {
-            //console.log(this.T1);
-            //console.log(this.T2);
-            if (this.T1.state == this.T2.state) return false;
-            if (this.T1.state == TerminalState.None) {
-                this.T1.state = this.T2.state;
-                return true;
-            }
-            if (this.T2.state == TerminalState.None) {
-                this.T2.state = this.T1.state;
-                return true;
-            }
-            /* at this point none of them can have None state */
-            if (this.T1.state == TerminalState.Virtual) {
-                this.T1.state = this.T2.state;
-                return true;
-            }
-            if (this.T2.state == TerminalState.Virtual) {
-                this.T2.state = this.T1.state;
-                return true;
-            }
-            alert("CWire : short circuit between " + this.T1.state + " and " + this.T2.state);
-            return false;
-        }
-
-        is_inside(pos_x, pos_y) {
-            var x_1 = this.x
-            var y_1 = this.y;
-            for (let i = 0; i < this.points.length; i++) {
-                var x_2 = this.points[i].x;
-                var y_2 = this.points[i].y;
-
-                var min_x = x_1 < x_2 ? x_1 : x_2;
-                var max_x = x_1 < x_2 ? x_2 : x_1;
-                var min_y = y_1 < y_2 ? y_1 : y_2;
-                var max_y = y_1 < y_2 ? y_2 : y_1;
-                min_x -= 2 * grid_size / 5;
-                max_x += 2 * grid_size / 5;
-                min_y -= 2 * grid_size / 5;
-                max_y += 2 * grid_size / 5;
-                
-                x_1 = x_2;
-                y_1 = y_2;
-                
-                if ((pos_x >= min_x) && (pos_x <= max_x) && (pos_y >= min_y) && (pos_y <= max_y)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     class CScene {
         constructor (canvas) {
             this.canvas = canvas;
@@ -151,39 +44,21 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             this.mouse_x = 0;
             this.mouse_y = 0;
             this.newWire = null;
+            this.selected = null;
 
             this.escButton = new CButton(20 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, 'rgba(255,140,0, 1)', "x");
             this.lWireButton = new CButton(40 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, color_l1, "wire");
             this.nWireButton = new CButton(60 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, color_n, "wire");
             this.peWireButton = new CButton(80 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, color_pe, "wire");
             this.delButton = new CButton(100 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, 'rgba(178, 34, 34, 1)', "delete");
+            this.moveButton = new CButton(120 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, 'rgba(120, 120, 120, 1)', "move");
 
             this.wiringPhase = 0;
             this.wireType = WireType.L;
-        }
+            
+            this.zoom = 1.0;
 
-        propagate () {
-            while (true) {
-                for (let i = 0; i < this.components.length; i++) {
-                    this.components[i].reset_terminals();
-                }
-                var something_changed = false;
-                while (true) {
-                    something_changed = false;
-                    for (let i = 0; i < this.components.length; i++) {
-                        something_changed |= this.components[i].propagate();
-                    }
-                    for (let i = 0; i < this.wires.length; i++) {
-                        something_changed |= this.wires[i].propagate();
-                    }
-                    if (something_changed == false) break;
-                }
-                something_changed = false;
-                for (let i = 0; i < this.components.length; i++) {
-                    something_changed |= this.components[i].check_terminals();
-                }
-                if (something_changed == false) break;
-            }
+            this.middleButtonDown = false;
         }
 
         draw_cursor_helper () {
@@ -216,27 +91,42 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             var rect = this.canvas.getBoundingClientRect();
             this.mouse_x = event.clientX - rect.left;
             this.mouse_y = event.clientY - rect.top;
-            //console.log(mouse_x + " " + mouse_y);
-            switch (this.mode) {
-                case Mode.Visual : {
-                    break;
-                }
-                case Mode.Wire : {
+            if (this.middleButtonDown) {
+                for (let i = 0; i < this.components.length; i++) {
+                    this.components[i].move(this.mouse_x, this.mouse_y);
                     this.redraw();
-                    if (this.wiringPhase == 2) {
-                        this.newWire.set_last_pos (this.mouse_x, this.mouse_y);
-                        this.newWire.draw(this.context);
+                }
+            }
+            else {
+                //console.log(mouse_x + " " + mouse_y);
+                switch (this.mode) {
+                    case Mode.Visual : {
+                        break;
                     }
-                    this.draw_cursor_helper();
-                    break;
-                }
-                case Mode.Delete : {
-                    this.redraw();
-                    this.draw_cursor_delete();
-                    break;
-                }
-                default : {
-                    console.log('ERROR : unknown mode')
+                    case Mode.Wire : {
+                        this.redraw();
+                        if (this.wiringPhase == 2) {
+                            this.newWire.set_last_pos (this.mouse_x, this.mouse_y);
+                            this.newWire.draw(this.context);
+                        }
+                        this.draw_cursor_helper();
+                        break;
+                    }
+                    case Mode.Delete : {
+                        this.redraw();
+                        this.draw_cursor_delete();
+                        break;
+                    }
+                    case Mode.Move : {
+                        if (this.selected != null) {
+                            this.selected.move(this.mouse_x, this.mouse_y);
+                            this.redraw();
+                        }
+                        break;
+                    }
+                    default : {
+                        console.log('ERROR : unknown mode')
+                    }
                 }
             }
         }
@@ -277,12 +167,17 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                 this.redraw();
                 return;
             }
+            if (this.moveButton.is_inside(this.mouse_x, this.mouse_y)) {
+                this.mode = Mode.Move;
+                this.selected = null;
+                this.redraw();
+                return;
+            }
             switch (this.mode) {
                 case Mode.Visual : {
                     for (let i = 0; i < this.components.length; i++) {
                         if (this.components[i].is_inside(this.mouse_x, this.mouse_y)) this.components[i].do_stuff();
                     }
-                    this.propagate();
                     this.redraw();
                     break;
                 }
@@ -308,7 +203,6 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                 this.newWire.set_last_pos (this.mouse_x, this.mouse_y);
                                 this.newWire.T2 = selectedTerminal;
                                 this.wires.push(this.newWire);
-                                this.propagate();
                                 this.redraw();
                                 this.wiringPhase = 0;
                                 return;
@@ -325,7 +219,6 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                     for (let i = 0; i < this.wires.length; i++) {
                         if (this.wires[i].is_inside(this.mouse_x, this.mouse_y)) {
                             this.wires.splice(i, 1);
-                            this.propagate();
                             this.mode = Mode.Visual;
                             this.redraw();
                             return;
@@ -335,54 +228,36 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                     this.draw_cursor_delete();
                     break;
                 }
+                case Mode.Move : {
+                    if (this.selected == null) {
+                        for (let i = 0; i < this.components.length; i++) {
+                            if (this.components[i].is_inside(this.mouse_x, this.mouse_y)) {
+                                this.selected = this.components[i];
+                                this.selected.start_move(this.mouse_x, this.mouse_y);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        this.selected = null;
+                    }
+                    break;
+                }
                 default : {
                     console.log('ERROR : unknown mode ' + this.mode);
                 }
             }
         }
-/*
-        handle_key_press_event (key) {
-            //console.log(key);
-            if (key == "Escape") {
-                this.mode = Mode.Visual;
-                this.redraw();
-            }
-            else if (key == "w") {
-                var selectedTerminal = null;
-                for (let i = 0; i < this.components.length; i++) {
-                    selectedTerminal = this.components[i].get_terminal_at(this.mouse_x, this.mouse_y);
-                    if (selectedTerminal !== null) { 
-                        this.mode = Mode.Wire;
-                        this.newWire = new CWire(selectedTerminal.x + selectedTerminal.w / 2, selectedTerminal.y + selectedTerminal.h / 2, WireType.L);
-                        this.newWire.T1 = selectedTerminal;
-                    }
-                }
-                this.redraw();
-            }
-            else if (key == "c") {
-                if (this.mode == Mode.Wire) {
-                    if (this.newWire.type == WireType.L) this.newWire.type = WireType.N;
-                    else if (this.newWire.type == WireType.N) this.newWire.type = WireType.PE;
-                    else this.newWire.type = WireType.L;
-                    this.redraw();
-                    this.draw_cursor_helper();
-                    this.newWire.draw(this.context);
-                }
-            }
-            else if (key == "Delete") {
-                if (this.mode == Mode.Visual) {
-                    for (let i = 0; i < this.wires.length; i++) {
-                        if (this.wires[i].is_inside(this.mouse_x, this.mouse_y)) {
-                            this.wires.splice(i, 1);
-                            break;
-                        }
-                    }
-                    this.propagate();
-                    this.redraw();
-                }
+
+        start_move () {
+            var rect = this.canvas.getBoundingClientRect();
+            this.mouse_x = event.clientX - rect.left;
+            this.mouse_y = event.clientY - rect.top;
+            for (let i = 0; i < this.components.length; i++) {
+                this.components[i].start_move(this.mouse_x, this.mouse_y);
             }
         }
-*/
+
         redraw () {
             //console.log("redraw");
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -390,10 +265,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             this.context.fillStyle = '#000000';
             this.context.fillText(this.mode, 2 * grid_size, 9 * grid_size);
             for (let i = 0; i < this.components.length; i++) {
-                this.components[i].draw(this.context);
+                this.components[i].draw(this.context, this.zoom);
             }
             for (let i = 0; i < this.wires.length; i++) {
-                this.wires[i].draw(this.context);
+                this.wires[i].draw(this.context, this.zoom);
             }
 
             this.escButton.draw(this.context);
@@ -401,19 +276,31 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             this.nWireButton.draw(this.context);
             this.peWireButton.draw(this.context);
             this.delButton.draw(this.context);
+            this.moveButton.draw(this.context);
         }
 
     };
 
 
 
-    var canvas = document.getElementById('playground');
+    var playground = document.getElementById('playground');
+    var menu = document.getElementById('menu');
     //canvas.width = document.body.clientWidth;
-    //canvas.height = document.body.clientHeight;
-    //canvas.width = window.innerWidth;
-    //canvas.height = window.innerHeight;
+    //canvas.height = document.body.clientHeight / 2;
+    menu.style.position = 'absolute';
+    menu.style.left = 0 + 'px';
+    menu.style.top = 0 + 'px';
+    playground.width = 3.0/4.0 * window.innerWidth;
+    playground.height = window.innerHeight;
+
+    menu.style.position = 'absolute';
+    menu.style.left = 3.0/4.0 * window.innerWidth + 'px';
+    menu.style.top = 0 + 'px';
+    menu.width = 1.0/4.0 * window.innerWidth;
+    menu.height = window.innerHeight;
     
-    var scene = new CScene(canvas);
+    var scene = new CScene(playground);
+    var menuScene = new CScene(menu);
 
 
     scene.components.push(new CSource(2 * grid_size, 20 * grid_size));
@@ -441,19 +328,44 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
     function timeElapsed () {
         timeSwitch.do_stuff();
-        scene.propagate();
         scene.redraw();
     }
 
     scene.redraw();
+    menuScene.redraw();
 
-    canvas.addEventListener('click', function(evt) {
+    menu.addEventListener('click', function(evt) {
+        menuScene.handle_mouse_click_event(evt);
+    }, false);
+
+    playground.addEventListener('click', function(evt) {
         scene.handle_mouse_click_event(evt);
     }, false);
-
-    canvas.addEventListener('mousemove', function(evt) {
+    playground.addEventListener("mousedown", (event) => {
+        if (event.button === 1) { // Middle mouse button
+            scene.middleButtonDown = true;
+            scene.start_move();
+            event.preventDefault();
+        }
+    });
+    playground.addEventListener('mousemove', function(evt) {
         scene.handle_mouse_move_event(evt);
     }, false);
+    playground.addEventListener("mouseup", (event) => {
+        if (event.button === 1) {
+            scene.middleButtonDown = false;
+            event.preventDefault();
+        }
+    });
+    playground.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        if (event.deltaY < 0) {
+            scene.zoom *= zoomFactor; // Zoom in
+        } else {
+            scene.zoom /= zoomFactor; // Zoom out
+        }
+        scene.redraw();
+    });
 /*
     document.addEventListener('keydown', (event) => {
         //var name = event.key;

@@ -35,11 +35,14 @@
 <script src="./src/wire.js"></script>
 <script>
     class CScene {
-        screen_to_canvas (x, y) {
+        fit_to_grid (x, y) {
             return {
-                x: (x - this.offset_x) / this.scale,
-                y: (y - this.offset_y) / this.scale
+                x: x - (x % grid_size),
+                y: y - (y % grid_size)
             };
+        }
+        screen_to_canvas (x, y) {
+            return this.fit_to_grid((x - this.offset_x) / this.scale, (y - this.offset_y) / this.scale)
         }
 
         get_component_at(x, y) {
@@ -97,7 +100,6 @@
                     if (terminal) {
                         this.new_wire = new CWire(this.wire_type);
                         this.new_wire.start(terminal.get_middle_x(), terminal.get_middle_y());
-                        this.mode = Mode.Wire;
                     }
                     else {
                         this.selected = this.get_component_at(x, y);
@@ -138,8 +140,8 @@
                     this.new_wire.stop(x, y);
                     this.components.push(this.new_wire);
                     this.new_wire = null;
-                    this.mode = Mode.Visual;
                 }
+                this.redraw();
             });
             canvas.addEventListener("contextmenu", (event) => {
                 const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
@@ -150,19 +152,16 @@
                 event.preventDefault();
                 this.redraw();
             });
-
-
-            this.mode = Mode.Visual;
         }
 
         draw_cursor_helper () {
             /* draw cursor */
             this.context.beginPath();
             this.context.lineWidth = (grid_size / 5) * 2;
-            this.context.moveTo(0, this.mouse_y - (this.mouse_y % grid_size));
-            this.context.lineTo(this.canvas.width, this.mouse_y - (this.mouse_y % grid_size));
-            this.context.moveTo(this.mouse_x - (this.mouse_x % grid_size), 0);
-            this.context.lineTo(this.mouse_x - (this.mouse_x % grid_size), this.canvas.height);
+            this.context.moveTo(0, this.new_wire.terminals.T2.get_middle_y());
+            this.context.lineTo(this.canvas.width, this.new_wire.terminals.T2.get_middle_y());
+            this.context.moveTo(this.new_wire.terminals.T2.get_middle_x(), 0);
+            this.context.lineTo(this.new_wire.terminals.T2.get_middle_x(), this.canvas.height);
             this.context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
             this.context.stroke();
             this.context.closePath();
@@ -181,177 +180,6 @@
             this.context.closePath();
         }
 
-        handle_mouse_move_event (event) {
-            var rect = this.canvas.getBoundingClientRect();
-            this.mouse_x = event.clientX - rect.left;
-            this.mouse_y = event.clientY - rect.top;
-            if (this.middleButtonDown) {
-                for (let i = 0; i < this.components.length; i++) {
-                    this.components[i].move(this.mouse_x, this.mouse_y);
-                    this.redraw();
-                }
-            }
-            else {
-                //console.log(mouse_x + " " + mouse_y);
-                switch (this.mode) {
-                    case Mode.Visual : {
-                        break;
-                    }
-                    case Mode.Wire : {
-                        this.redraw();
-                        if (this.wiringPhase == 2) {
-                            this.newWire.set_last_pos (this.mouse_x, this.mouse_y);
-                            this.newWire.draw(this.context);
-                        }
-                        this.draw_cursor_helper();
-                        break;
-                    }
-                    case Mode.Delete : {
-                        this.redraw();
-                        this.draw_cursor_delete();
-                        break;
-                    }
-                    case Mode.Move : {
-                        if (this.selected != null) {
-                            this.selected.move(this.mouse_x, this.mouse_y);
-                            this.redraw();
-                        }
-                        break;
-                    }
-                    default : {
-                        console.log('ERROR : unknown mode')
-                    }
-                }
-            }
-        }
-
-        handle_mouse_click_event (event) {
-            var rect = this.canvas.getBoundingClientRect();
-            this.mouse_x = event.clientX - rect.left;
-            this.mouse_y = event.clientY - rect.top;
-            //console.log(mouse_x + " " + mouse_y);
-            if (this.escButton.is_inside(this.mouse_x, this.mouse_y)) {
-                this.mode = Mode.Visual;
-                this.redraw();
-                return;
-            }
-            if (this.lWireButton.is_inside(this.mouse_x, this.mouse_y)) {
-                this.mode = Mode.Wire;
-                this.wiringPhase = 1;
-                this.wireType = WireType.L;
-                this.redraw();
-                return;
-            }
-            if (this.nWireButton.is_inside(this.mouse_x, this.mouse_y)) {
-                this.mode = Mode.Wire;
-                this.wiringPhase = 1;
-                this.wireType = WireType.N;
-                this.redraw();
-                return;
-            }
-            if (this.peWireButton.is_inside(this.mouse_x, this.mouse_y)) {
-                this.mode = Mode.Wire;
-                this.wiringPhase = 1;
-                this.wireType = WireType.PE;
-                this.redraw();
-                return;
-            }
-            if (this.delButton.is_inside(this.mouse_x, this.mouse_y)) {
-                this.mode = Mode.Delete;
-                this.redraw();
-                return;
-            }
-            if (this.moveButton.is_inside(this.mouse_x, this.mouse_y)) {
-                this.mode = Mode.Move;
-                this.selected = null;
-                this.redraw();
-                return;
-            }
-            switch (this.mode) {
-                case Mode.Visual : {
-                    for (let i = 0; i < this.components.length; i++) {
-                        if (this.components[i].is_inside(this.mouse_x, this.mouse_y)) this.components[i].do_stuff();
-                    }
-                    this.redraw();
-                    break;
-                }
-                case Mode.Wire : {
-                    if (this.wiringPhase == 1) {
-                        var selectedTerminal = null;
-                        for (let i = 0; i < this.components.length; i++) {
-                            selectedTerminal = this.components[i].get_terminal_at(this.mouse_x, this.mouse_y);
-                            if (selectedTerminal !== null) { 
-                                this.mode = Mode.Wire;
-                                this.newWire = new CWire(selectedTerminal.x + selectedTerminal.w / 2, selectedTerminal.y + selectedTerminal.h / 2, this.wireType);
-                                this.newWire.T1 = selectedTerminal;
-                            }
-                        }
-                        this.redraw();
-                        this.wiringPhase = 2;
-                    }
-                    else if (this.wiringPhase == 2) {
-                        for (let i = 0; i < this.components.length; i++) {
-                            var selectedTerminal = this.components[i].get_terminal_at(this.newWire.get_last_pos_x(), this.newWire.get_last_pos_y());
-                            if (selectedTerminal !== null) { 
-                                this.mode = Mode.Visual;
-                                this.newWire.set_last_pos (this.mouse_x, this.mouse_y);
-                                this.newWire.T2 = selectedTerminal;
-                                this.wires.push(this.newWire);
-                                this.redraw();
-                                this.wiringPhase = 0;
-                                return;
-                            }
-                        }
-                        this.newWire.fix_last_pos(this.mouse_x, this.mouse_y);
-                        this.redraw();
-                        this.draw_cursor_helper();
-                        this.newWire.draw(this.context);
-                    }
-                    break;
-                }
-                case Mode.Delete : {
-                    for (let i = 0; i < this.wires.length; i++) {
-                        if (this.wires[i].is_inside(this.mouse_x, this.mouse_y)) {
-                            this.wires.splice(i, 1);
-                            this.mode = Mode.Visual;
-                            this.redraw();
-                            return;
-                        }
-                    }
-                    this.redraw();
-                    this.draw_cursor_delete();
-                    break;
-                }
-                case Mode.Move : {
-                    if (this.selected == null) {
-                        for (let i = 0; i < this.components.length; i++) {
-                            if (this.components[i].is_inside(this.mouse_x, this.mouse_y)) {
-                                this.selected = this.components[i];
-                                this.selected.start_move(this.mouse_x, this.mouse_y);
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        this.selected = null;
-                    }
-                    break;
-                }
-                default : {
-                    console.log('ERROR : unknown mode ' + this.mode);
-                }
-            }
-        }
-
-        start_move () {
-            var rect = this.canvas.getBoundingClientRect();
-            this.mouse_x = event.clientX - rect.left;
-            this.mouse_y = event.clientY - rect.top;
-            for (let i = 0; i < this.components.length; i++) {
-                this.components[i].start_move(this.mouse_x, this.mouse_y);
-            }
-        }
-
         redraw () {
             //console.log("redraw");
             this.context.setTransform(this.scale, 0, 0, this.scale, this.offset_x, this.offset_y);
@@ -361,8 +189,6 @@
             });
             if (this.new_wire) {
                 this.new_wire.draw(this.context);
-            }
-            if (this.mode == Mode.Wire) {
                 this.draw_cursor_helper();
             }
         }

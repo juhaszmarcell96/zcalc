@@ -15,32 +15,32 @@ class CSwitch102 extends IComponent {
         context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = 'rgba(230, 230, 230, 1)'; /* grey */
         context.fill();
-        context.moveTo(this.x + 0 * this.zoomed_g, this.y +  4 * this.zoomed_g);
-        context.lineTo(this.x + 5 * this.zoomed_g, this.y +  4 * this.zoomed_g);
-        context.moveTo(this.x + 0 * this.zoomed_g, this.y + 12 * this.zoomed_g);
-        context.lineTo(this.x + 5 * this.zoomed_g, this.y + 12 * this.zoomed_g);
+        context.moveTo(this.x + 0 * grid_size, this.y +  4 * grid_size);
+        context.lineTo(this.x + 5 * grid_size, this.y +  4 * grid_size);
+        context.moveTo(this.x + 0 * grid_size, this.y + 12 * grid_size);
+        context.lineTo(this.x + 5 * grid_size, this.y + 12 * grid_size);
         if (this.closed == false) {
-            context.moveTo(this.x +  5 * this.zoomed_g, this.y +  4 * this.zoomed_g);
-            context.lineTo(this.x + 11 * this.zoomed_g, this.y +  2 * this.zoomed_g);
-            context.moveTo(this.x +  5 * this.zoomed_g, this.y + 12 * this.zoomed_g);
-            context.lineTo(this.x + 11 * this.zoomed_g, this.y + 10 * this.zoomed_g);
+            context.moveTo(this.x +  5 * grid_size, this.y +  4 * grid_size);
+            context.lineTo(this.x + 11 * grid_size, this.y +  2 * grid_size);
+            context.moveTo(this.x +  5 * grid_size, this.y + 12 * grid_size);
+            context.lineTo(this.x + 11 * grid_size, this.y + 10 * grid_size);
         }
         else {
-            context.moveTo(this.x +  5 * this.zoomed_g, this.y +  4 * this.zoomed_g);
-            context.lineTo(this.x + 11 * this.zoomed_g, this.y +  4 * this.zoomed_g);
-            context.moveTo(this.x +  5 * this.zoomed_g, this.y + 12 * this.zoomed_g);
-            context.lineTo(this.x + 11 * this.zoomed_g, this.y + 12 * this.zoomed_g);
+            context.moveTo(this.x +  5 * grid_size, this.y +  4 * grid_size);
+            context.lineTo(this.x + 11 * grid_size, this.y +  4 * grid_size);
+            context.moveTo(this.x +  5 * grid_size, this.y + 12 * grid_size);
+            context.lineTo(this.x + 11 * grid_size, this.y + 12 * grid_size);
         }
-        context.moveTo(this.x + 11 * this.zoomed_g, this.y +  4 * this.zoomed_g);
-        context.lineTo(this.x + 16 * this.zoomed_g, this.y +  4 * this.zoomed_g);
-        context.moveTo(this.x + 11 * this.zoomed_g, this.y + 12 * this.zoomed_g);
-        context.lineTo(this.x + 16 * this.zoomed_g, this.y + 12 * this.zoomed_g);
-        context.moveTo(this.x +  8 * this.zoomed_g, this.y +  5 * this.zoomed_g);
-        context.lineTo(this.x +  8 * this.zoomed_g, this.y +  6 * this.zoomed_g);
-        context.moveTo(this.x +  8 * this.zoomed_g, this.y +  7 * this.zoomed_g);
-        context.lineTo(this.x +  8 * this.zoomed_g, this.y +  8 * this.zoomed_g);
-        context.moveTo(this.x +  8 * this.zoomed_g, this.y +  9 * this.zoomed_g);
-        context.lineTo(this.x +  8 * this.zoomed_g, this.y + 10 * this.zoomed_g);
+        context.moveTo(this.x + 11 * grid_size, this.y +  4 * grid_size);
+        context.lineTo(this.x + 16 * grid_size, this.y +  4 * grid_size);
+        context.moveTo(this.x + 11 * grid_size, this.y + 12 * grid_size);
+        context.lineTo(this.x + 16 * grid_size, this.y + 12 * grid_size);
+        context.moveTo(this.x +  8 * grid_size, this.y +  5 * grid_size);
+        context.lineTo(this.x +  8 * grid_size, this.y +  6 * grid_size);
+        context.moveTo(this.x +  8 * grid_size, this.y +  7 * grid_size);
+        context.lineTo(this.x +  8 * grid_size, this.y +  8 * grid_size);
+        context.moveTo(this.x +  8 * grid_size, this.y +  9 * grid_size);
+        context.lineTo(this.x +  8 * grid_size, this.y + 10 * grid_size);
         context.lineWidth = this.lineWidth;
         context.strokeStyle = '#000000';
         context.stroke();

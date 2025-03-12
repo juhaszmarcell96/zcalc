@@ -8,24 +8,11 @@ class IComponent {
         this.terminals = {};
         this.move_offset_x = 0;
         this.move_offset_y = 0;
-        this.zoomed_g = grid_size;
     }
 
     draw_terminals(context, zoom) {
         for (const [key, value] of Object.entries(this.terminals)) {
             value.draw(context, zoom);
-        }
-    }
-
-    zoom (zoom) {
-        this.x *= zoom;
-        this.y *= zoom;
-        this.w *= zoom;
-        this.h *= zoom;
-        this.lineWidth *= zoom;
-        this.zoomed_g *= zoom;
-        for (const [key, value] of Object.entries(this.terminals)) {
-            value.zoom(zoom);
         }
     }
 
@@ -35,11 +22,6 @@ class IComponent {
 
     is_inside(pos_x, pos_y) {
         return pos_x > this.x && pos_x < this.x + this.w && pos_y < this.y + this.h && pos_y > this.y;
-    }
-
-    start_move(pos_x, pos_y) {
-        this.move_offset_x = pos_x - (pos_x % grid_size) - this.x;
-        this.move_offset_y = pos_y - (pos_y % grid_size) - this.y;
     }
 
     move(dx, dy) {

@@ -16,7 +16,6 @@ class CWire extends IComponent {
         super(0.0, 0.0, 0.0, 0.0);
         this.type = type;
         this.lineWidth = (grid_size / 5) * 2;
-        this.zoomed_g = grid_size;
     }
     
     draw (context) {

@@ -14,20 +14,20 @@ class CSwitch106 extends IComponent {
         context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = 'rgba(230, 230, 230, 1)'; /* grey */
         context.fill();
-        context.moveTo(this.x + 0 * this.zoomed_g, this.y + 8 * this.zoomed_g);
-        context.lineTo(this.x + 5 * this.zoomed_g, this.y + 8 * this.zoomed_g);
+        context.moveTo(this.x + 0 * grid_size, this.y + 8 * grid_size);
+        context.lineTo(this.x + 5 * grid_size, this.y + 8 * grid_size);
         if (this.closed == false) {
-            context.moveTo(this.x +  5 * this.zoomed_g, this.y + 8 * this.zoomed_g);
-            context.lineTo(this.x + 11 * this.zoomed_g, this.y + 4 * this.zoomed_g);
+            context.moveTo(this.x +  5 * grid_size, this.y + 8 * grid_size);
+            context.lineTo(this.x + 11 * grid_size, this.y + 4 * grid_size);
         }
         else {
-            context.moveTo(this.x +  5 * this.zoomed_g, this.y + 8 * this.zoomed_g);
-            context.lineTo(this.x + 11 * this.zoomed_g, this.y + 12 * this.zoomed_g);
+            context.moveTo(this.x +  5 * grid_size, this.y + 8 * grid_size);
+            context.lineTo(this.x + 11 * grid_size, this.y + 12 * grid_size);
         }
-        context.moveTo(this.x + 11 * this.zoomed_g, this.y + 4 * this.zoomed_g);
-        context.lineTo(this.x + 16 * this.zoomed_g, this.y + 4 * this.zoomed_g);
-        context.moveTo(this.x + 11 * this.zoomed_g, this.y + 12 * this.zoomed_g);
-        context.lineTo(this.x + 16 * this.zoomed_g, this.y + 12 * this.zoomed_g);
+        context.moveTo(this.x + 11 * grid_size, this.y + 4 * grid_size);
+        context.lineTo(this.x + 16 * grid_size, this.y + 4 * grid_size);
+        context.moveTo(this.x + 11 * grid_size, this.y + 12 * grid_size);
+        context.lineTo(this.x + 16 * grid_size, this.y + 12 * grid_size);
         context.lineWidth = this.lineWidth;
         context.strokeStyle = '#000000';
         context.stroke();

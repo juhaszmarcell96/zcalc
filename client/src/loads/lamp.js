@@ -25,11 +25,11 @@ class CLamp extends IComponent {
             context.fillStyle = 'rgba(255, 215,   0, 1)'; /* yellow */
         }
         context.fill();
-        context.moveTo(middle_x - 4 * this.zoomed_g, middle_y - 4 * this.zoomed_g);
-        context.lineTo(middle_x + 4 * this.zoomed_g, middle_y + 4 * this.zoomed_g);
-        context.moveTo(middle_x - 4 * this.zoomed_g, middle_y + 4 * this.zoomed_g);
-        context.lineTo(middle_x + 4 * this.zoomed_g, middle_y - 4 * this.zoomed_g);
-        context.lineWidth = (this.zoomed_g / 5) * 2;
+        context.moveTo(middle_x - 4 * grid_size, middle_y - 4 * grid_size);
+        context.lineTo(middle_x + 4 * grid_size, middle_y + 4 * grid_size);
+        context.moveTo(middle_x - 4 * grid_size, middle_y + 4 * grid_size);
+        context.lineTo(middle_x + 4 * grid_size, middle_y - 4 * grid_size);
+        context.lineWidth = (grid_size / 5) * 2;
         context.strokeStyle = '#000000';
         context.stroke();
         context.closePath();

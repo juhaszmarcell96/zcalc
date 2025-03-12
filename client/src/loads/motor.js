@@ -27,31 +27,31 @@ class C3PhaseMotor extends IComponent {
         context.strokeStyle = '#000000';
         context.font = '14pt Kremlin Pro Web';
         context.fillStyle = '#000000';
-        context.fillText("U1", this.x +  4 * this.zoomed_g - context.measureText("U1").width / 2, this.y +  4 * this.zoomed_g);
-        context.fillText("V1", this.x + 10 * this.zoomed_g - context.measureText("V1").width / 2, this.y +  4 * this.zoomed_g);
-        context.fillText("W1", this.x + 16 * this.zoomed_g - context.measureText("W1").width / 2, this.y +  4 * this.zoomed_g);
-        context.fillText("W2", this.x +  4 * this.zoomed_g - context.measureText("W2").width / 2, this.y + 15 * this.zoomed_g);
-        context.fillText("U2", this.x + 10 * this.zoomed_g - context.measureText("U2").width / 2, this.y + 15 * this.zoomed_g);
-        context.fillText("V2", this.x + 16 * this.zoomed_g - context.measureText("V2").width / 2, this.y + 15 * this.zoomed_g);
+        context.fillText("U1", this.x +  4 * grid_size - context.measureText("U1").width / 2, this.y +  4 * grid_size);
+        context.fillText("V1", this.x + 10 * grid_size - context.measureText("V1").width / 2, this.y +  4 * grid_size);
+        context.fillText("W1", this.x + 16 * grid_size - context.measureText("W1").width / 2, this.y +  4 * grid_size);
+        context.fillText("W2", this.x +  4 * grid_size - context.measureText("W2").width / 2, this.y + 15 * grid_size);
+        context.fillText("U2", this.x + 10 * grid_size - context.measureText("U2").width / 2, this.y + 15 * grid_size);
+        context.fillText("V2", this.x + 16 * grid_size - context.measureText("V2").width / 2, this.y + 15 * grid_size);
         if (this.error == true) {
-                context.fillText("error", this.x + 26 * this.zoomed_g - context.measureText("error").width / 2, this.y + 9 * this.zoomed_g);
+                context.fillText("error", this.x + 26 * grid_size - context.measureText("error").width / 2, this.y + 9 * grid_size);
         }
         else {
             if (this.on == false) {
-                context.fillText("off", this.x + 26 * this.zoomed_g - context.measureText("off").width / 2, this.y + 9 * this.zoomed_g);
+                context.fillText("off", this.x + 26 * grid_size - context.measureText("off").width / 2, this.y + 9 * grid_size);
             }
             else {
                 if (this.forward == false) {
-                    context.fillText("rev", this.x + 26 * this.zoomed_g - context.measureText("rev").width / 2, this.y + 6 * this.zoomed_g);
+                    context.fillText("rev", this.x + 26 * grid_size - context.measureText("rev").width / 2, this.y + 6 * grid_size);
                 }
                 else {
-                    context.fillText("fwd", this.x + 26 * this.zoomed_g - context.measureText("fwd").width / 2, this.y + 6 * this.zoomed_g);
+                    context.fillText("fwd", this.x + 26 * grid_size - context.measureText("fwd").width / 2, this.y + 6 * grid_size);
                 }
                 if (this.delta == false) {
-                    context.fillText("star", this.x + 26 * this.zoomed_g - context.measureText("star").width / 2, this.y + 13 * this.zoomed_g);
+                    context.fillText("star", this.x + 26 * grid_size - context.measureText("star").width / 2, this.y + 13 * grid_size);
                 }
                 else {
-                    context.fillText("delta", this.x + 26 * this.zoomed_g - context.measureText("delta").width / 2, this.y + 13 * this.zoomed_g);
+                    context.fillText("delta", this.x + 26 * grid_size - context.measureText("delta").width / 2, this.y + 13 * grid_size);
                 }
             }
         }

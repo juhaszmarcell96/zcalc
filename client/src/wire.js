@@ -15,7 +15,7 @@ class CWire extends IComponent {
     constructor (type) {
         super(0.0, 0.0, 0.0, 0.0);
         this.type = type;
-        this.lineWidth = (grid_size / 5) * 2;
+        this.lineWidth = 2;
     }
     
     draw (context) {
@@ -44,8 +44,10 @@ class CWire extends IComponent {
     }
 
     wire (x, y) {
-        const dx = x - this.terminals.T1.get_middle_x();
-        const dy = y - this.terminals.T1.get_middle_y();
+        let dx = x - this.terminals.T1.get_middle_x();
+        let dy = y - this.terminals.T1.get_middle_y();
+        dx = dx - (dx % grid_size);
+        dy = dy - (dy % grid_size);
         if (Math.abs(dx) > Math.abs(dy)) {
             this.w = Math.abs(dx);
             this.h = this.terminals.T1.w;

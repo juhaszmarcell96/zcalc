@@ -35,14 +35,11 @@
 <script src="./src/wire.js"></script>
 <script>
     class CScene {
-        fit_to_grid (x, y) {
-            return {
-                x: x - (x % grid_size),
-                y: y - (y % grid_size)
-            };
-        }
         screen_to_canvas (x, y) {
-            return this.fit_to_grid((x - this.offset_x) / this.scale, (y - this.offset_y) / this.scale)
+            return {
+                x: (x - this.offset_x) / this.scale,
+                y: (y - this.offset_y) / this.scale
+            };
         }
 
         get_component_at(x, y) {

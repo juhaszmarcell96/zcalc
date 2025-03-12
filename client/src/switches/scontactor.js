@@ -43,7 +43,7 @@ class CContactor extends IComponent {
         context.strokeStyle = '#000000';
         context.font = '10pt Kremlin Pro Web';
         context.fillStyle = '#000000';
-        context.fillText("A1"  , this.x +  4 * grid_size - context.measureText("A1").width / 2, this.y +  3 * grid_size);
+        context.fillText("A1"  , this.x +  3 * grid_size - context.measureText("A1").width / 2, this.y +  3 * grid_size);
         context.fillText("L1"  , this.x +  9 * grid_size - context.measureText("L1").width / 2, this.y +  3 * grid_size);
         context.fillText("L2"  , this.x + 15 * grid_size - context.measureText("L2").width / 2, this.y +  3 * grid_size);
         context.fillText("L3"  , this.x + 21 * grid_size - context.measureText("L3").width / 2, this.y +  3 * grid_size);

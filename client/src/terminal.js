@@ -6,12 +6,7 @@ class CTerminal {
         this.h = 4 * grid_size;
         this.lineWidth = (grid_size / 5) * 2;
         this.fillStyle = fillStyle;
-        this.selected = false;
         this.state = TerminalState.None;
-    }
-
-    select () {
-        this.selected = true;
     }
 
     move (dx, dy) {
@@ -25,6 +20,26 @@ class CTerminal {
         this.w *= zoom;
         this.h *= zoom;
         this.lineWidth *= zoom;
+    }
+
+    set_middle (x, y) {
+        this.x = x - this.w / 2.0;
+        this.y = y - this.h / 2.0;
+    }
+
+    scale (s) {
+        this.x += (this.w - this.w * s) / 2.0;
+        this.y += (this.h - this.h * s) / 2.0;
+        this.w *= s;
+        this.h *= s;
+    }
+
+    get_middle_x () {
+        return this.x + this.w / 2.0;
+    }
+
+    get_middle_y () {
+        return this.y + this.h / 2.0;
     }
 
     draw (context) {

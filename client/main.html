@@ -35,30 +35,124 @@
 <script src="./src/wire.js"></script>
 <script>
     class CScene {
+        screen_to_canvas (x, y) {
+            return {
+                x: (x - this.offset_x) / this.scale,
+                y: (y - this.offset_y) / this.scale
+            };
+        }
+
+        get_component_at(x, y) {
+            return this.components.find(component => component.is_inside(x, y));
+        }
+
+        get_terminal_at(x, y) {
+            for (const component of this.components){
+                let terminal = component.get_terminal_at(x, y);
+                if (terminal) { return terminal; }
+            }
+            return null;
+        }
+
         constructor (canvas) {
             this.canvas = canvas;
             this.context = canvas.getContext('2d');
-            this.components = [];
-            this.wires = [];
-            this.mode = Mode.Visual;
-            this.mouse_x = 0;
-            this.mouse_y = 0;
-            this.newWire = null;
+            this.scale = 1.0;
+            this.offset_x = 0.0;
+            this.offset_y = 0.0;
             this.selected = null;
+            this.panning = false;
+            this.dragging = false;
+            this.last_x = 0.0;
+            this.last_y = 0.0
+            this.components = [];
+            this.new_wire = null;
+            this.wire_type = WireType.L;
 
-            this.escButton = new CButton(20 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, 'rgba(255,140,0, 1)', "x");
-            this.lWireButton = new CButton(40 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, color_l1, "wire");
-            this.nWireButton = new CButton(60 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, color_n, "wire");
-            this.peWireButton = new CButton(80 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, color_pe, "wire");
-            this.delButton = new CButton(100 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, 'rgba(178, 34, 34, 1)', "delete");
-            this.moveButton = new CButton(120 * grid_size, 3 * grid_size, 15 * grid_size, 8 * grid_size, 'rgba(120, 120, 120, 1)', "move");
-
-            this.wiringPhase = 0;
-            this.wireType = WireType.L;
+            canvas.addEventListener("wheel", (event) => {
+                const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
+                const zoomFactor = 1.1;
+                
+                if (event.deltaY < 0) { // Zoom in
+                    this.scale *= zoomFactor;
+                }
+                else { // Zoom out
+                    this.scale /= zoomFactor;
+                }
             
-            this.zoom = 1.0;
+                // Adjust offset to zoom towards cursor
+                this.offset_x = event.clientX - x * this.scale;
+                this.offset_y = event.clientY - y * this.scale;
+            
+                this.redraw();
+                event.preventDefault();
+            });
+            canvas.addEventListener("mousedown", (event) => {
+                const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
+                this.last_x = event.clientX;
+                this.last_y = event.clientY;
+            
+                if (event.button === 0) { // Left click (select object)
+                    const terminal = this.get_terminal_at(x, y);
+                    if (terminal) {
+                        this.new_wire = new CWire(this.wire_type);
+                        this.new_wire.start(terminal.get_middle_x(), terminal.get_middle_y());
+                        this.mode = Mode.Wire;
+                    }
+                    else {
+                        this.selected = this.get_component_at(x, y);
+                        if (this.selected) {
+                            this.dragging = true;
+                        }
+                    }
+                }
+                else if (event.button === 1) { // Middle click (pan)
+                    this.panning = true;
+                }
+                event.preventDefault();
+            });
+            canvas.addEventListener("mousemove", (event) => {
+                const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
+                
+                if (this.new_wire) {
+                    this.new_wire.wire(x, y);
+                }
+                else if (this.dragging && this.selected) {
+                    this.selected.move((event.clientX - this.last_x) / this.scale, (event.clientY - this.last_y) / this.scale);
+                }
+                else if (this.panning) {
+                    this.offset_x += event.clientX - this.last_x;
+                    this.offset_y += event.clientY - this.last_y;
+                }
+                
+                this.last_x = event.clientX;
+                this.last_y = event.clientY;
+                this.redraw();
+            });
+            canvas.addEventListener("mouseup", () => {
+                this.dragging = false;
+                this.panning = false;
+                this.selected = null;
+                const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
+                if (this.new_wire) {
+                    this.new_wire.stop(x, y);
+                    this.components.push(this.new_wire);
+                    this.new_wire = null;
+                    this.mode = Mode.Visual;
+                }
+            });
+            canvas.addEventListener("contextmenu", (event) => {
+                const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
+                const index = [...this.components].reverse().findIndex(component => component.is_inside(x, y));
+                if (index !== -1) {
+                    this.components.splice(this.components.length - 1 - index, 1);
+                }
+                event.preventDefault();
+                this.redraw();
+            });
 
-            this.middleButtonDown = false;
+
+            this.mode = Mode.Visual;
         }
 
         draw_cursor_helper () {
@@ -260,43 +354,17 @@
 
         redraw () {
             //console.log("redraw");
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.context.font = '20pt Kremlin Pro Web';
-            this.context.fillStyle = '#000000';
-            this.context.fillText(this.mode, 2 * grid_size, 9 * grid_size);
-            for (let i = 0; i < this.components.length; i++) {
-                this.components[i].draw(this.context);
+            this.context.setTransform(this.scale, 0, 0, this.scale, this.offset_x, this.offset_y);
+            this.context.clearRect(-this.offset_x / this.scale, -this.offset_y / this.scale, this.canvas.width / this.scale, this.canvas.height / this.scale);
+            this.components.forEach(component => {
+                component.draw(this.context);
+            });
+            if (this.new_wire) {
+                this.new_wire.draw(this.context);
             }
-            for (let i = 0; i < this.wires.length; i++) {
-                this.wires[i].draw(this.context);
+            if (this.mode == Mode.Wire) {
+                this.draw_cursor_helper();
             }
-
-            this.escButton.draw(this.context);
-            this.lWireButton.draw(this.context);
-            this.nWireButton.draw(this.context);
-            this.peWireButton.draw(this.context);
-            this.delButton.draw(this.context);
-            this.moveButton.draw(this.context);
-        }
-
-        zoom_in () {
-            for (let i = 0; i < this.wires.length; i++) {
-                this.wires[i].zoom(1.1);
-            }
-            for (let i = 0; i < this.components.length; i++) {
-                this.components[i].zoom(1.1);
-            }
-            this.redraw();
-        }
-
-        zoom_out () {
-            for (let i = 0; i < this.wires.length; i++) {
-                this.wires[i].zoom(0.9);
-            }
-            for (let i = 0; i < this.components.length; i++) {
-                this.components[i].zoom(0.9);
-            }
-            this.redraw();
         }
 
     };
@@ -357,34 +425,6 @@
     menu.addEventListener('click', function(evt) {
         menuScene.handle_mouse_click_event(evt);
     }, false);
-
-    playground.addEventListener('click', function(evt) {
-        scene.handle_mouse_click_event(evt);
-    }, false);
-    playground.addEventListener("mousedown", (event) => {
-        if (event.button === 1) { // Middle mouse button
-            scene.middleButtonDown = true;
-            scene.start_move();
-            event.preventDefault();
-        }
-    });
-    playground.addEventListener('mousemove', function(evt) {
-        scene.handle_mouse_move_event(evt);
-    }, false);
-    playground.addEventListener("mouseup", (event) => {
-        if (event.button === 1) {
-            scene.middleButtonDown = false;
-            event.preventDefault();
-        }
-    });
-    playground.addEventListener("wheel", (event) => {
-        event.preventDefault();
-        if (event.deltaY < 0) {
-            scene.zoom_in();
-        } else {
-            scene.zoom_out();
-        }
-    });
 /*
     document.addEventListener('keydown', (event) => {
         //var name = event.key;

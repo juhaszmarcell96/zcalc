@@ -42,13 +42,11 @@ class IComponent {
         this.move_offset_y = pos_y - (pos_y % grid_size) - this.y;
     }
 
-    move(pos_x, pos_y) {
-        let prev_x = this.x;
-        let prev_y = this.y;
-        this.x = pos_x - (pos_x % grid_size) - this.move_offset_x;
-        this.y = pos_y - (pos_y % grid_size) - this.move_offset_y;
+    move(dx, dy) {
+        this.x += dx;
+        this.y += dy;
         for (const [key, value] of Object.entries(this.terminals)) {
-            value.move(this.x - prev_x, this.y - prev_y);
+            value.move(dx, dy);
         }
     }
 

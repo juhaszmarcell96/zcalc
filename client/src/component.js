@@ -4,10 +4,12 @@ class IComponent {
         this.y = y - (y % grid_size);
         this.w = w
         this.h = h
-        this.lineWidth = (grid_size / 5) * 2;
+        this.lineWidth = 2;
         this.terminals = {};
         this.move_offset_x = 0;
         this.move_offset_y = 0;
+        this.dx = 0.0
+        this.dy = 0.0
     }
 
     draw_terminals(context, zoom) {
@@ -25,10 +27,34 @@ class IComponent {
     }
 
     move(dx, dy) {
-        this.x += dx;
-        this.y += dy;
+        this.dx += dx;
+        this.dy += dy;
+        let terminal_dx = 0.0;
+        let terminal_dy = 0.0;
+        if (this.dx > grid_size / 2) {
+            this.x += grid_size;
+            this.dx -= grid_size;
+            terminal_dx = grid_size;
+        }
+        else if (this.dx < -grid_size / 2) {
+            this.x -= grid_size;
+            this.dx += grid_size;
+            terminal_dx = -grid_size;
+        }
+        if (this.dy > grid_size / 2) {
+            this.y += grid_size;
+            this.dy -= grid_size;
+            terminal_dy = grid_size;
+        }
+        else if (this.dy < -grid_size / 2) {
+            this.y -= grid_size;
+            this.dy += grid_size;
+            terminal_dy = -grid_size;
+        }
+        //this.x += dx;
+        //this.y += dy;
         for (const [key, value] of Object.entries(this.terminals)) {
-            value.move(dx, dy);
+            value.move(terminal_dx, terminal_dy);
         }
     }
 

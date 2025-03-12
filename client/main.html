@@ -74,15 +74,21 @@
                 const zoomFactor = 1.1;
                 
                 if (event.deltaY < 0) { // Zoom in
-                    this.scale *= zoomFactor;
+                    if (this.scale < 2.0) {
+                        this.scale *= zoomFactor;
+                    }
                 }
                 else { // Zoom out
-                    this.scale /= zoomFactor;
+                    if (this.scale > 0.1) {
+                        this.scale /= zoomFactor;
+                    }
                 }
             
                 // Adjust offset to zoom towards cursor
                 this.offset_x = event.clientX - x * this.scale;
                 this.offset_y = event.clientY - y * this.scale;
+                if (this.offset_x < 0) { this.offset_x = 0; }
+                if (this.offset_y < 0) { this.offset_y = 0; }
             
                 this.redraw();
                 event.preventDefault();
@@ -122,6 +128,8 @@
                 else if (this.panning) {
                     this.offset_x += event.clientX - this.last_x;
                     this.offset_y += event.clientY - this.last_y;
+                    if (this.offset_x < 0) { this.offset_x = 0; }
+                    if (this.offset_y < 0) { this.offset_y = 0; }
                 }
                 
                 this.last_x = event.clientX;
@@ -129,6 +137,9 @@
                 this.redraw();
             });
             canvas.addEventListener("mouseup", () => {
+                if (this.dragging && this.selected) {
+                    this.selected.snap_to_grid();
+                }
                 this.dragging = false;
                 this.panning = false;
                 this.selected = null;

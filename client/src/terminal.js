@@ -9,6 +9,23 @@ class CTerminal {
         this.state = TerminalState.None;
     }
 
+    snap_to_grid () {
+        const modulo_x = this.x % grid_size;
+        const modulo_y = this.y % grid_size;
+        if (modulo_x > grid_size / 2) {
+            this.x += grid_size - modulo_x;
+        }
+        else {
+            this.x -= modulo_x;
+        }
+        if (modulo_y > grid_size / 2) {
+            this.y += grid_size - modulo_y;
+        }
+        else {
+            this.y -= modulo_y;
+        }
+    }
+
     move (dx, dy) {
         this.x += dx;
         this.y += dy;

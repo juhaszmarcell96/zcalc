@@ -8,8 +8,6 @@ class IComponent {
         this.terminals = {};
         this.move_offset_x = 0;
         this.move_offset_y = 0;
-        this.dx = 0.0
-        this.dy = 0.0
     }
 
     draw_terminals(context, zoom) {
@@ -26,35 +24,31 @@ class IComponent {
         return pos_x > this.x && pos_x < this.x + this.w && pos_y < this.y + this.h && pos_y > this.y;
     }
 
-    move(dx, dy) {
-        this.dx += dx;
-        this.dy += dy;
-        let terminal_dx = 0.0;
-        let terminal_dy = 0.0;
-        if (this.dx > grid_size / 2) {
-            this.x += grid_size;
-            this.dx -= grid_size;
-            terminal_dx = grid_size;
+    snap_to_grid () {
+        const modulo_x = this.x % grid_size;
+        const modulo_y = this.y % grid_size;
+        if (modulo_x > grid_size / 2) {
+            this.x += grid_size - modulo_x;
         }
-        else if (this.dx < -grid_size / 2) {
-            this.x -= grid_size;
-            this.dx += grid_size;
-            terminal_dx = -grid_size;
+        else {
+            this.x -= modulo_x;
         }
-        if (this.dy > grid_size / 2) {
-            this.y += grid_size;
-            this.dy -= grid_size;
-            terminal_dy = grid_size;
+        if (modulo_y > grid_size / 2) {
+            this.y += grid_size - modulo_y;
         }
-        else if (this.dy < -grid_size / 2) {
-            this.y -= grid_size;
-            this.dy += grid_size;
-            terminal_dy = -grid_size;
+        else {
+            this.y -= modulo_y;
         }
-        //this.x += dx;
-        //this.y += dy;
         for (const [key, value] of Object.entries(this.terminals)) {
-            value.move(terminal_dx, terminal_dy);
+            value.snap_to_grid();
+        }
+    }
+
+    move(dx, dy) {
+        this.x += dx;
+        this.y += dy;
+        for (const [key, value] of Object.entries(this.terminals)) {
+            value.move(dx, dy);
         }
     }
 

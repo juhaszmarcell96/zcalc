@@ -1,16 +1,12 @@
 class CTerminal {
     constructor (x, y, fillStyle) {
-        this.x = x - (x % grid_size);;
-        this.y = y - (y % grid_size);;
+        this.x = x - (x % grid_size);
+        this.y = y - (y % grid_size);
         this.w = 4 * grid_size;
         this.h = 4 * grid_size;
+        this.lineWidth = (grid_size / 5) * 2;
         this.fillStyle = fillStyle;
-        this.selected = false;
         this.state = TerminalState.None;
-    }
-
-    select () {
-        this.selected = true;
     }
 
     move (dx, dy) {
@@ -18,17 +14,40 @@ class CTerminal {
         this.y += dy;
     }
 
-    draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
+    zoom (zoom) {
+        this.x *= zoom;
+        this.y *= zoom;
+        this.w *= zoom;
+        this.h *= zoom;
+        this.lineWidth *= zoom;
+    }
+
+    set_middle (x, y) {
+        this.x = x - this.w / 2.0;
+        this.y = y - this.h / 2.0;
+    }
+
+    scale (s) {
+        this.x += (this.w - this.w * s) / 2.0;
+        this.y += (this.h - this.h * s) / 2.0;
+        this.w *= s;
+        this.h *= s;
+    }
+
+    get_middle_x () {
+        return this.x + this.w / 2.0;
+    }
+
+    get_middle_y () {
+        return this.y + this.h / 2.0;
+    }
+
+    draw (context) {
         context.beginPath();
-        context.rect(zoomed_x,zoomed_y, zoomed_w, zoomed_h);
+        context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = this.fillStyle;
         context.fill();
-        context.lineWidth = (zoomed_g / 5) * 2;
+        context.lineWidth = this.lineWidth;
         if (this.selected == true) {
             context.strokeStyle = '#DC143C';
         }

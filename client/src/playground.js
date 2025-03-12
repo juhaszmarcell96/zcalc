@@ -9,17 +9,12 @@ class CPlayground {
         this.wires = [];
     }
 
-    draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
+    draw (context) {
         context.beginPath();
-        context.rect(zoomed_x,zoomed_y, zoomed_w, zoomed_h);
+        context.rect(this.x,this.y, this.w, this.h);
         context.fillStyle = this.fillStyle;
         context.fill();
-        context.lineWidth = (zoomed_g / 5) * 2;
+        context.lineWidth = this.lineWidth;
         if (this.selected == true) {
             context.strokeStyle = '#DC143C';
         }

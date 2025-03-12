@@ -35,48 +35,43 @@ class CContactor extends IComponent {
     }
 
     draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
         context.beginPath();
-        context.rect(zoomed_x, zoomed_y, zoomed_w, zoomed_h);
+        context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = 'rgba(230, 230, 230, 1)'; /* grey */
         context.fill();
-        context.lineWidth = (zoomed_g / 5) * 2;
+        context.lineWidth = this.lineWidth;
         context.strokeStyle = '#000000';
         context.font = '10pt Kremlin Pro Web';
         context.fillStyle = '#000000';
-        context.fillText("A1"  , zoomed_x +  4 * zoomed_g - context.measureText("A1").width / 2, zoomed_y +  3 * zoomed_g);
-        context.fillText("L1"  , zoomed_x +  9 * zoomed_g - context.measureText("L1").width / 2, zoomed_y +  3 * zoomed_g);
-        context.fillText("L2"  , zoomed_x + 15 * zoomed_g - context.measureText("L2").width / 2, zoomed_y +  3 * zoomed_g);
-        context.fillText("L3"  , zoomed_x + 21 * zoomed_g - context.measureText("L3").width / 2, zoomed_y +  3 * zoomed_g);
-        context.fillText("NO13", zoomed_x + 27 * zoomed_g - context.measureText("NO13").width / 2, zoomed_y +  3 * zoomed_g);
-        context.fillText("A2"  , zoomed_x + 33 * zoomed_g - context.measureText("A2").width / 2, zoomed_y +  3 * zoomed_g);
-        context.fillText("T1"  , zoomed_x +  9 * zoomed_g - context.measureText("T1").width / 2, zoomed_y + 54 * zoomed_g);
-        context.fillText("T2"  , zoomed_x + 15 * zoomed_g - context.measureText("T2").width / 2, zoomed_y + 54 * zoomed_g);
-        context.fillText("T3"  , zoomed_x + 21 * zoomed_g - context.measureText("T3").width / 2, zoomed_y + 54 * zoomed_g);
-        context.fillText("NO14", zoomed_x + 27 * zoomed_g - context.measureText("NO14").width / 2, zoomed_y + 54 * zoomed_g);
+        context.fillText("A1"  , this.x +  4 * this.zoomed_g - context.measureText("A1").width / 2, this.y +  3 * this.zoomed_g);
+        context.fillText("L1"  , this.x +  9 * this.zoomed_g - context.measureText("L1").width / 2, this.y +  3 * this.zoomed_g);
+        context.fillText("L2"  , this.x + 15 * this.zoomed_g - context.measureText("L2").width / 2, this.y +  3 * this.zoomed_g);
+        context.fillText("L3"  , this.x + 21 * this.zoomed_g - context.measureText("L3").width / 2, this.y +  3 * this.zoomed_g);
+        context.fillText("NO13", this.x + 27 * this.zoomed_g - context.measureText("NO13").width / 2, this.y +  3 * this.zoomed_g);
+        context.fillText("A2"  , this.x + 33 * this.zoomed_g - context.measureText("A2").width / 2, this.y +  3 * this.zoomed_g);
+        context.fillText("T1"  , this.x +  9 * this.zoomed_g - context.measureText("T1").width / 2, this.y + 54 * this.zoomed_g);
+        context.fillText("T2"  , this.x + 15 * this.zoomed_g - context.measureText("T2").width / 2, this.y + 54 * this.zoomed_g);
+        context.fillText("T3"  , this.x + 21 * this.zoomed_g - context.measureText("T3").width / 2, this.y + 54 * this.zoomed_g);
+        context.fillText("NO14", this.x + 27 * this.zoomed_g - context.measureText("NO14").width / 2, this.y + 54 * this.zoomed_g);
         if (this.closed) {
-            context.fillText("on", zoomed_x + 17 * zoomed_g - context.measureText("on").width / 2, zoomed_y + 34 * zoomed_g);
+            context.fillText("on", this.x + 17 * this.zoomed_g - context.measureText("on").width / 2, this.y + 34 * this.zoomed_g);
         }
         else {
-            context.fillText("off", zoomed_x + 17 * zoomed_g - context.measureText("off").width / 2, zoomed_y + 34 * zoomed_g);
+            context.fillText("off", this.x + 17 * this.zoomed_g - context.measureText("off").width / 2, this.y + 34 * this.zoomed_g);
         }
         context.font = '10pt Kremlin Pro Web';
-        context.fillText("NO53", zoomed_x +  5 * zoomed_g - context.measureText("NO53").width / 2, zoomed_y +  9 * zoomed_g);
-        context.fillText("NC61", zoomed_x + 13 * zoomed_g - context.measureText("NC61").width / 2, zoomed_y +  9 * zoomed_g);
-        context.fillText("NC71", zoomed_x + 22 * zoomed_g - context.measureText("NC71").width / 2, zoomed_y +  9 * zoomed_g);
-        context.fillText("NO83", zoomed_x + 30 * zoomed_g - context.measureText("NO83").width / 2, zoomed_y +  9 * zoomed_g);
-        context.fillText("NO54", zoomed_x +  5 * zoomed_g - context.measureText("NO54").width / 2, zoomed_y + 27 * zoomed_g);
-        context.fillText("NC62", zoomed_x + 13 * zoomed_g - context.measureText("NC62").width / 2, zoomed_y + 27 * zoomed_g);
-        context.fillText("NC72", zoomed_x + 22 * zoomed_g - context.measureText("NC72").width / 2, zoomed_y + 27 * zoomed_g);
-        context.fillText("NO84", zoomed_x + 30 * zoomed_g - context.measureText("NO84").width / 2, zoomed_y + 27 * zoomed_g);
-        context.fillText("NC98", zoomed_x +  5 * zoomed_g - context.measureText("NC98").width / 2, zoomed_y + 39 * zoomed_g);
-        context.fillText("NC97", zoomed_x + 13 * zoomed_g - context.measureText("NC97").width / 2, zoomed_y + 39 * zoomed_g);
-        context.fillText("NO95", zoomed_x + 22 * zoomed_g - context.measureText("NO95").width / 2, zoomed_y + 39 * zoomed_g);
-        context.fillText("NO96", zoomed_x + 30 * zoomed_g - context.measureText("NO96").width / 2, zoomed_y + 39 * zoomed_g);
+        context.fillText("NO53", this.x +  5 * this.zoomed_g - context.measureText("NO53").width / 2, this.y +  9 * this.zoomed_g);
+        context.fillText("NC61", this.x + 13 * this.zoomed_g - context.measureText("NC61").width / 2, this.y +  9 * this.zoomed_g);
+        context.fillText("NC71", this.x + 22 * this.zoomed_g - context.measureText("NC71").width / 2, this.y +  9 * this.zoomed_g);
+        context.fillText("NO83", this.x + 30 * this.zoomed_g - context.measureText("NO83").width / 2, this.y +  9 * this.zoomed_g);
+        context.fillText("NO54", this.x +  5 * this.zoomed_g - context.measureText("NO54").width / 2, this.y + 27 * this.zoomed_g);
+        context.fillText("NC62", this.x + 13 * this.zoomed_g - context.measureText("NC62").width / 2, this.y + 27 * this.zoomed_g);
+        context.fillText("NC72", this.x + 22 * this.zoomed_g - context.measureText("NC72").width / 2, this.y + 27 * this.zoomed_g);
+        context.fillText("NO84", this.x + 30 * this.zoomed_g - context.measureText("NO84").width / 2, this.y + 27 * this.zoomed_g);
+        context.fillText("NC98", this.x +  5 * this.zoomed_g - context.measureText("NC98").width / 2, this.y + 39 * this.zoomed_g);
+        context.fillText("NC97", this.x + 13 * this.zoomed_g - context.measureText("NC97").width / 2, this.y + 39 * this.zoomed_g);
+        context.fillText("NO95", this.x + 22 * this.zoomed_g - context.measureText("NO95").width / 2, this.y + 39 * this.zoomed_g);
+        context.fillText("NO96", this.x + 30 * this.zoomed_g - context.measureText("NO96").width / 2, this.y + 39 * this.zoomed_g);
         context.stroke();
         context.closePath();
         super.draw_terminals(context, zoom);

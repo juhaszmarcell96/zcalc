@@ -10,30 +10,25 @@ class CSwitch106 extends IComponent {
     }
 
     draw (context, zoom) {
-        const zoomed_x = this.x * zoom;
-        const zoomed_y = this.y * zoom;
-        const zoomed_w = this.w * zoom;
-        const zoomed_h = this.h * zoom;
-        const zoomed_g = grid_size * zoom;
         context.beginPath();
-        context.rect(zoomed_x, zoomed_y, zoomed_w, zoomed_h);
+        context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = 'rgba(230, 230, 230, 1)'; /* grey */
         context.fill();
-        context.moveTo(zoomed_x + 0 * zoomed_g, zoomed_y + 8 * zoomed_g);
-        context.lineTo(zoomed_x + 5 * zoomed_g, zoomed_y + 8 * zoomed_g);
+        context.moveTo(this.x + 0 * this.zoomed_g, this.y + 8 * this.zoomed_g);
+        context.lineTo(this.x + 5 * this.zoomed_g, this.y + 8 * this.zoomed_g);
         if (this.closed == false) {
-            context.moveTo(zoomed_x +  5 * zoomed_g, zoomed_y + 8 * zoomed_g);
-            context.lineTo(zoomed_x + 11 * zoomed_g, zoomed_y + 4 * zoomed_g);
+            context.moveTo(this.x +  5 * this.zoomed_g, this.y + 8 * this.zoomed_g);
+            context.lineTo(this.x + 11 * this.zoomed_g, this.y + 4 * this.zoomed_g);
         }
         else {
-            context.moveTo(zoomed_x +  5 * zoomed_g, zoomed_y + 8 * zoomed_g);
-            context.lineTo(zoomed_x + 11 * zoomed_g, zoomed_y + 12 * zoomed_g);
+            context.moveTo(this.x +  5 * this.zoomed_g, this.y + 8 * this.zoomed_g);
+            context.lineTo(this.x + 11 * this.zoomed_g, this.y + 12 * this.zoomed_g);
         }
-        context.moveTo(zoomed_x + 11 * zoomed_g, zoomed_y + 4 * zoomed_g);
-        context.lineTo(zoomed_x + 16 * zoomed_g, zoomed_y + 4 * zoomed_g);
-        context.moveTo(zoomed_x + 11 * zoomed_g, zoomed_y + 12 * zoomed_g);
-        context.lineTo(zoomed_x + 16 * zoomed_g, zoomed_y + 12 * zoomed_g);
-        context.lineWidth = (zoomed_g / 5) * 2;
+        context.moveTo(this.x + 11 * this.zoomed_g, this.y + 4 * this.zoomed_g);
+        context.lineTo(this.x + 16 * this.zoomed_g, this.y + 4 * this.zoomed_g);
+        context.moveTo(this.x + 11 * this.zoomed_g, this.y + 12 * this.zoomed_g);
+        context.lineTo(this.x + 16 * this.zoomed_g, this.y + 12 * this.zoomed_g);
+        context.lineWidth = this.lineWidth;
         context.strokeStyle = '#000000';
         context.stroke();
         context.closePath();

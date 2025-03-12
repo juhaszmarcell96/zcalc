@@ -11,85 +11,69 @@ const WireType = {
     PE: 2
 };
 
-class CWire {
-    constructor (x, y, type) {
-        this.x = x;
-        this.y = y;
-        this.points = []
-        this.points.push(new Point(super.x, super.y));
+class CWire extends IComponent {
+    constructor (type) {
+        super(0.0, 0.0, 0.0, 0.0);
         this.type = type;
-
-        this.T1 = null;
-        this.T2 = null;
+        this.lineWidth = (grid_size / 5) * 2;
+        this.zoomed_g = grid_size;
     }
     
-    draw (context, zoom) {
+    draw (context) {
         context.beginPath();
-        context.lineWidth = (grid_size / 5) * 2;
-        context.arc(this.x, this.y, (grid_size / 5) * 2, 0, 2 * Math.PI);
-        context.moveTo(this.x, this.y);
-        for (let i = 0; i < this.points.length; i++) {
-            context.lineTo(this.points[i].x, this.points[i].y);
-            context.arc(this.points[i].x, this.points[i].y, (grid_size / 5) * 2, 0, 2 * Math.PI);
-            context.moveTo(this.points[i].x, this.points[i].y);
-        }
+        context.lineWidth = this.lineWidth;
+        context.moveTo(this.terminals.T1.get_middle_x(), this.terminals.T1.get_middle_y());
+        context.lineTo(this.terminals.T2.get_middle_x(), this.terminals.T2.get_middle_y());
         if (this.type == WireType.L) context.strokeStyle = color_l1;
         else if (this.type == WireType.N) context.strokeStyle = color_n;
         else context.strokeStyle = color_pe;
         context.stroke();
         context.closePath();
+        super.draw_terminals(context);
     }
 
-    set_last_pos (pos_x, pos_y) {
-        if (this.points.length == 1) {
-            if (Math.abs(this.x - pos_x) < Math.abs(this.y - pos_y)) pos_x = this.x;
-            else pos_y = this.y;
+    start (x, y) {
+        this.terminals = {
+            T1: new CTerminal(x, y, color_l1),
+            T2: new CTerminal(x, y, color_l1)
+        }
+        this.terminals.T1.set_middle(x, y);
+        this.terminals.T1.scale(0.5);
+        this.terminals.T2.scale(0.5);
+        this.x = this.terminals.T1.x;
+        this.y = this.terminals.T1.y;
+    }
+
+    wire (x, y) {
+        const dx = x - this.terminals.T1.get_middle_x();
+        const dy = y - this.terminals.T1.get_middle_y();
+        if (Math.abs(dx) > Math.abs(dy)) {
+            this.w = Math.abs(dx);
+            this.h = this.terminals.T1.w;
+            this.terminals.T2.x = this.terminals.T1.get_middle_x() + dx - this.terminals.T2.w / 2;
+            this.terminals.T2.y = this.terminals.T1.get_middle_y() + 0.0 - this.terminals.T2.h / 2;
         }
         else {
-            if (Math.abs(this.points[this.points.length - 2].x - pos_x) < Math.abs(this.points[this.points.length - 2].y - pos_y)) pos_x = this.points[this.points.length - 2].x;
-            else pos_y = this.points[this.points.length - 2].y;
+            this.w = this.terminals.T1.h;
+            this.h = Math.abs(dy);
+            this.terminals.T2.x = this.terminals.T1.get_middle_x() + 0.0 - this.terminals.T2.w / 2;
+            this.terminals.T2.y = this.terminals.T1.get_middle_y() + dy - this.terminals.T2.h / 2;
         }
-        this.points[this.points.length - 1].x = pos_x - (pos_x % grid_size);
-        this.points[this.points.length - 1].y = pos_y - (pos_y % grid_size);
-    }
-
-    fix_last_pos (pos_x, pos_y) {
-        pos_x = pos_x - (pos_x % grid_size);
-        pos_y = pos_y - (pos_y % grid_size);
-        this.points.push(new Point(pos_x, pos_y));
-    }
-
-    get_last_pos_x () {
-        return this.points[this.points.length - 1].x;
-    }
-
-    get_last_pos_y () {
-        return this.points[this.points.length - 1].y;
-    }
-
-    is_inside(pos_x, pos_y) {
-        var x_1 = this.x
-        var y_1 = this.y;
-        for (let i = 0; i < this.points.length; i++) {
-            var x_2 = this.points[i].x;
-            var y_2 = this.points[i].y;
-
-            var min_x = x_1 < x_2 ? x_1 : x_2;
-            var max_x = x_1 < x_2 ? x_2 : x_1;
-            var min_y = y_1 < y_2 ? y_1 : y_2;
-            var max_y = y_1 < y_2 ? y_2 : y_1;
-            min_x -= 2 * grid_size / 5;
-            max_x += 2 * grid_size / 5;
-            min_y -= 2 * grid_size / 5;
-            max_y += 2 * grid_size / 5;
-            
-            x_1 = x_2;
-            y_1 = y_2;
-            
-            if ((pos_x >= min_x) && (pos_x <= max_x) && (pos_y >= min_y) && (pos_y <= max_y)) {
-                return true;
-            }
+        if (this.terminals.T1.x < this.terminals.T2.x) {
+            this.x = this.terminals.T1.x;
         }
-        return false;
+        else {
+            this.x = this.terminals.T2.x;
+        }
+        if (this.terminals.T1.y < this.terminals.T2.y) {
+            this.y = this.terminals.T1.y;
+        }
+        else {
+            this.y = this.terminals.T2.y;
+        }
+    }
+
+    stop (x, y) {
+        this.wire(x, y);
     }
 }

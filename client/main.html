@@ -179,10 +179,10 @@
             /* draw cursor */
             this.context.beginPath();
             this.context.lineWidth = (grid_size / 5) * 2;
-            this.context.moveTo(0, this.new_wire.terminals.T2.get_middle_y());
-            this.context.lineTo(this.canvas.width, this.new_wire.terminals.T2.get_middle_y());
-            this.context.moveTo(this.new_wire.terminals.T2.get_middle_x(), 0);
-            this.context.lineTo(this.new_wire.terminals.T2.get_middle_x(), this.canvas.height);
+            this.context.moveTo(-this.offset_x / this.scale, this.new_wire.terminals.T2.get_middle_y());
+            this.context.lineTo((-this.offset_x + this.canvas.width) / this.scale, this.new_wire.terminals.T2.get_middle_y());
+            this.context.moveTo(this.new_wire.terminals.T2.get_middle_x(), -this.offset_y / this.scale);
+            this.context.lineTo(this.new_wire.terminals.T2.get_middle_x(), (-this.offset_y + this.canvas.height) / this.scale);
             this.context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
             this.context.stroke();
             this.context.closePath();

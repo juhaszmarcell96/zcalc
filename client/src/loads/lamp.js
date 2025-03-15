@@ -1,13 +1,12 @@
-
 class CLamp extends IComponent {
     constructor (x, y) {
-        super(x, y, 12 * grid_size, 12 * grid_size);
+        super(x, y, 60 * scale, 60 * scale);
         let middle_x = this.x + this.w / 2;
         let middle_y = this.y + this.h / 2;
         this.terminals = {
-            L : new CTerminal(middle_x - 8 * grid_size, middle_y + 8 * grid_size, color_l1),
-            N : new CTerminal(middle_x - 2 * grid_size, middle_y + 8 * grid_size, color_n),
-            PE: new CTerminal(middle_x + 4 * grid_size, middle_y + 8 * grid_size, color_pe)
+            L : new CTerminal(middle_x - 30 * scale, middle_y + 50 * scale, Colors.l1),
+            N : new CTerminal(middle_x -  0 * scale, middle_y + 50 * scale, Colors.n),
+            PE: new CTerminal(middle_x + 30 * scale, middle_y + 50 * scale, Colors.pe)
         }
         this.on = false;
     }
@@ -19,18 +18,19 @@ class CLamp extends IComponent {
         let radius = this.w / 2;
         context.arc(middle_x, middle_y, radius, 0, 2 * Math.PI);
         if (this.on == false) {
-            context.fillStyle = 'rgba(192, 192, 192, 1)'; /* grey */
+            context.fillStyle = Colors.grey;
         }
         else {
-            context.fillStyle = 'rgba(255, 215,   0, 1)'; /* yellow */
+            context.fillStyle = Colors.yellow;
         }
         context.fill();
-        context.moveTo(middle_x - 4 * grid_size, middle_y - 4 * grid_size);
-        context.lineTo(middle_x + 4 * grid_size, middle_y + 4 * grid_size);
-        context.moveTo(middle_x - 4 * grid_size, middle_y + 4 * grid_size);
-        context.lineTo(middle_x + 4 * grid_size, middle_y - 4 * grid_size);
-        context.lineWidth = (grid_size / 5) * 2;
-        context.strokeStyle = '#000000';
+        const line_offset = 20 * scale;
+        context.moveTo(middle_x - line_offset, middle_y - line_offset);
+        context.lineTo(middle_x + line_offset, middle_y + line_offset);
+        context.moveTo(middle_x - line_offset, middle_y + line_offset);
+        context.lineTo(middle_x + line_offset, middle_y - line_offset);
+        context.lineWidth = this.lineWidth;
+        context.strokeStyle = Colors.black;
         context.stroke();
         context.closePath();
         super.draw_terminals(context, zoom);

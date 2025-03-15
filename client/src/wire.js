@@ -23,8 +23,8 @@ class CWire extends IComponent {
         context.lineWidth = this.lineWidth;
         context.moveTo(this.terminals.T1.get_middle_x(), this.terminals.T1.get_middle_y());
         context.lineTo(this.terminals.T2.get_middle_x(), this.terminals.T2.get_middle_y());
-        if (this.type == WireType.L) context.strokeStyle = color_l1;
-        else if (this.type == WireType.N) context.strokeStyle = color_n;
+        if (this.type == WireType.L) context.strokeStyle = Colors.l1;
+        else if (this.type == WireType.N) context.strokeStyle = Colors.n;
         else context.strokeStyle = color_pe;
         context.stroke();
         context.closePath();
@@ -33,8 +33,8 @@ class CWire extends IComponent {
 
     start (x, y) {
         this.terminals = {
-            T1: new CTerminal(x, y, color_l1),
-            T2: new CTerminal(x, y, color_l1)
+            T1: new CTerminal(x, y, Colors.l1),
+            T2: new CTerminal(x, y, Colors.l1)
         }
         this.terminals.T1.set_middle(x, y);
         this.terminals.T1.scale(0.5);

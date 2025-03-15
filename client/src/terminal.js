@@ -1,9 +1,9 @@
 class CTerminal {
     constructor (x, y, fillStyle) {
-        this.x = x - (x % grid_size);
-        this.y = y - (y % grid_size);
-        this.w = 4 * grid_size;
-        this.h = 4 * grid_size;
+        this.w = 20 * scale;
+        this.h = 20 * scale;
+        this.set_middle(x, y);
+        this.snap_to_grid(x, y);
         this.lineWidth = 2;
         this.fillStyle = fillStyle;
         this.state = TerminalState.None;
@@ -61,7 +61,7 @@ class CTerminal {
             context.strokeStyle = '#DC143C';
         }
         else {
-            context.strokeStyle = '#000000';
+            context.strokeStyle = Colors.black;
         }
         context.stroke();
         context.closePath();

@@ -14,11 +14,11 @@ class CButton {
         context.fillStyle = this.fillStyle;
         context.fill();
         context.lineWidth = (grid_size / 5) * 2;
-        context.strokeStyle = '#000000';
+        context.strokeStyle = Colors.black;
         context.font = '14pt Kremlin Pro Web';
-        context.fillStyle = '#FFFFFF';
+        context.fillStyle = Colors.white;
         var width = context.measureText(this.text).width;
-        context.fillText(this.text, this.x + (this.w - width) / 2, this.y + 5 * grid_size);
+        context.fillText(this.text, this.x + 15 * scale, this.y + 25 * scale);
         context.stroke();
         context.closePath();
     }

@@ -19,7 +19,7 @@ class CPlayground {
             context.strokeStyle = '#DC143C';
         }
         else {
-            context.strokeStyle = '#000000';
+            context.strokeStyle = Colors.black;
         }
         context.stroke();
         context.closePath();

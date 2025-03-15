@@ -1,33 +1,33 @@
 class CContactor extends IComponent {
     constructor (x, y) {
-        super(x, y, 36 * grid_size, 55 * grid_size);
+        super(x, y, 180 * scale, 275 * scale);
         this.terminals = {
-            A1  : new CTerminal(this.x +  1 * grid_size, this.y -  4 * grid_size, color_l1),
-            L1  : new CTerminal(this.x +  7 * grid_size, this.y -  4 * grid_size, color_l3),
-            L2  : new CTerminal(this.x + 13 * grid_size, this.y -  4 * grid_size, color_l3),
-            L3  : new CTerminal(this.x + 19 * grid_size, this.y -  4 * grid_size, color_l3),
-            NO13: new CTerminal(this.x + 25 * grid_size, this.y -  4 * grid_size, color_l3),
-            A2  : new CTerminal(this.x + 31 * grid_size, this.y -  4 * grid_size, color_n ),
-    
-            T1  : new CTerminal(this.x +  7 * grid_size, this.y + 55 * grid_size, color_l3),
-            T2  : new CTerminal(this.x + 13 * grid_size, this.y + 55 * grid_size, color_l3),
-            T3  : new CTerminal(this.x + 19 * grid_size, this.y + 55 * grid_size, color_l3),
-            NO14: new CTerminal(this.x + 25 * grid_size, this.y + 55 * grid_size, color_l3),
-    
-            NO53: new CTerminal(this.x +  3 * grid_size, this.y + 10 * grid_size, color_l3),
-            NC61: new CTerminal(this.x + 11 * grid_size, this.y + 10 * grid_size, color_l3),
-            NC71: new CTerminal(this.x + 20 * grid_size, this.y + 10 * grid_size, color_l3),
-            NO83: new CTerminal(this.x + 28 * grid_size, this.y + 10 * grid_size, color_l3),
-    
-            NO54: new CTerminal(this.x +  3 * grid_size, this.y + 20 * grid_size, color_l3),
-            NC62: new CTerminal(this.x + 11 * grid_size, this.y + 20 * grid_size, color_l3),
-            NC72: new CTerminal(this.x + 20 * grid_size, this.y + 20 * grid_size, color_l3),
-            NO84: new CTerminal(this.x + 28 * grid_size, this.y + 20 * grid_size, color_l3),
-    
-            NC98: new CTerminal(this.x +  3 * grid_size, this.y + 40 * grid_size, color_l3),
-            NC97: new CTerminal(this.x + 11 * grid_size, this.y + 40 * grid_size, color_l3),
-            NO95: new CTerminal(this.x + 20 * grid_size, this.y + 40 * grid_size, color_l3),
-            NO96: new CTerminal(this.x + 28 * grid_size, this.y + 40 * grid_size, color_l3)
+            A1  : new CTerminal(this.x +  15 * scale, this.y -  10 * scale, Colors.l1),
+            L1  : new CTerminal(this.x +  45 * scale, this.y -  10 * scale, Colors.l3),
+            L2  : new CTerminal(this.x +  75 * scale, this.y -  10 * scale, Colors.l3),
+            L3  : new CTerminal(this.x + 105 * scale, this.y -  10 * scale, Colors.l3),
+            NO13: new CTerminal(this.x + 135 * scale, this.y -  10 * scale, Colors.l3),
+            A2  : new CTerminal(this.x + 165 * scale, this.y -  10 * scale, Colors.n ),
+
+            T1  : new CTerminal(this.x +  45 * scale, this.y + 285 * scale, Colors.l3),
+            T2  : new CTerminal(this.x +  75 * scale, this.y + 285 * scale, Colors.l3),
+            T3  : new CTerminal(this.x + 105 * scale, this.y + 285 * scale, Colors.l3),
+            NO14: new CTerminal(this.x + 135 * scale, this.y + 285 * scale, Colors.l3),
+
+            NO53: new CTerminal(this.x +  25 * scale, this.y +  60 * scale, Colors.l3),
+            NC61: new CTerminal(this.x +  65 * scale, this.y +  60 * scale, Colors.l3),
+            NC71: new CTerminal(this.x + 110 * scale, this.y +  60 * scale, Colors.l3),
+            NO83: new CTerminal(this.x + 150 * scale, this.y +  60 * scale, Colors.l3),
+
+            NO54: new CTerminal(this.x +  25 * scale, this.y + 110 * scale, Colors.l3),
+            NC62: new CTerminal(this.x +  65 * scale, this.y + 110 * scale, Colors.l3),
+            NC72: new CTerminal(this.x + 110 * scale, this.y + 110 * scale, Colors.l3),
+            NO84: new CTerminal(this.x + 150 * scale, this.y + 110 * scale, Colors.l3),
+
+            NC98: new CTerminal(this.x +  25 * scale, this.y + 210 * scale, Colors.l3),
+            NC97: new CTerminal(this.x +  65 * scale, this.y + 210 * scale, Colors.l3),
+            NO95: new CTerminal(this.x + 110 * scale, this.y + 210 * scale, Colors.l3),
+            NO96: new CTerminal(this.x + 150 * scale, this.y + 210 * scale, Colors.l3)
         }
 
         this.prev_closed = false;
@@ -37,41 +37,41 @@ class CContactor extends IComponent {
     draw (context, zoom) {
         context.beginPath();
         context.rect(this.x, this.y, this.w, this.h);
-        context.fillStyle = 'rgba(230, 230, 230, 1)'; /* grey */
+        context.fillStyle = Colors.dark_grey;
         context.fill();
         context.lineWidth = this.lineWidth;
-        context.strokeStyle = '#000000';
+        context.strokeStyle = Colors.black;
         context.font = '10pt Kremlin Pro Web';
-        context.fillStyle = '#000000';
-        context.fillText("A1"  , this.x +  4 * this.zoomed_g - context.measureText("A1").width / 2, this.y +  3 * this.zoomed_g);
-        context.fillText("L1"  , this.x +  9 * this.zoomed_g - context.measureText("L1").width / 2, this.y +  3 * this.zoomed_g);
-        context.fillText("L2"  , this.x + 15 * this.zoomed_g - context.measureText("L2").width / 2, this.y +  3 * this.zoomed_g);
-        context.fillText("L3"  , this.x + 21 * this.zoomed_g - context.measureText("L3").width / 2, this.y +  3 * this.zoomed_g);
-        context.fillText("NO13", this.x + 27 * this.zoomed_g - context.measureText("NO13").width / 2, this.y +  3 * this.zoomed_g);
-        context.fillText("A2"  , this.x + 33 * this.zoomed_g - context.measureText("A2").width / 2, this.y +  3 * this.zoomed_g);
-        context.fillText("T1"  , this.x +  9 * this.zoomed_g - context.measureText("T1").width / 2, this.y + 54 * this.zoomed_g);
-        context.fillText("T2"  , this.x + 15 * this.zoomed_g - context.measureText("T2").width / 2, this.y + 54 * this.zoomed_g);
-        context.fillText("T3"  , this.x + 21 * this.zoomed_g - context.measureText("T3").width / 2, this.y + 54 * this.zoomed_g);
-        context.fillText("NO14", this.x + 27 * this.zoomed_g - context.measureText("NO14").width / 2, this.y + 54 * this.zoomed_g);
+        context.fillStyle = Colors.black;
+        context.fillText("A1"  , this.terminals.A1.get_middle_x()   -  8 * scale,   this.terminals.A1.get_middle_y()   + 30 * scale);
+        context.fillText("L1"  , this.terminals.L1.get_middle_x()   -  8 * scale,   this.terminals.L1.get_middle_y()   + 30 * scale);
+        context.fillText("L2"  , this.terminals.L2.get_middle_x()   -  8 * scale,   this.terminals.L2.get_middle_y()   + 30 * scale);
+        context.fillText("L3"  , this.terminals.L3.get_middle_x()   -  8 * scale,   this.terminals.L3.get_middle_y()   + 30 * scale);
+        context.fillText("NO13", this.terminals.NO13.get_middle_x() - 16 * scale,   this.terminals.NO13.get_middle_y() + 30 * scale);
+        context.fillText("A2"  , this.terminals.A2.get_middle_x()   -  8 * scale,   this.terminals.A2.get_middle_y()   + 30 * scale);
+        context.fillText("T1"  , this.terminals.T1.get_middle_x()   -  8 * scale,   this.terminals.T1.get_middle_y()   - 20 * scale);
+        context.fillText("T2"  , this.terminals.T2.get_middle_x()   -  8 * scale,   this.terminals.T2.get_middle_y()   - 20 * scale);
+        context.fillText("T3"  , this.terminals.T3.get_middle_x()   -  8 * scale,   this.terminals.T3.get_middle_y()   - 20 * scale);
+        context.fillText("NO14", this.terminals.NO14.get_middle_x() - 16 * scale,   this.terminals.NO14.get_middle_y() - 20 * scale);
         if (this.closed) {
-            context.fillText("on", this.x + 17 * this.zoomed_g - context.measureText("on").width / 2, this.y + 34 * this.zoomed_g);
+            context.fillText("on", this.x + 85 * scale - context.measureText("on").width / 2, this.y + 170 * scale);
         }
         else {
-            context.fillText("off", this.x + 17 * this.zoomed_g - context.measureText("off").width / 2, this.y + 34 * this.zoomed_g);
+            context.fillText("off", this.x + 85 * scale - context.measureText("off").width / 2, this.y + 170 * scale);
         }
         context.font = '10pt Kremlin Pro Web';
-        context.fillText("NO53", this.x +  5 * this.zoomed_g - context.measureText("NO53").width / 2, this.y +  9 * this.zoomed_g);
-        context.fillText("NC61", this.x + 13 * this.zoomed_g - context.measureText("NC61").width / 2, this.y +  9 * this.zoomed_g);
-        context.fillText("NC71", this.x + 22 * this.zoomed_g - context.measureText("NC71").width / 2, this.y +  9 * this.zoomed_g);
-        context.fillText("NO83", this.x + 30 * this.zoomed_g - context.measureText("NO83").width / 2, this.y +  9 * this.zoomed_g);
-        context.fillText("NO54", this.x +  5 * this.zoomed_g - context.measureText("NO54").width / 2, this.y + 27 * this.zoomed_g);
-        context.fillText("NC62", this.x + 13 * this.zoomed_g - context.measureText("NC62").width / 2, this.y + 27 * this.zoomed_g);
-        context.fillText("NC72", this.x + 22 * this.zoomed_g - context.measureText("NC72").width / 2, this.y + 27 * this.zoomed_g);
-        context.fillText("NO84", this.x + 30 * this.zoomed_g - context.measureText("NO84").width / 2, this.y + 27 * this.zoomed_g);
-        context.fillText("NC98", this.x +  5 * this.zoomed_g - context.measureText("NC98").width / 2, this.y + 39 * this.zoomed_g);
-        context.fillText("NC97", this.x + 13 * this.zoomed_g - context.measureText("NC97").width / 2, this.y + 39 * this.zoomed_g);
-        context.fillText("NO95", this.x + 22 * this.zoomed_g - context.measureText("NO95").width / 2, this.y + 39 * this.zoomed_g);
-        context.fillText("NO96", this.x + 30 * this.zoomed_g - context.measureText("NO96").width / 2, this.y + 39 * this.zoomed_g);
+        context.fillText("NO53", this.terminals.NO53.get_middle_x() - 16 * scale, this.terminals.NO53.get_middle_y() + 25 * scale);
+        context.fillText("NC61", this.terminals.NC61.get_middle_x() - 16 * scale, this.terminals.NC61.get_middle_y() + 25 * scale);
+        context.fillText("NC71", this.terminals.NC71.get_middle_x() - 16 * scale, this.terminals.NC71.get_middle_y() + 25 * scale);
+        context.fillText("NO83", this.terminals.NO83.get_middle_x() - 16 * scale, this.terminals.NO83.get_middle_y() + 25 * scale);
+        context.fillText("NO54", this.terminals.NO54.get_middle_x() - 16 * scale, this.terminals.NO54.get_middle_y() + 25 * scale);
+        context.fillText("NC62", this.terminals.NC62.get_middle_x() - 16 * scale, this.terminals.NC62.get_middle_y() + 25 * scale);
+        context.fillText("NC72", this.terminals.NC72.get_middle_x() - 16 * scale, this.terminals.NC72.get_middle_y() + 25 * scale);
+        context.fillText("NO84", this.terminals.NO84.get_middle_x() - 16 * scale, this.terminals.NO84.get_middle_y() + 25 * scale);
+        context.fillText("NC98", this.terminals.NC98.get_middle_x() - 16 * scale, this.terminals.NC98.get_middle_y() + 25 * scale);
+        context.fillText("NC97", this.terminals.NC97.get_middle_x() - 16 * scale, this.terminals.NC97.get_middle_y() + 25 * scale);
+        context.fillText("NO95", this.terminals.NO95.get_middle_x() - 16 * scale, this.terminals.NO95.get_middle_y() + 25 * scale);
+        context.fillText("NO96", this.terminals.NO96.get_middle_x() - 16 * scale, this.terminals.NO96.get_middle_y() + 25 * scale);
         context.stroke();
         context.closePath();
         super.draw_terminals(context, zoom);

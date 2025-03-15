@@ -69,6 +69,10 @@
             this.new_wire = null;
             this.wire_type = WireType.L;
 
+            this.del_button = null;
+            this.context_menu = false;
+            this.context_component_index = -1;
+
             canvas.addEventListener("wheel", (event) => {
                 const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
                 const zoomFactor = 1.1;
@@ -149,10 +153,23 @@
             });
             canvas.addEventListener("contextmenu", (event) => {
                 const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
-                const index = [...this.components].reverse().findIndex(component => component.is_inside(x, y));
-                if (index !== -1) {
-                    this.components.splice(this.components.length - 1 - index, 1);
+                this.context_component_index = [...this.components].reverse().findIndex(component => component.is_inside(x, y));
+                if (this.context_component_index !== -1) {
+                    this.del_button = new CButton(x, y, 75 * scale, 40 * scale, Colors.red, "delete");
+                    this.context_menu = true;
                 }
+                event.preventDefault();
+                this.redraw();
+            });
+            playground.addEventListener('click', (event) => {
+                const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
+                if (this.context_menu) {
+                    if (this.del_button.is_inside(x, y)) {
+                        this.components.splice(this.components.length - 1 - this.context_component_index, 1);
+                    }
+                }
+                this.context_menu = false;
+                this.del_button = null;
                 event.preventDefault();
                 this.redraw();
             });
@@ -181,6 +198,9 @@
             if (this.new_wire) {
                 this.new_wire.draw(this.context);
                 this.draw_cursor_helper();
+            }
+            if (this.context_menu) {
+                this.del_button.draw(this.context);
             }
         }
 

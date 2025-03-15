@@ -12,6 +12,8 @@ const Colors = {
     black     : 'rgba(  0,   0,   0, 1)',
     yellow    : 'rgba(255, 215,   0, 1)',
     dark_grey : 'rgba(230, 230, 230, 1)',
+    red       : 'rgba(178,  34,  34, 1)',
+    white     : 'rgba(255, 255, 255, 1)',
 }
 
 const Mode = {

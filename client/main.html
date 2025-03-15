@@ -226,30 +226,30 @@
     var scene = new CScene(playground);
     var menuScene = new CScene(menu);
 
-    menuScene.components.push(new CSource(2 * grid_size, 20 * grid_size));
+    menuScene.components.push(new CSource(10 * scale, 100 * scale));
 
-    scene.components.push(new CSource(2 * grid_size, 20 * grid_size));
+    scene.components.push(new CSource(10 * scale, 100 * scale));
 
-    scene.components.push(new CJunctionBox(20 * grid_size, 100 * grid_size));
-    scene.components.push(new CJunctionBox(100 * grid_size, 100 * grid_size));
-    scene.components.push(new CJunctionBox(180 * grid_size, 100 * grid_size));
-    scene.components.push(new CJunctionBox(260 * grid_size, 100 * grid_size));
+    scene.components.push(new CJunctionBox(100 * scale, 500 * scale));
+    scene.components.push(new CJunctionBox(500 * scale, 500 * scale));
+    scene.components.push(new CJunctionBox(900 * scale, 500 * scale));
+    scene.components.push(new CJunctionBox(1300 * scale, 500 * scale));
 
-    scene.components.push(new CLamp(120 * grid_size, 20 * grid_size));
-    scene.components.push(new CLamp(180 * grid_size, 20 * grid_size));
-    scene.components.push(new CLamp(240 * grid_size, 20 * grid_size));
-    scene.components.push(new CLamp(300 * grid_size, 20 * grid_size));
+    scene.components.push(new CLamp(600 * scale, 100 * scale));
+    scene.components.push(new CLamp(900 * scale, 100 * scale));
+    scene.components.push(new CLamp(1200 * scale, 100 * scale));
+    scene.components.push(new CLamp(1500 * scale, 100 * scale));
 
-    scene.components.push(new CSwitch101(20 * grid_size, 150 * grid_size));
-    scene.components.push(new CSwitch101(100 * grid_size, 150 * grid_size));
-    var timeSwitch = new CTimeSwitch(180 * grid_size, 150 * grid_size);
+    scene.components.push(new CSwitch101(100 * scale, 750 * scale));
+    scene.components.push(new CSwitch101(500 * scale, 750 * scale));
+    var timeSwitch = new CTimeSwitch(900 * scale, 750 * scale);
     scene.components.push(timeSwitch);
-    scene.components.push(new CSwitch102(260 * grid_size, 150 * grid_size));
-    scene.components.push(new CSwitch106(320 * grid_size, 100 * grid_size));
-    scene.components.push(new CSwitch106(320 * grid_size, 150 * grid_size));
+    scene.components.push(new CSwitch102(1300 * scale, 750 * scale));
+    scene.components.push(new CSwitch106(1600 * scale, 500 * scale));
+    scene.components.push(new CSwitch106(1600 * scale, 750 * scale));
 
-    scene.components.push(new C3PhaseMotor(120 * grid_size, 70 * grid_size));
-    scene.components.push(new CContactor(50 * grid_size, 70 * grid_size));
+    scene.components.push(new C3PhaseMotor(600 * scale, 350 * scale));
+    scene.components.push(new CContactor(250 * scale, 350 * scale));
 
     function timeElapsed () {
         timeSwitch.do_stuff();
@@ -258,17 +258,6 @@
 
     scene.redraw();
     menuScene.redraw();
-
-    menu.addEventListener('click', function(evt) {
-        menuScene.handle_mouse_click_event(evt);
-    }, false);
-/*
-    document.addEventListener('keydown', (event) => {
-        //var name = event.key;
-        //var code = event.code;
-        scene.handle_key_press_event(event.key);
-    }, false);
-*/
 </script> 
 
 </body>

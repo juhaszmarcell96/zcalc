@@ -79,7 +79,7 @@
                     }
                 }
                 else { // Zoom out
-                    if (this.scale > 0.1) {
+                    if (this.scale > 0.5) {
                         this.scale /= zoomFactor;
                     }
                 }
@@ -87,8 +87,6 @@
                 // Adjust offset to zoom towards cursor
                 this.offset_x = event.clientX - x * this.scale;
                 this.offset_y = event.clientY - y * this.scale;
-                if (this.offset_x < 0) { this.offset_x = 0; }
-                if (this.offset_y < 0) { this.offset_y = 0; }
             
                 this.redraw();
                 event.preventDefault();
@@ -128,8 +126,6 @@
                 else if (this.panning) {
                     this.offset_x += event.clientX - this.last_x;
                     this.offset_y += event.clientY - this.last_y;
-                    if (this.offset_x < 0) { this.offset_x = 0; }
-                    if (this.offset_y < 0) { this.offset_y = 0; }
                 }
                 
                 this.last_x = event.clientX;
@@ -166,23 +162,10 @@
             /* draw cursor */
             this.context.beginPath();
             this.context.lineWidth = (grid_size / 5) * 2;
-            this.context.moveTo(0, this.new_wire.terminals.T2.get_middle_y());
-            this.context.lineTo(this.canvas.width, this.new_wire.terminals.T2.get_middle_y());
-            this.context.moveTo(this.new_wire.terminals.T2.get_middle_x(), 0);
-            this.context.lineTo(this.new_wire.terminals.T2.get_middle_x(), this.canvas.height);
-            this.context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
-            this.context.stroke();
-            this.context.closePath();
-        }
-
-        draw_cursor_delete () {
-            /* draw cursor */
-            this.context.beginPath();
-            this.context.lineWidth = (grid_size / 5) * 2;
-            this.context.moveTo(this.mouse_x - (2 * grid_size), this.mouse_y - (2 * grid_size));
-            this.context.lineTo(this.mouse_x + (2 * grid_size), this.mouse_y + (2 * grid_size));
-            this.context.moveTo(this.mouse_x - (2 * grid_size), this.mouse_y + (2 * grid_size));
-            this.context.lineTo(this.mouse_x + (2 * grid_size), this.mouse_y - (2 * grid_size));
+            this.context.moveTo(-this.offset_x / this.scale, this.new_wire.terminals.T2.get_middle_y());
+            this.context.lineTo(this.canvas.width / this.scale, this.new_wire.terminals.T2.get_middle_y());
+            this.context.moveTo(this.new_wire.terminals.T2.get_middle_x(), -this.offset_y / this.scale);
+            this.context.lineTo(this.new_wire.terminals.T2.get_middle_x(), this.canvas.height / this.scale);
             this.context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
             this.context.stroke();
             this.context.closePath();
@@ -207,11 +190,10 @@
 
     var playground = document.getElementById('playground');
     var menu = document.getElementById('menu');
-    //canvas.width = document.body.clientWidth;
-    //canvas.height = document.body.clientHeight / 2;
-    menu.style.position = 'absolute';
-    menu.style.left = 0 + 'px';
-    menu.style.top = 0 + 'px';
+
+    playground.style.position = 'absolute';
+    playground.style.left = 0 + 'px';
+    playground.style.top = 0 + 'px';
     playground.width = 3.0/4.0 * window.innerWidth;
     playground.height = window.innerHeight;
 
@@ -224,6 +206,7 @@
     var scene = new CScene(playground);
     var menuScene = new CScene(menu);
 
+    menuScene.components.push(new CSource(2 * grid_size, 20 * grid_size));
 
     scene.components.push(new CSource(2 * grid_size, 20 * grid_size));
 

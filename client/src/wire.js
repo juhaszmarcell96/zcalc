@@ -28,7 +28,7 @@ class CWire extends IComponent {
         else context.strokeStyle = color_pe;
         context.stroke();
         context.closePath();
-        super.draw_terminals(context);
+        this.draw_terminals(context);
     }
 
     start (x, y) {
@@ -72,6 +72,10 @@ class CWire extends IComponent {
         else {
             this.y = this.terminals.T2.y;
         }
+    }
+
+    rotate () {
+        return;
     }
 
     stop (x, y) {

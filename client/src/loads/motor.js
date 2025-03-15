@@ -17,7 +17,7 @@ class C3PhaseMotor extends IComponent {
         this.delta = false;
     }
 
-    draw (context, zoom) {
+    draw (context) {
         context.beginPath();
         context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = Colors.dark_grey;
@@ -56,7 +56,11 @@ class C3PhaseMotor extends IComponent {
         }
         context.stroke();
         context.closePath();
-        super.draw_terminals(context, zoom);
+        this.draw_terminals(context);
+    }
+
+    rotate () {
+        return;
     }
 
     do_stuff () {

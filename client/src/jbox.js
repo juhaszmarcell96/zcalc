@@ -17,7 +17,11 @@ class CJunctionBox extends IComponent {
         context.strokeStyle = Colors.black;
         context.stroke();
         context.closePath();
-        super.draw_terminals(context);
+        this.draw_terminals(context);
+    }
+
+    rotate () {
+        return;
     }
 
     do_stuff () {

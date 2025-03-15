@@ -8,7 +8,7 @@ class CSwitch101 extends IComponent {
         this.closed = false;
     }
 
-    draw (context, zoom) {
+    draw (context) {
         context.beginPath();
         context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = Colors.dark_grey; /* grey */
@@ -29,7 +29,11 @@ class CSwitch101 extends IComponent {
         context.strokeStyle = Colors.black;
         context.stroke();
         context.closePath();
-        super.draw_terminals(context, zoom);
+        this.draw_terminals(context);
+    }
+
+    rotate () {
+        return;
     }
 
     do_stuff () {

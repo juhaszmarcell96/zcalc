@@ -10,14 +10,18 @@ class IComponent {
         this.move_offset_y = 0;
     }
 
-    draw_terminals(context, zoom) {
+    draw_terminals(context) {
         for (const [key, value] of Object.entries(this.terminals)) {
-            value.draw(context, zoom);
+            value.draw(context);
         }
     }
 
     draw (context) {
         console.log('ERROR : "draw" function not overloaded');
+    }
+
+    rotate () {
+        console.log('ERROR : "rotate" function not overloaded');
     }
 
     is_inside(pos_x, pos_y) {

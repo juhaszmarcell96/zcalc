@@ -34,7 +34,7 @@ class CContactor extends IComponent {
         this.closed = false;
     }
 
-    draw (context, zoom) {
+    draw (context) {
         context.beginPath();
         context.rect(this.x, this.y, this.w, this.h);
         context.fillStyle = Colors.dark_grey;
@@ -74,7 +74,11 @@ class CContactor extends IComponent {
         context.fillText("NO96", this.terminals.NO96.get_middle_x() - 16 * scale, this.terminals.NO96.get_middle_y() + 25 * scale);
         context.stroke();
         context.closePath();
-        super.draw_terminals(context, zoom);
+        this.draw_terminals(context);
+    }
+
+    rotate () {
+        return;
     }
 
     do_stuff () {

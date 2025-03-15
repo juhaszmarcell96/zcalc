@@ -11,7 +11,7 @@ class CLamp extends IComponent {
         this.on = false;
     }
 
-    draw (context, zoom) {
+    draw (context) {
         context.beginPath();
         let middle_x = this.x + this.w / 2;
         let middle_y = this.y + this.h / 2;
@@ -33,7 +33,11 @@ class CLamp extends IComponent {
         context.strokeStyle = Colors.black;
         context.stroke();
         context.closePath();
-        super.draw_terminals(context, zoom);
+        this.draw_terminals(context);
+    }
+
+    rotate () {
+        return;
     }
 
     do_stuff () {

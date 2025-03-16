@@ -2,50 +2,54 @@ class CSwitch102 extends IComponent {
     constructor (x, y) {
         super(x, y, 90 * scale, 90 * scale);
         this.terminals = {
-            T1: new CTerminal(this.x          - 10 * scale, this.y + 30 * scale, Colors.l3),
-            T2: new CTerminal(this.x          - 10 * scale, this.y + 70 * scale, Colors.l3),
-            T3: new CTerminal(this.x + this.w + 10 * scale, this.y + 30 * scale, Colors.l3),
-            T4: new CTerminal(this.x + this.w + 10 * scale, this.y + 70 * scale, Colors.l3)
+            T1: new CTerminal(-this.w / 2          - 10 * scale, -this.h / 2 + 30 * scale, Colors.l3),
+            T2: new CTerminal(-this.w / 2          - 10 * scale, -this.h / 2 + 70 * scale, Colors.l3),
+            T3: new CTerminal(-this.w / 2 + this.w + 10 * scale, -this.h / 2 + 30 * scale, Colors.l3),
+            T4: new CTerminal(-this.w / 2 + this.w + 10 * scale, -this.h / 2 + 70 * scale, Colors.l3)
         }
         this.closed = false;
     }
 
     draw (context) {
+        context.translate(this.x + this.w / 2, this.y + this.h / 2);
+        context.rotate(this.angle * Math.PI / 2);
         context.beginPath();
-        context.rect(this.x, this.y, this.w, this.h);
+        context.rect(-this.w / 2, -this.h / 2, this.w, this.h);
         context.fillStyle = Colors.dark_grey;
         context.fill();
-        context.moveTo(this.x +  0 * scale, this.y + 30 * scale);
-        context.lineTo(this.x + 35 * scale, this.y + 30 * scale);
-        context.moveTo(this.x +  0 * scale, this.y + 70 * scale);
-        context.lineTo(this.x + 35 * scale, this.y + 70 * scale);
+        context.moveTo(-this.w / 2 +  0 * scale, -this.h / 2 + 30 * scale);
+        context.lineTo(-this.w / 2 + 35 * scale, -this.h / 2 + 30 * scale);
+        context.moveTo(-this.w / 2 +  0 * scale, -this.h / 2 + 70 * scale);
+        context.lineTo(-this.w / 2 + 35 * scale, -this.h / 2 + 70 * scale);
         if (this.closed == false) {
-            context.moveTo(this.x + 35 * scale, this.y + 30 * scale);
-            context.lineTo(this.x + 65 * scale, this.y + 20 * scale);
-            context.moveTo(this.x + 35 * scale, this.y + 70 * scale);
-            context.lineTo(this.x + 65 * scale, this.y + 60 * scale);
+            context.moveTo(-this.w / 2 + 35 * scale, -this.h / 2 + 30 * scale);
+            context.lineTo(-this.w / 2 + 65 * scale, -this.h / 2 + 20 * scale);
+            context.moveTo(-this.w / 2 + 35 * scale, -this.h / 2 + 70 * scale);
+            context.lineTo(-this.w / 2 + 65 * scale, -this.h / 2 + 60 * scale);
         }
         else {
-            context.moveTo(this.x + 35 * scale, this.y + 30 * scale);
-            context.lineTo(this.x + 65 * scale, this.y + 30 * scale);
-            context.moveTo(this.x + 35 * scale, this.y + 70 * scale);
-            context.lineTo(this.x + 65 * scale, this.y + 70 * scale);
+            context.moveTo(-this.w / 2 + 35 * scale, -this.h / 2 + 30 * scale);
+            context.lineTo(-this.w / 2 + 65 * scale, -this.h / 2 + 30 * scale);
+            context.moveTo(-this.w / 2 + 35 * scale, -this.h / 2 + 70 * scale);
+            context.lineTo(-this.w / 2 + 65 * scale, -this.h / 2 + 70 * scale);
         }
-        context.moveTo(this.x + 65 * scale, this.y + 30 * scale);
-        context.lineTo(this.x + 90 * scale, this.y + 30 * scale);
-        context.moveTo(this.x + 65 * scale, this.y + 70 * scale);
-        context.lineTo(this.x + 90 * scale, this.y + 70 * scale);
-        context.moveTo(this.x + 50 * scale, this.y + 35 * scale);
-        context.lineTo(this.x + 50 * scale, this.y + 40 * scale);
-        context.moveTo(this.x + 50 * scale, this.y + 45 * scale);
-        context.lineTo(this.x + 50 * scale, this.y + 50 * scale);
-        context.moveTo(this.x + 50 * scale, this.y +  9 * grid_size);
-        context.lineTo(this.x + 50 * scale, this.y + 60 * scale);
+        context.moveTo(-this.w / 2 + 65 * scale, -this.h / 2 + 30 * scale);
+        context.lineTo(-this.w / 2 + 90 * scale, -this.h / 2 + 30 * scale);
+        context.moveTo(-this.w / 2 + 65 * scale, -this.h / 2 + 70 * scale);
+        context.lineTo(-this.w / 2 + 90 * scale, -this.h / 2 + 70 * scale);
+        context.moveTo(-this.w / 2 + 50 * scale, -this.h / 2 + 35 * scale);
+        context.lineTo(-this.w / 2 + 50 * scale, -this.h / 2 + 40 * scale);
+        context.moveTo(-this.w / 2 + 50 * scale, -this.h / 2 + 45 * scale);
+        context.lineTo(-this.w / 2 + 50 * scale, -this.h / 2 + 50 * scale);
+        context.moveTo(-this.w / 2 + 50 * scale, -this.h / 2 + 45 * scale);
+        context.lineTo(-this.w / 2 + 50 * scale, -this.h / 2 + 60 * scale);
         context.lineWidth = this.lineWidth;
         context.strokeStyle = Colors.black;
         context.stroke();
         context.closePath();
         this.draw_terminals(context);
+        context.rotate(-1 * this.angle * Math.PI / 2);
+        context.translate(-(this.x + this.w / 2), -(this.y + this.h / 2));
     }
 
     rotate () {

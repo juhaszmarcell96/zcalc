@@ -106,7 +106,7 @@
                     const terminal = this.get_terminal_at(x, y);
                     if (terminal) {
                         this.new_wire = new CWire(this.wire_type);
-                        this.new_wire.start(terminal.get_middle_x(), terminal.get_middle_y());
+                        this.new_wire.start(terminal.x, terminal.y);
                     }
                     else {
                         this.selected = this.get_component_at(x, y);

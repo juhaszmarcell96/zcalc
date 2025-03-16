@@ -8,6 +8,8 @@ class IComponent {
         this.terminals = {};
         this.move_offset_x = 0;
         this.move_offset_y = 0;
+        
+        this.angle = 0;
     }
 
     draw_terminals(context) {
@@ -21,11 +23,24 @@ class IComponent {
     }
 
     rotate () {
-        console.log('ERROR : "rotate" function not overloaded');
+        this.angle += 1;
+        if (this.angle == 4) {
+            this.angle = 0;
+        }
     }
 
     is_inside(pos_x, pos_y) {
-        return pos_x > this.x && pos_x < this.x + this.w && pos_y < this.y + this.h && pos_y > this.y;
+        let x = this.x;
+        let y = this.y;
+        let w = this.w;
+        let h = this.h;
+        if (this.angle == 1 || this.angle == 3) {
+            x = x + w / 2 - h / 2;
+            y = y + h / 2 - w / 2;
+            w = h;
+            h = this.w;
+        }
+        return pos_x > x && pos_x < x + w && pos_y < y + h && pos_y > y;
     }
 
     snap_to_grid () {
@@ -51,14 +66,33 @@ class IComponent {
     move(dx, dy) {
         this.x += dx;
         this.y += dy;
-        for (const [key, value] of Object.entries(this.terminals)) {
-            value.move(dx, dy);
-        }
+    }
+
+    global_to_local (x, y) {
+        const centerX = this.x + this.w / 2;
+        const centerY = this.y + this.h / 2;
+        const localX = x - centerX;
+        const localY = y - centerY;
+        const unrotatedX = localX * Math.cos(-this.angle * Math.PI / 2) - localY * Math.sin(-this.angle * Math.PI / 2);
+        const unrotatedY = localX * Math.sin(-this.angle * Math.PI / 2) + localY * Math.cos(-this.angle * Math.PI / 2);
+        return [ unrotatedX, unrotatedY ];
+    }
+
+    local_to_global (x, y) {
+        const centerX = this.x + this.w / 2;
+        const centerY = this.y + this.h / 2;
+        const rotatedX = x * Math.cos(this.angle * Math.PI / 2) - y * Math.sin(this.angle * Math.PI / 2);
+        const rotatedY = x * Math.sin(this.angle * Math.PI / 2) + y * Math.cos(this.angle * Math.PI / 2);
+        return [rotatedX + centerX, rotatedY + centerY];
     }
 
     get_terminal_at (pos_x, pos_y) {
+        const [ unrotatedX, unrotatedY ] = this.global_to_local(pos_x, pos_y);
         for (const [key, value] of Object.entries(this.terminals)) {
-            if (value.is_inside(pos_x, pos_y)) { return value; }
+            if (value.is_inside(unrotatedX, unrotatedY)) {
+                const [ x, y ] = this.local_to_global(value.get_middle_x(), value.get_middle_y());
+                return new Coordinates (x, y);
+            }
         }
         return null;
     }

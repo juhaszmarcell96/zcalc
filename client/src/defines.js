@@ -32,3 +32,10 @@ const TerminalState = {
     PE : "PE",
     Virtual : "Virtual" /* virtual wire state, overrides None state but gets overridden by every other state -> to see whether wires with None states are connected */
 };
+
+class Coordinates {
+    constructor (x, y) {
+        this.x = x;
+        this.y = y;
+    }
+};

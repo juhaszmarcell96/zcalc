@@ -106,7 +106,7 @@
                     const terminal = this.get_terminal_at(x, y);
                     if (terminal) {
                         this.new_wire = new CWire(this.wire_type);
-                        this.new_wire.start(terminal.get_middle_x(), terminal.get_middle_y());
+                        this.new_wire.start(terminal.x, terminal.y);
                     }
                     else {
                         this.selected = this.get_component_at(x, y);
@@ -125,18 +125,20 @@
                 
                 if (this.new_wire) {
                     this.new_wire.wire(x, y);
+                    this.redraw();
                 }
                 else if (this.dragging && this.selected) {
                     this.selected.move((event.clientX - this.last_x) / this.scale, (event.clientY - this.last_y) / this.scale);
+                    this.redraw();
                 }
                 else if (this.panning) {
                     this.offset_x += event.clientX - this.last_x;
                     this.offset_y += event.clientY - this.last_y;
+                    this.redraw();
                 }
                 
                 this.last_x = event.clientX;
                 this.last_y = event.clientY;
-                this.redraw();
             });
             canvas.addEventListener("mouseup", () => {
                 if (this.dragging && this.selected) {
@@ -234,11 +236,16 @@
     var scene = new CScene(playground);
     var menuScene = new CScene(menu);
 
+    const resistor_img = new Image();
+    resistor_img.src = 'assets/svg/resistor.svg';
+    resistor_img.onload = function() { scene.redraw(); };
+    resistor_img.onerror = function() { console.error("failed to load resistor image"); };
+
     menuScene.components.push(new CSource(10 * scale, 100 * scale));
 
     scene.components.push(new CSource(10 * scale, 100 * scale));
     
-    scene.components.push(new CResistor(50 * scale, 200 * scale));
+    scene.components.push(new CResistor(50 * scale, 200 * scale, resistor_img));
 
     scene.components.push(new CJunctionBox(100 * scale, 500 * scale));
     scene.components.push(new CJunctionBox(500 * scale, 500 * scale));

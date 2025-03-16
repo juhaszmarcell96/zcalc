@@ -2,13 +2,13 @@ class C3PhaseMotor extends IComponent {
     constructor (x, y) {
         super(x, y, 160 * scale, 80 * scale);
         this.terminals = {
-            U1: new CTerminal(this.x +  30 * scale, this.y          - 10 * scale, Colors.l3),
-            V1: new CTerminal(this.x +  70 * scale, this.y          - 10 * scale, Colors.l3),
-            W1: new CTerminal(this.x + 110 * scale, this.y          - 10 * scale, Colors.l3),
-            W2: new CTerminal(this.x +  30 * scale, this.y + this.h + 10 * scale, Colors.l3),
-            U2: new CTerminal(this.x +  70 * scale, this.y + this.h + 10 * scale, Colors.l3),
-            V2: new CTerminal(this.x + 110 * scale, this.y + this.h + 10 * scale, Colors.l3),
-            PE: new CTerminal(this.x -  10 * scale, this.y          + 40 * scale, Colors.pe)
+            U1: new CTerminal(-this.w / 2 +  30 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
+            V1: new CTerminal(-this.w / 2 +  70 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
+            W1: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
+            W2: new CTerminal(-this.w / 2 +  30 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            U2: new CTerminal(-this.w / 2 +  70 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            V2: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            PE: new CTerminal(-this.w / 2 + -10 * scale, -this.h / 2 +        + 40 * scale, Colors.pe)
         }
 
         this.error = false;
@@ -18,8 +18,10 @@ class C3PhaseMotor extends IComponent {
     }
 
     draw (context) {
+        context.translate(this.x + this.w / 2, this.y + this.h / 2);
+        context.rotate(this.angle * Math.PI / 2);
         context.beginPath();
-        context.rect(this.x, this.y, this.w, this.h);
+        context.rect(-this.w / 2, -this.h / 2, this.w, this.h);
         context.fillStyle = Colors.dark_grey;
         context.fill();
         context.lineWidth = this.lineWidth;
@@ -32,31 +34,35 @@ class C3PhaseMotor extends IComponent {
         context.fillText("W2", this.terminals.W2.get_middle_x() - 8 * scale, this.terminals.W2.get_middle_y() - 20 * scale);
         context.fillText("U2", this.terminals.U2.get_middle_x() - 8 * scale, this.terminals.U2.get_middle_y() - 20 * scale);
         context.fillText("V2", this.terminals.V2.get_middle_x() - 8 * scale, this.terminals.V2.get_middle_y() - 20 * scale);
+        let msg = "";
         if (this.error == true) {
-                context.fillText("error", this.x + 120 * scale - context.measureText("error").width / 2, this.terminals.PE.get_middle_y() + 5 * scale);
+            msg = "error";
         }
         else {
             if (this.on == false) {
-                context.fillText("off", this.x + 120 * scale - context.measureText("off").width / 2, this.terminals.PE.get_middle_y() + 5 * scale);
+                msg = "off";
             }
             else {
                 if (this.forward == false) {
-                    context.fillText("rev", this.x + 120 * scale - context.measureText("rev").width / 2, this.terminals.PE.get_middle_y() + 5 * scale);
+                    msg = "rev";
                 }
                 else {
-                    context.fillText("fwd", this.x + 120 * scale - context.measureText("fwd").width / 2, this.terminals.PE.get_middle_y() + 5 * scale);
+                    msg = "fwd";
                 }
                 if (this.delta == false) {
-                    context.fillText("star", this.x + 120 * scale - context.measureText("star").width / 2, this.terminals.PE.get_middle_y() + 5 * scale);
+                    msg = "star";
                 }
                 else {
-                    context.fillText("delta", this.x + 120 * scale - context.measureText("delta").width / 2, this.terminals.PE.get_middle_y() + 5 * scale);
+                    msg = "delta";
                 }
             }
         }
+        context.fillText(msg, 40 * scale - context.measureText(msg).width / 2, this.terminals.PE.get_middle_y() + 5 * scale);
         context.stroke();
         context.closePath();
         this.draw_terminals(context);
+        context.rotate(-1 * this.angle * Math.PI / 2);
+        context.translate(-(this.x + this.w / 2), -(this.y + this.h / 2));
     }
 
     rotate () {

@@ -2,17 +2,19 @@ class CSource extends IComponent {
     constructor (x, y) {
         super(x, y, 200 * scale, 40 * scale);
         this.terminals = {
-            L1: new CTerminal(this.x +  20 * scale, this.y + 20 * scale, Colors.l1),
-            L2: new CTerminal(this.x +  60 * scale, this.y + 20 * scale, Colors.l2),
-            L3: new CTerminal(this.x + 100 * scale, this.y + 20 * scale, Colors.l3),
-            N : new CTerminal(this.x + 140 * scale, this.y + 20 * scale, Colors.n),
-            PE: new CTerminal(this.x + 180 * scale, this.y + 20 * scale, Colors.pe)
+            L1: new CTerminal(-this.w / 2 +  20 * scale, -this.h / 2 + 20 * scale, Colors.l1),
+            L2: new CTerminal(-this.w / 2 +  60 * scale, -this.h / 2 + 20 * scale, Colors.l2),
+            L3: new CTerminal(-this.w / 2 + 100 * scale, -this.h / 2 + 20 * scale, Colors.l3),
+            N : new CTerminal(-this.w / 2 + 140 * scale, -this.h / 2 + 20 * scale, Colors.n),
+            PE: new CTerminal(-this.w / 2 + 180 * scale, -this.h / 2 + 20 * scale, Colors.pe)
         }
     }
 
     draw (context) {
+        context.translate(this.x + this.w / 2, this.y + this.h / 2);
+        context.rotate(this.angle * Math.PI / 2);
         context.beginPath();
-        context.rect(this.x, this.y, this.w, this.h);
+        context.rect(-this.w / 2, -this.h / 2, this.w, this.h);
         context.fillStyle = Colors.dark_grey;
         context.fill();
         context.lineWidth = this.lineWidth;
@@ -20,10 +22,8 @@ class CSource extends IComponent {
         context.stroke();
         context.closePath();
         this.draw_terminals(context);
-    }
-
-    rotate () {
-        return;
+        context.rotate(-1 * this.angle * Math.PI / 2);
+        context.translate(-(this.x + this.w / 2), -(this.y + this.h / 2));
     }
 
     do_stuff () {

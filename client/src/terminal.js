@@ -57,12 +57,7 @@ class CTerminal {
         context.fillStyle = this.fillStyle;
         context.fill();
         context.lineWidth = this.lineWidth;
-        if (this.selected == true) {
-            context.strokeStyle = '#DC143C';
-        }
-        else {
-            context.strokeStyle = Colors.black;
-        }
+        context.strokeStyle = Colors.black;
         context.stroke();
         context.closePath();
     }

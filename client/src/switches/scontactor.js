@@ -2,32 +2,32 @@ class CContactor extends IComponent {
     constructor (x, y) {
         super(x, y, 180 * scale, 275 * scale);
         this.terminals = {
-            A1  : new CTerminal(this.x +  15 * scale, this.y -  10 * scale, Colors.l1),
-            L1  : new CTerminal(this.x +  45 * scale, this.y -  10 * scale, Colors.l3),
-            L2  : new CTerminal(this.x +  75 * scale, this.y -  10 * scale, Colors.l3),
-            L3  : new CTerminal(this.x + 105 * scale, this.y -  10 * scale, Colors.l3),
-            NO13: new CTerminal(this.x + 135 * scale, this.y -  10 * scale, Colors.l3),
-            A2  : new CTerminal(this.x + 165 * scale, this.y -  10 * scale, Colors.n ),
+            A1  : new CTerminal(-this.w / 2 +  15 * scale, -this.h / 2 -  10 * scale, Colors.l1),
+            L1  : new CTerminal(-this.w / 2 +  45 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            L2  : new CTerminal(-this.w / 2 +  75 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            L3  : new CTerminal(-this.w / 2 + 105 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            NO13: new CTerminal(-this.w / 2 + 135 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            A2  : new CTerminal(-this.w / 2 + 165 * scale, -this.h / 2 -  10 * scale, Colors.n ),
 
-            T1  : new CTerminal(this.x +  45 * scale, this.y + 285 * scale, Colors.l3),
-            T2  : new CTerminal(this.x +  75 * scale, this.y + 285 * scale, Colors.l3),
-            T3  : new CTerminal(this.x + 105 * scale, this.y + 285 * scale, Colors.l3),
-            NO14: new CTerminal(this.x + 135 * scale, this.y + 285 * scale, Colors.l3),
+            T1  : new CTerminal(-this.w / 2 +  45 * scale, -this.h / 2 + 285 * scale, Colors.l3),
+            T2  : new CTerminal(-this.w / 2 +  75 * scale, -this.h / 2 + 285 * scale, Colors.l3),
+            T3  : new CTerminal(-this.w / 2 + 105 * scale, -this.h / 2 + 285 * scale, Colors.l3),
+            NO14: new CTerminal(-this.w / 2 + 135 * scale, -this.h / 2 + 285 * scale, Colors.l3),
 
-            NO53: new CTerminal(this.x +  25 * scale, this.y +  60 * scale, Colors.l3),
-            NC61: new CTerminal(this.x +  65 * scale, this.y +  60 * scale, Colors.l3),
-            NC71: new CTerminal(this.x + 110 * scale, this.y +  60 * scale, Colors.l3),
-            NO83: new CTerminal(this.x + 150 * scale, this.y +  60 * scale, Colors.l3),
+            NO53: new CTerminal(-this.w / 2 +  25 * scale, -this.h / 2 +  60 * scale, Colors.l3),
+            NC61: new CTerminal(-this.w / 2 +  65 * scale, -this.h / 2 +  60 * scale, Colors.l3),
+            NC71: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 +  60 * scale, Colors.l3),
+            NO83: new CTerminal(-this.w / 2 + 150 * scale, -this.h / 2 +  60 * scale, Colors.l3),
 
-            NO54: new CTerminal(this.x +  25 * scale, this.y + 110 * scale, Colors.l3),
-            NC62: new CTerminal(this.x +  65 * scale, this.y + 110 * scale, Colors.l3),
-            NC72: new CTerminal(this.x + 110 * scale, this.y + 110 * scale, Colors.l3),
-            NO84: new CTerminal(this.x + 150 * scale, this.y + 110 * scale, Colors.l3),
+            NO54: new CTerminal(-this.w / 2 +  25 * scale, -this.h / 2 + 110 * scale, Colors.l3),
+            NC62: new CTerminal(-this.w / 2 +  65 * scale, -this.h / 2 + 110 * scale, Colors.l3),
+            NC72: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 + 110 * scale, Colors.l3),
+            NO84: new CTerminal(-this.w / 2 + 150 * scale, -this.h / 2 + 110 * scale, Colors.l3),
 
-            NC98: new CTerminal(this.x +  25 * scale, this.y + 210 * scale, Colors.l3),
-            NC97: new CTerminal(this.x +  65 * scale, this.y + 210 * scale, Colors.l3),
-            NO95: new CTerminal(this.x + 110 * scale, this.y + 210 * scale, Colors.l3),
-            NO96: new CTerminal(this.x + 150 * scale, this.y + 210 * scale, Colors.l3)
+            NC98: new CTerminal(-this.w / 2 +  25 * scale, -this.h / 2 + 210 * scale, Colors.l3),
+            NC97: new CTerminal(-this.w / 2 +  65 * scale, -this.h / 2 + 210 * scale, Colors.l3),
+            NO95: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 + 210 * scale, Colors.l3),
+            NO96: new CTerminal(-this.w / 2 + 150 * scale, -this.h / 2 + 210 * scale, Colors.l3)
         }
 
         this.prev_closed = false;
@@ -35,8 +35,10 @@ class CContactor extends IComponent {
     }
 
     draw (context) {
+        context.translate(this.x + this.w / 2, this.y + this.h / 2);
+        context.rotate(this.angle * Math.PI / 2);
         context.beginPath();
-        context.rect(this.x, this.y, this.w, this.h);
+        context.rect(-this.w / 2, -this.h / 2, this.w, this.h);
         context.fillStyle = Colors.dark_grey;
         context.fill();
         context.lineWidth = this.lineWidth;
@@ -54,10 +56,10 @@ class CContactor extends IComponent {
         context.fillText("T3"  , this.terminals.T3.get_middle_x()   -  8 * scale,   this.terminals.T3.get_middle_y()   - 20 * scale);
         context.fillText("NO14", this.terminals.NO14.get_middle_x() - 16 * scale,   this.terminals.NO14.get_middle_y() - 20 * scale);
         if (this.closed) {
-            context.fillText("on", this.x + 85 * scale - context.measureText("on").width / 2, this.y + 170 * scale);
+            context.fillText("on", -this.w / 2 + 85 * scale - context.measureText("on").width / 2, -this.h / 2 + 170 * scale);
         }
         else {
-            context.fillText("off", this.x + 85 * scale - context.measureText("off").width / 2, this.y + 170 * scale);
+            context.fillText("off", -this.w / 2 + 85 * scale - context.measureText("off").width / 2, -this.h / 2 + 170 * scale);
         }
         context.font = '10pt Kremlin Pro Web';
         context.fillText("NO53", this.terminals.NO53.get_middle_x() - 16 * scale, this.terminals.NO53.get_middle_y() + 25 * scale);
@@ -75,6 +77,8 @@ class CContactor extends IComponent {
         context.stroke();
         context.closePath();
         this.draw_terminals(context);
+        context.rotate(-1 * this.angle * Math.PI / 2);
+        context.translate(-(this.x + this.w / 2), -(this.y + this.h / 2));
     }
 
     rotate () {

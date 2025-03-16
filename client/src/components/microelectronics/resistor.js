@@ -1,5 +1,5 @@
 class CResistor extends IComponent {
-    constructor (x, y) {
+    constructor (x, y, img) {
         super(x, y, 90 * scale, 20 * scale);
         const terminal_0_x = -this.w / 2 - 10 * scale;
         const terminal_1_x = -this.w / 2 + this.w + 10 * scale;
@@ -11,8 +11,7 @@ class CResistor extends IComponent {
         }
         this.angle = 0;
 
-        this.img = new Image();
-        this.img.src = 'assets/svg/resistor.svg';
+        this.img = img
     }
 
     draw (context) {

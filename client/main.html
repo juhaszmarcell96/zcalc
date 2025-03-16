@@ -236,11 +236,16 @@
     var scene = new CScene(playground);
     var menuScene = new CScene(menu);
 
+    const resistor_img = new Image();
+    resistor_img.src = 'assets/svg/resistor.svg';
+    resistor_img.onload = function() { scene.redraw(); };
+    resistor_img.onerror = function() { console.error("failed to load resistor image"); };
+
     menuScene.components.push(new CSource(10 * scale, 100 * scale));
 
     scene.components.push(new CSource(10 * scale, 100 * scale));
     
-    scene.components.push(new CResistor(50 * scale, 200 * scale));
+    scene.components.push(new CResistor(50 * scale, 200 * scale, resistor_img));
 
     scene.components.push(new CJunctionBox(100 * scale, 500 * scale));
     scene.components.push(new CJunctionBox(500 * scale, 500 * scale));

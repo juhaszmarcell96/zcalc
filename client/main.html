@@ -125,18 +125,20 @@
                 
                 if (this.new_wire) {
                     this.new_wire.wire(x, y);
+                    this.redraw();
                 }
                 else if (this.dragging && this.selected) {
                     this.selected.move((event.clientX - this.last_x) / this.scale, (event.clientY - this.last_y) / this.scale);
+                    this.redraw();
                 }
                 else if (this.panning) {
                     this.offset_x += event.clientX - this.last_x;
                     this.offset_y += event.clientY - this.last_y;
+                    this.redraw();
                 }
                 
                 this.last_x = event.clientX;
                 this.last_y = event.clientY;
-                this.redraw();
             });
             canvas.addEventListener("mouseup", () => {
                 if (this.dragging && this.selected) {

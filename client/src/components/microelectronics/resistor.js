@@ -15,13 +15,6 @@ class CResistor extends IComponent {
         this.img.src = 'assets/svg/resistor.svg';
     }
 
-    rotate () {
-        this.angle += 1;
-        if (this.angle == 4) {
-            this.andle = 0;
-        }
-    }
-
     draw (context) {
         context.translate(this.x + this.w / 2, this.y + this.h / 2);
         context.rotate(this.angle * Math.PI / 2);

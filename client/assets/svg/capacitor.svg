@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="90mm"
+   height="30mm"
+   viewBox="0 0 90 30"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
+  <g
+     id="layer1">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 0,10.5 H 41.368986"
+       id="path1183" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 48.124137,10.5 h 26.7925"
+       id="path1183-3" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 77.768649,10.5 H 90.000001"
+       id="path1183-3-62" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 25.135417,25.635417 H 64.822918"
+       id="path1183-3-6" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 25.135417,25.635417 2.718145,-2.718144"
+       id="path1183-3-6-7" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2.00001;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 74.91663,10.5 78.69341,7.7818562"
+       id="path1183-3-6-7-3" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2.00001;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 74.916632,10.5 3.776778,2.718145"
+       id="path1183-3-6-7-3-5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 25.135417,25.635417 2.718144,2.718145"
+       id="path1183-3-6-7-5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 78.693411,7.7818562 -2e-6,5.4362888"
+       id="path1521" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round"
+       d="M 40.994224,1 V 20"
+       id="path897" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round"
+       d="M 48.486571,1 V 20"
+       id="path1012" />
+  </g>
+</svg>

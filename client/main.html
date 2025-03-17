@@ -186,12 +186,13 @@
 
         draw_cursor_helper () {
             /* draw cursor */
+            const [ x, y ] = this.new_wire.get_end();
             this.context.beginPath();
             this.context.lineWidth = (grid_size / 5) * 2;
-            this.context.moveTo(-this.offset_x / this.scale, this.new_wire.terminals.T2.get_middle_y());
-            this.context.lineTo((-this.offset_x + this.canvas.width) / this.scale, this.new_wire.terminals.T2.get_middle_y());
-            this.context.moveTo(this.new_wire.terminals.T2.get_middle_x(), -this.offset_y / this.scale);
-            this.context.lineTo(this.new_wire.terminals.T2.get_middle_x(), (-this.offset_y + this.canvas.height) / this.scale);
+            this.context.moveTo(-this.offset_x / this.scale, y);
+            this.context.lineTo((-this.offset_x + this.canvas.width) / this.scale, y);
+            this.context.moveTo(x, -this.offset_y / this.scale);
+            this.context.lineTo(x, (-this.offset_y + this.canvas.height) / this.scale);
             this.context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
             this.context.stroke();
             this.context.closePath();

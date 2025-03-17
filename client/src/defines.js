@@ -23,6 +23,12 @@ const Mode = {
     Move: "Move"
 };
 
+const WireType = {
+    L: 0,
+    N: 1,
+    PE: 2
+};
+
 const TerminalState = {
     None : "None",
     L1 : "L1",

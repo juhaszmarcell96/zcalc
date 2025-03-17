@@ -129,7 +129,7 @@ class CScene {
             event.preventDefault();
             this.redraw();
         });
-        playground.addEventListener('click', (event) => {
+        canvas.addEventListener('click', (event) => {
             const { x, y } = this.screen_to_canvas(event.clientX, event.clientY);
             if (this.context_menu) {
                 if (this.del_button.is_inside(x, y)) {

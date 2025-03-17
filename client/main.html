@@ -35,9 +35,10 @@
 <script src="./src/jbox.js"></script>
 <script src="./src/wire.js"></script>
 <script src="./src/scene.js"></script>
+<script src="./src/menu.js"></script>
 <script>
     var playground = document.getElementById('playground');
-    var menu = document.getElementById('menu');
+    var menuCanvas = document.getElementById('menu');
 
     playground.style.position = 'absolute';
     playground.style.left = 0 + 'px';
@@ -45,21 +46,19 @@
     playground.width = 3.0/4.0 * window.innerWidth;
     playground.height = window.innerHeight;
 
-    menu.style.position = 'absolute';
-    menu.style.left = 3.0/4.0 * window.innerWidth + 'px';
-    menu.style.top = 0 + 'px';
-    menu.width = 1.0/4.0 * window.innerWidth;
-    menu.height = window.innerHeight;
+    menuCanvas.style.position = 'absolute';
+    menuCanvas.style.left = 3.0/4.0 * window.innerWidth + 'px';
+    menuCanvas.style.top = 0 + 'px';
+    menuCanvas.width = 1.0/4.0 * window.innerWidth;
+    menuCanvas.height = window.innerHeight;
     
     var scene = new CScene(playground);
-    var menuScene = new CScene(menu);
+    var menu = new CMenu(3.0/4.0 * window.innerWidth, 0, menuCanvas, scene);
 
     const resistor_img = new Image();
     resistor_img.src = 'assets/svg/resistor.svg';
     resistor_img.onload = function() { scene.redraw(); };
     resistor_img.onerror = function() { console.error("failed to load resistor image"); };
-
-    menuScene.components.push(new CSource(10 * scale, 100 * scale));
 
     scene.components.push(new CSource(10 * scale, 100 * scale));
     
@@ -92,7 +91,7 @@
     }
 
     scene.redraw();
-    menuScene.redraw();
+    menu.redraw();
 </script> 
 
 </body>

@@ -22,7 +22,7 @@ class C3PhaseMotor extends IComponent {
         context.rotate(this.angle * Math.PI / 2);
         context.beginPath();
         context.rect(-this.w / 2, -this.h / 2, this.w, this.h);
-        context.fillStyle = Colors.dark_grey;
+        context.fillStyle = Colors.light_grey;
         context.fill();
         context.lineWidth = this.lineWidth;
         context.strokeStyle = Colors.black;

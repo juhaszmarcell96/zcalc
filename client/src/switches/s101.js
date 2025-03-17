@@ -13,7 +13,7 @@ class CSwitch101 extends IComponent {
         context.rotate(this.angle * Math.PI / 2);
         context.beginPath();
         context.rect(-this.w / 2, -this.h / 2, this.w, this.h);
-        context.fillStyle = Colors.dark_grey; /* grey */
+        context.fillStyle = Colors.light_grey;
         context.fill();
         context.moveTo(-this.w / 2 +  0 * scale, -this.h / 2 + 50 * scale);
         context.lineTo(-this.w / 2 + 35 * scale, -this.h / 2 + 50 * scale);

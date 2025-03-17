@@ -18,7 +18,7 @@ class CTimeSwitch extends IComponent {
         context.rotate(this.angle * Math.PI / 2);
         context.beginPath();
         context.rect(-this.w / 2, -this.h / 2, this.w, this.h);
-        context.fillStyle = Colors.dark_grey;
+        context.fillStyle = Colors.light_grey;
         context.fill();
         context.moveTo(-this.w / 2 + 45 * scale, -this.h / 2 +  0 * scale);
         context.lineTo(-this.w / 2 + 45 * scale, -this.h / 2 + 50 * scale);

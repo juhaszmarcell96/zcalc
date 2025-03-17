@@ -29,6 +29,13 @@ class IComponent {
         }
     }
 
+    rotate_back () {
+        this.angle -= 1;
+        if (this.angle == -1) {
+            this.angle = 3;
+        }
+    }
+
     is_inside(pos_x, pos_y) {
         let x = this.x;
         let y = this.y;

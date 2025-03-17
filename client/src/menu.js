@@ -10,6 +10,7 @@ class CMenu {
         this.add_capacitor_button = new CButton(10,  60, 150 * scale, 40 * scale, Colors.dark_grey, "capacitor");
         this.add_inductor_button  = new CButton(10, 110, 150 * scale, 40 * scale, Colors.dark_grey, "inductor");
         this.add_vsource_button   = new CButton(10, 160, 150 * scale, 40 * scale, Colors.dark_grey, "voltage source");
+        this.add_csource_button   = new CButton(10, 210, 150 * scale, 40 * scale, Colors.dark_grey, "current source");
 
         this.resistor_img = new Image();
         this.resistor_img.src = 'assets/svg/resistor.svg';
@@ -23,6 +24,9 @@ class CMenu {
         this.vsource_img = new Image();
         this.vsource_img.src = 'assets/svg/voltage_source.svg';
         this.vsource_img.onerror = function() { console.error("failed to load voltage source image"); };
+        this.csource_img = new Image();
+        this.csource_img.src = 'assets/svg/current_source.svg';
+        this.csource_img.onerror = function() { console.error("failed to load current source image"); };
 
         canvas.addEventListener('click', (event) => {
             const x = event.clientX - this.x;
@@ -43,6 +47,10 @@ class CMenu {
                 this.scene.components.push(new CVoltageSource(50 * scale, 200 * scale, this.vsource_img));
                 this.scene.redraw();
             }
+            else if (this.add_csource_button.is_inside(x, y)) {
+                this.scene.components.push(new CCurrentSource(50 * scale, 200 * scale, this.csource_img));
+                this.scene.redraw();
+            }
             event.preventDefault();
         });
     }
@@ -52,5 +60,6 @@ class CMenu {
         this.add_capacitor_button.draw(this.context);
         this.add_inductor_button.draw(this.context);
         this.add_vsource_button.draw(this.context);
+        this.add_csource_button.draw(this.context);
     }
 };

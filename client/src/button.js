@@ -17,7 +17,10 @@ class CButton {
         context.strokeStyle = Colors.black;
         context.font = '12pt "Courier New"';
         context.fillStyle = Colors.white;
-        context.fillText(this.text, this.x + this.w / 2 - (this.text.length / 2) * 9.5 * scale, this.y + 25 * scale);
+        var lines = this.text.split('\n');
+        for (var i = 0; i<lines.length; i++) {
+            context.fillText(lines[i], this.x + this.w / 2 - (lines[i].length / 2) * 9.5 * scale, this.y + (i + 1) * 25 * scale);
+        }
         context.stroke();
         context.closePath();
     }

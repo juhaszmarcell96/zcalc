@@ -31,7 +31,12 @@
 <script src="./src/switches/s106.js"></script>
 <script src="./src/switches/stime.js"></script>
 <script src="./src/switches/scontactor.js"></script>
+<script src="./src/components/microelectronics/two_pole.js"></script>
 <script src="./src/components/microelectronics/resistor.js"></script>
+<script src="./src/components/microelectronics/capacitor.js"></script>
+<script src="./src/components/microelectronics/inductor.js"></script>
+<script src="./src/components/microelectronics/voltage_source.js"></script>
+<script src="./src/components/microelectronics/current_source.js"></script>
 <script src="./src/jbox.js"></script>
 <script src="./src/wire.js"></script>
 <script src="./src/scene.js"></script>
@@ -59,36 +64,6 @@
     resistor_img.src = 'assets/svg/resistor.svg';
     resistor_img.onload = function() { scene.redraw(); };
     resistor_img.onerror = function() { console.error("failed to load resistor image"); };
-
-    scene.components.push(new CSource(10 * scale, 100 * scale));
-    
-    scene.components.push(new CResistor(50 * scale, 200 * scale, resistor_img));
-
-    scene.components.push(new CJunctionBox(100 * scale, 500 * scale));
-    scene.components.push(new CJunctionBox(500 * scale, 500 * scale));
-    scene.components.push(new CJunctionBox(900 * scale, 500 * scale));
-    scene.components.push(new CJunctionBox(1300 * scale, 500 * scale));
-
-    scene.components.push(new CLamp(600 * scale, 100 * scale));
-    scene.components.push(new CLamp(900 * scale, 100 * scale));
-    scene.components.push(new CLamp(1200 * scale, 100 * scale));
-    scene.components.push(new CLamp(1500 * scale, 100 * scale));
-
-    scene.components.push(new CSwitch101(100 * scale, 750 * scale));
-    scene.components.push(new CSwitch101(500 * scale, 750 * scale));
-    var timeSwitch = new CTimeSwitch(900 * scale, 750 * scale);
-    scene.components.push(timeSwitch);
-    scene.components.push(new CSwitch102(1300 * scale, 750 * scale));
-    scene.components.push(new CSwitch106(1600 * scale, 500 * scale));
-    scene.components.push(new CSwitch106(1600 * scale, 750 * scale));
-
-    scene.components.push(new C3PhaseMotor(600 * scale, 350 * scale));
-    scene.components.push(new CContactor(250 * scale, 350 * scale));
-
-    function timeElapsed () {
-        timeSwitch.do_stuff();
-        scene.redraw();
-    }
 
     scene.redraw();
     menu.redraw();

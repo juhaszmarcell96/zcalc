@@ -68,6 +68,12 @@ class CWire extends IComponent {
 
     stop (x, y) {
         this.wire(x, y);
+        if (Math.abs(this.w) < this.terminals.T1.w) {
+            this.w = this.w < 0 ? -this.terminals.T1.w : this.terminals.T1.w;
+        }
+        if (Math.abs(this.h) < this.terminals.T1.h) {
+            this.h = this.h < 0 ? -this.terminals.T1.h : this.terminals.T1.h;
+        }
     }
 
     get_terminal_at (pos_x, pos_y) {

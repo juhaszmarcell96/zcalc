@@ -1,4 +1,4 @@
-class CResistor extends CTwoPole {
+class CInductor extends CTwoPole {
     constructor (x, y, img) {
         super(x, y, img);
     }

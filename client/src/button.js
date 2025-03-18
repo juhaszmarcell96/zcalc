@@ -15,10 +15,9 @@ class CButton {
         context.fill();
         context.lineWidth = (grid_size / 5) * 2;
         context.strokeStyle = Colors.black;
-        context.font = '14pt Kremlin Pro Web';
+        context.font = '12pt "Courier New"';
         context.fillStyle = Colors.white;
-        var width = context.measureText(this.text).width;
-        context.fillText(this.text, this.x + 15 * scale, this.y + 25 * scale);
+        context.fillText(this.text, this.x + this.w / 2 - (this.text.length / 2) * 9.5 * scale, this.y + 25 * scale);
         context.stroke();
         context.closePath();
     }

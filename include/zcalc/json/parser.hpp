@@ -17,7 +17,7 @@ private:
     size_t m_pos;
 
     void report_error (const std::string& message) {
-        report_error(message + " at position " + std::to_string(m_pos));
+        throw std::runtime_error(message + " at position " + std::to_string(m_pos));
     }
 
     char peek () {
@@ -55,10 +55,9 @@ private:
     }
 
     Element parse_value() {
+        //std::cout << "parse_value" << std::endl;
         skip_whitespace();
-        if (m_pos >= m_input.size()) { report_error("unexpected end of JSON"); }
-
-        char c = m_input[m_pos];
+        char c = peek();
         if (c == '{') { return parse_object(); }
         if (c == '[') { return parse_array(); }
         if (c == '"') { return parse_string(); }
@@ -71,6 +70,7 @@ private:
     }
 
     Element parse_object() {
+        //std::cout << "parse_object" << std::endl;
         Object obj;
         consume('{');
         while (true) {
@@ -90,6 +90,7 @@ private:
     }
 
     Element parse_array() {
+        //std::cout << "parse_array" << std::endl;
         Array arr;
         consume('[');
         while (true) {
@@ -105,6 +106,7 @@ private:
     }
 
     Element parse_string() {
+        //std::cout << "parse_string" << std::endl;
         consume('"');
         std::string str;
         
@@ -116,12 +118,45 @@ private:
     }
 
     Element parse_number() {
-        size_t start = m_pos;
-        while (m_pos < m_input.size() && (std::isdigit(m_input[m_pos]) || m_input[m_pos] == '.' || m_input[m_pos] == '-')) { m_pos++; }
-        return std::stod(m_input.substr(start, m_pos - start));
+        //std::cout << "parse_number" << std::endl;
+        double num { 0.0 };
+        bool negative = false;
+        bool fraction = false;
+        double divider = 10.0;
+        if (try_consume('-')) { negative = true; }
+        while(true) {
+            const auto c = peek();
+            if (c == ',') { break; }
+            if (c == '.') {
+                consume();
+                if (fraction) {
+                    report_error("unexpected '.'");
+                }
+                fraction = true;
+            }
+            else if (std::isdigit(c)) {
+                consume();
+                if (!fraction) {
+                    num *= 10.0;
+                    num += static_cast<double>(c - '0');
+                }
+                else {
+                    num += static_cast<double>(c - '0') / divider;
+                    divider *= 10;
+                }
+            }
+            else {
+                break;
+            }
+        }
+        if (negative) {
+            num *= -1.0;
+        }
+        return num;
     }
 
     Element parse_boolean() {
+        //std::cout << "parse_boolean" << std::endl;
         if (m_input.compare(m_pos, 4, "true") == 0) {
             m_pos += 4;
             return true;
@@ -135,6 +170,7 @@ private:
     }
 
     Element parse_null() {
+        //std::cout << "parse_null" << std::endl;
         if (m_input.compare(m_pos, 4, "null") == 0) {
             m_pos += 4;
             return Element();

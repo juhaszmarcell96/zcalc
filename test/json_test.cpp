@@ -108,10 +108,10 @@ TEST(JsonTest, JsonParseNestedTest) {
     zcalc::json::JsonParser parser { json_text };
     const auto json = parser.parse();
 
-    // Check root type
+    // check root type
     ASSERT_TRUE(json.is_object());
 
-    // Check simple fields
+    // check simple fields
     ASSERT_TRUE(json.as_object().at("name").is_string());
     ASSERT_EQ(json.as_object().at("name").as_string(), "John Doe");
 
@@ -123,7 +123,7 @@ TEST(JsonTest, JsonParseNestedTest) {
 
     ASSERT_TRUE(json.as_object().at("nullableField").is_null());
 
-    // Check nested object
+    // check nested object
     ASSERT_TRUE(json.as_object().at("address").is_object());
     const auto& address = json.as_object().at("address").as_object();
     ASSERT_EQ(address.at("street").as_string(), "123 Main St");
@@ -132,7 +132,7 @@ TEST(JsonTest, JsonParseNestedTest) {
     ASSERT_EQ(address.at("geo").as_object().at("lat").as_number(), 40.7128);
     ASSERT_EQ(address.at("geo").as_object().at("lng").as_number(), -74.0060);
 
-    // Check nested objects in contacts
+    // check nested objects in contacts
     ASSERT_TRUE(json.as_object().at("contacts").is_object());
     const auto& contacts = json.as_object().at("contacts").as_object();
     ASSERT_EQ(contacts.at("email").as_string(), "john.doe@example.com");
@@ -144,7 +144,7 @@ TEST(JsonTest, JsonParseNestedTest) {
     ASSERT_EQ(phoneNumbers[1].as_object().at("type").as_string(), "work");
     ASSERT_EQ(phoneNumbers[1].as_object().at("number").as_string(), "987-6543");
 
-    // Check array
+    // check array
     ASSERT_TRUE(json.as_object().at("skills").is_array());
     const auto& skills = json.as_object().at("skills").as_array();
     ASSERT_EQ(skills.size(), 3);
@@ -152,7 +152,7 @@ TEST(JsonTest, JsonParseNestedTest) {
     ASSERT_EQ(skills[1].as_string(), "Python");
     ASSERT_EQ(skills[2].as_string(), "Embedded Systems");
 
-    // Check array of objects with nested data
+    // check array of objects with nested data
     ASSERT_TRUE(json.as_object().at("projects").is_array());
     const auto& projects = json.as_object().at("projects").as_array();
     ASSERT_EQ(projects.size(), 2);
@@ -164,4 +164,75 @@ TEST(JsonTest, JsonParseNestedTest) {
     ASSERT_EQ(projects[1].as_object().at("year").as_number(), 2022);
     ASSERT_EQ(projects[1].as_object().at("details").as_object().at("budget").as_number(), 20000);
     ASSERT_EQ(projects[1].as_object().at("details").as_object().at("teamSize").as_number(), 8);
+}
+
+TEST(JsonTest, JsonParseNetworkTest) {
+    std::string json_text = R"(
+        {
+            "num_nodes": 3,
+            "components": [
+                {
+                    "id": "0",
+                    "type": "resistor",
+                    "value": 500,
+                    "node_0": 2,
+                    "node_1": 0
+                },
+                {
+                    "id": "1",
+                    "type": "resistor",
+                    "value": 0.5,
+                    "unit": "k",
+                    "node_0": 1,
+                    "node_1": 2
+                },
+                {
+                    "type": "vsource",
+                    "value": 1,
+                    "frequency": 5000,
+                    "phase": 1.1586,
+                    "node_0": 1,
+                    "node_1": 0
+                }
+            ]
+        }
+    )";
+
+    zcalc::json::JsonParser parser { json_text };
+    const auto json = parser.parse();
+
+    // check root type
+    ASSERT_TRUE(json.is_object());
+
+    // check simple fields
+    ASSERT_TRUE(json.as_object().at("num_nodes").is_number());
+    ASSERT_EQ(json.as_object().at("num_nodes").as_number(), 3);
+
+    // check array of objects
+    ASSERT_TRUE(json.as_object().at("components").is_array());
+    const auto& components = json.as_object().at("components").as_array();
+    ASSERT_EQ(components.size(), 3);
+
+    // check first component
+    ASSERT_EQ(components[0].as_object().at("id").as_string(), "0");
+    ASSERT_EQ(components[0].as_object().at("type").as_string(), "resistor");
+    ASSERT_EQ(components[0].as_object().at("value").as_number(), 500);
+    ASSERT_EQ(components[0].as_object().at("node_0").as_number(), 2);
+    ASSERT_EQ(components[0].as_object().at("node_1").as_number(), 0);
+
+    // check second component
+    ASSERT_EQ(components[1].as_object().at("id").as_string(), "1");
+    ASSERT_EQ(components[1].as_object().at("type").as_string(), "resistor");
+    ASSERT_EQ(components[1].as_object().at("value").as_number(), 0.5);
+    ASSERT_EQ(components[1].as_object().at("unit").as_string(), "k");
+    ASSERT_EQ(components[1].as_object().at("node_0").as_number(), 1);
+    ASSERT_EQ(components[1].as_object().at("node_1").as_number(), 2);
+
+    // check third component
+    ASSERT_EQ(components[2].as_object().at("type").as_string(), "vsource");
+    ASSERT_EQ(components[2].as_object().at("value").as_number(), 1);
+    ASSERT_EQ(components[2].as_object().at("frequency").as_number(), 5000);
+    ASSERT_EQ(components[2].as_object().at("phase").as_number(), 1.1586);
+    ASSERT_EQ(components[2].as_object().at("node_0").as_number(), 1);
+    ASSERT_EQ(components[2].as_object().at("node_1").as_number(), 0);
 }

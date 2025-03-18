@@ -8,7 +8,7 @@
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="voltage_source.svg"
+   sodipodi:docname="current_source.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -40,17 +40,9 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:none;stroke:#000000;stroke-width:2.00001;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 0,11.029167 H 35.202593"
+       style="fill:none;stroke:#000000;stroke-width:2.00002;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 0,11.029167 H 68.566628"
        id="path1183" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 54.907171,11.029167 H 68.566627"
-       id="path1183-3" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 45.000001,21.467007 V 1.4575467"
-       id="path1183-3-3" />
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
        d="M 72.001765,11.029167 H 89.999996"

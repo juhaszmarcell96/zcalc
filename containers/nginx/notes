@@ -1,0 +1,8 @@
+# Create a private key
+openssl genpkey -algorithm RSA -out nginx.key
+
+# Generate a Certificate Signing Request (CSR)
+openssl req -new -key nginx.key -out nginx.csr -subj "/C=US/ST=State/L=City/O=Company/OU=IT/CN=localhost"
+
+# Self-sign the certificate (valid for 1 year)
+openssl x509 -req -days 365 -in nginx.csr -signkey nginx.key -out nginx.crt

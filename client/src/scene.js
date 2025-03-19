@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CScene {
+import { scale, WireType, Colors } from "./defines";
+import { CButton } from "./button";
+import { CWire } from "./wire";
+
+export class CScene {
     screen_to_canvas (x, y) {
         return {
             x: (x - this.offset_x) / this.scale,
@@ -153,7 +157,7 @@ class CScene {
         /* draw cursor */
         const [ x, y ] = this.new_wire.get_end();
         this.context.beginPath();
-        this.context.lineWidth = (grid_size / 5) * 2;
+        this.context.lineWidth = 2 * scale;
         this.context.moveTo(-this.offset_x / this.scale, y);
         this.context.lineTo((-this.offset_x + this.canvas.width) / this.scale, y);
         this.context.moveTo(x, -this.offset_y / this.scale);

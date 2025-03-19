@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class C3PhaseMotor extends IComponent {
+import { IComponent } from "../../component";
+import { Colors, scale } from "../../defines";
+import { CTerminal } from "../../terminal";
+
+export class C3PhaseMotor extends IComponent {
     constructor (x, y) {
         super(x, y, 160 * scale, 80 * scale);
         this.terminals = {

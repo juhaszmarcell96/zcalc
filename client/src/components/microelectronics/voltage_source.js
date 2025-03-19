@@ -1,6 +1,8 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CVoltageSource extends CTwoPole {
+import { CTwoPole } from "./two_pole";
+
+export class CVoltageSource extends CTwoPole {
     constructor (x, y, img) {
         super(x, y, img);
     }

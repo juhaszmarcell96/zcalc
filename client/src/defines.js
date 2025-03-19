@@ -1,10 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-const scale = 1;
-const grid_size = 5;
-const zoomFactor = 1.1;
+export const scale = 1;
+export const grid_size = 5;
+export const zoomFactor = 1.1;
 
-const Colors = {
+export const Colors = {
     l1         : 'rgba(  0,   0,   0, 1)',
     l2         : 'rgba(139,  69,  19, 1)',
     l3         : 'rgba(192, 192, 192, 1)',
@@ -19,20 +19,20 @@ const Colors = {
     white      : 'rgba(255, 255, 255, 1)',
 }
 
-const Mode = {
+export const Mode = {
     Visual: "Visual",
     Wire: "Wire",
     Delete: "Delete",
     Move: "Move"
 };
 
-const WireType = {
+export const WireType = {
     L: 0,
     N: 1,
     PE: 2
 };
 
-const TerminalState = {
+export const TerminalState = {
     None : "None",
     L1 : "L1",
     L2 : "L2",
@@ -42,7 +42,7 @@ const TerminalState = {
     Virtual : "Virtual" /* virtual wire state, overrides None state but gets overridden by every other state -> to see whether wires with None states are connected */
 };
 
-class Coordinates {
+export class Coordinates {
     constructor (x, y) {
         this.x = x;
         this.y = y;

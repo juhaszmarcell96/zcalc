@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CIdealAmplifier extends IComponent {
+import { IComponent } from "../../component";
+import { Colors, scale } from "../../defines";
+import { CTerminal } from "../../terminal";
+
+export class CIdealAmplifier extends IComponent {
     constructor (x, y, img) {
         super(x, y, 140 * scale, 90 * scale);
 

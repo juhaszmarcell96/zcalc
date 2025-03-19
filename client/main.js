@@ -1,5 +1,8 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
+import { CScene } from "./src/scene";
+import { CMenu } from "./src/menu";
+
 var playground = document.getElementById('playground');
 var menuCanvas = document.getElementById('menu');
 

@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CTimeSwitch extends IComponent {
+import { IComponent } from "../../component";
+import { Colors, scale } from "../../defines";
+import { CTerminal } from "../../terminal";
+
+export class CTimeSwitch extends IComponent {
     constructor (x, y) {
         super(x, y, 70 * scale, 100 * scale);
         this.terminals = {

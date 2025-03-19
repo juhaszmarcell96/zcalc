@@ -1,6 +1,8 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class IComponent {
+import { grid_size, Coordinates } from "./defines";
+
+export class IComponent {
     constructor (x, y, w, h) {
         this.x = x - (x % grid_size);
         this.y = y - (y % grid_size);

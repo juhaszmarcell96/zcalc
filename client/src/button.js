@@ -1,6 +1,8 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CButton {
+import { Colors, scale } from "./defines";
+
+export class CButton {
     constructor (x, y, w, h, fillStyle, text) {
         this.x = x;
         this.y = y;
@@ -12,10 +14,10 @@ class CButton {
 
     draw (context) {
         context.beginPath();
-        context.roundRect(this.x, this.y, this.w, this.h, [2 * grid_size]);
+        context.roundRect(this.x, this.y, this.w, this.h, [10 * scale]);
         context.fillStyle = this.fillStyle;
         context.fill();
-        context.lineWidth = (grid_size / 5) * 2;
+        context.lineWidth = 2 * scale;
         context.strokeStyle = Colors.black;
         context.font = '12pt "Courier New"';
         context.fillStyle = Colors.white;

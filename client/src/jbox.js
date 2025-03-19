@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CJunctionBox extends IComponent {
+import { scale, Colors } from "./defines";
+import { IComponent } from "./component";
+import { CTerminal } from "./terminal";
+
+export class CJunctionBox extends IComponent {
     constructor (x, y) {
         super(x, y, 70 * scale, 70 * scale);
         this.terminals = {

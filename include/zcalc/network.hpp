@@ -54,7 +54,7 @@ private:
         if (m_components.contains(designator)) { throw std::invalid_argument("component " + designator + " already exists"); }
     }
 public:
-    Network () {}
+    Network () = default;
     ~Network () = default;
 
     component::Node get_node (const std::string& designator) const {
@@ -298,13 +298,6 @@ public:
             std::cout << "    " << des << " : " << val << std::endl;
         }
     }
-
-    // void set_frequency (double frequency) {
-    //     m_frequency = frequency;
-    //     for (const auto& component : m_components) {
-    //         component.second->set_frequency(frequency);
-    //     }
-    // }
 };
 
 } /* namespace zcalc */

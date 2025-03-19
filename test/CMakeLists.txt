@@ -16,5 +16,6 @@ add_executable (
     network_calculator_test.cpp
     symbolic_linear_equation_test.cpp
     json_test.cpp
+    network_json_test.cpp
 )
 target_link_libraries (tests ${GTEST_LIBRARIES} pthread)

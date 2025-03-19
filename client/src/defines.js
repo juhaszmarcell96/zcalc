@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 const scale = 1;
 const grid_size = 5;
 const zoomFactor = 1.1;

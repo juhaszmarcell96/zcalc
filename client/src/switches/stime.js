@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CTimeSwitch extends IComponent {
     constructor (x, y) {
         super(x, y, 70 * scale, 100 * scale);

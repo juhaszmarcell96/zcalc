@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CSource extends IComponent {
     constructor (x, y) {
         super(x, y, 200 * scale, 40 * scale);

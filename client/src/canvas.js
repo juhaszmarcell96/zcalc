@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class Canvas {
     constructor (x, y, w, h, canvas) {
         this.x = x;

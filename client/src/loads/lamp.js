@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CLamp extends IComponent {
     constructor (x, y) {
         super(x, y, 60 * scale, 60 * scale);

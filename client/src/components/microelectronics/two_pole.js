@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CTwoPole extends IComponent {
     constructor (x, y, img) {
         super(x, y, 90 * scale, 20 * scale);

@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class IComponent {
     constructor (x, y, w, h) {
         this.x = x - (x % grid_size);

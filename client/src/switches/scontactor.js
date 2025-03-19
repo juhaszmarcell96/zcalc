@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CContactor extends IComponent {
     constructor (x, y) {
         super(x, y, 180 * scale, 275 * scale);

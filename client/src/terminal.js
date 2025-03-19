@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CTerminal {
     constructor (x, y, fillStyle) {
         this.w = 20 * scale;

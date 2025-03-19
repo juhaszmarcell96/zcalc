@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CSwitch106 extends IComponent {
     constructor (x, y) {
         super(x, y, 90 * scale, 90 * scale);

@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CMenu {
     constructor (x, y, canvas, scene) {
         this.canvas = canvas;

@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CButton {
     constructor (x, y, w, h, fillStyle, text) {
         this.x = x;

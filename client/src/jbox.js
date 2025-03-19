@@ -1,3 +1,5 @@
+/* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
+
 class CJunctionBox extends IComponent {
     constructor (x, y) {
         super(x, y, 70 * scale, 70 * scale);

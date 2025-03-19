@@ -9,6 +9,7 @@ class CTwoPole extends IComponent {
             T1: new CTerminal(terminal_0_x, terminal_0_y, Colors.l3),
             T2: new CTerminal(terminal_1_x, terminal_1_y, Colors.l3)
         }
+        this.angle = 0;
 
         this.img = img
     }

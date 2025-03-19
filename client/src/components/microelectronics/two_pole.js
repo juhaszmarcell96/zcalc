@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CTwoPole extends IComponent {
+import { IComponent } from "../../component";
+import { Colors, scale } from "../../defines";
+import { CTerminal } from "../../terminal";
+
+export class CTwoPole extends IComponent {
     constructor (x, y, img) {
         super(x, y, 90 * scale, 20 * scale);
         const terminal_0_x = -this.w / 2 - 10 * scale;

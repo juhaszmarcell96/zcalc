@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CWire extends IComponent {
+import { IComponent } from "./component";
+import { scale, Colors, WireType, Coordinates, grid_size } from "./defines";
+import { CTerminal } from "./terminal";
+
+export class CWire extends IComponent {
     constructor (type) {
         super(0.0, 0.0, 10 * scale, 10 * scale);
         this.type = type;

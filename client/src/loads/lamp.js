@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CLamp extends IComponent {
+import { IComponent } from "../../component";
+import { Colors, scale } from "../../defines";
+import { CTerminal } from "../../terminal";
+
+export class CLamp extends IComponent {
     constructor (x, y) {
         super(x, y, 60 * scale, 60 * scale);
         this.terminals = {

@@ -1,6 +1,24 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CMenu {
+import { scale, Colors } from "./defines";
+import { CResistor } from "./components/microelectronics/resistor";
+import { CCapacitor } from "./components/microelectronics/capacitor";
+import { CInductor } from "./components/microelectronics/inductor";
+import { CVoltageSource } from "./components/microelectronics/voltage_source";
+import { CCurrentSource } from "./components/microelectronics/current_source";
+import { CVoltageControlledVoltageSource } from "./components/microelectronics/voltage_controlled_voltage_source";
+import { CCurrentControlledVoltageSource } from "./components/microelectronics/current_controlled_voltage_source";
+import { CVoltageControlledCurrentSource } from "./components/microelectronics/voltage_controlled_current_source";
+import { CCurrentControlledCurrentSource } from "./components/microelectronics/current_controlled_current_source";
+import { CCoupledInductor } from "./components/microelectronics/coupled_inductor";
+import { CIdealTransformer } from "./components/microelectronics/ideal_transformer";
+import { CGyrator } from "./components/microelectronics/gyrator";
+import { CIdealAmplifier } from "./components/microelectronics/ideal_amplifier";
+import { CVoltmeter } from "./components/microelectronics/voltmeter";
+import { CAmmeter } from "./components/microelectronics/ammeter";
+import { CButton } from "./button";
+
+export class CMenu {
     constructor (x, y, canvas, scene) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');

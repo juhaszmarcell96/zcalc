@@ -19,66 +19,7 @@
 <canvas id="playground" width="1800" height="1000" style="border:1px solid #d3d3d3;">no canvas support</canvas>
 <canvas id="menu" width="1800" height="1000" style="border:1px solid #d3d3d3;">no canvas support</canvas>
 
-<script src="./src/defines.js"></script>
-<script src="./src/button.js"></script>
-<script src="./src/component.js"></script>
-<script src="./src/terminal.js"></script>
-<script src="./src/source.js"></script>
-<script src="./src/loads/lamp.js"></script>
-<script src="./src/loads/motor.js"></script>
-<script src="./src/switches/s101.js"></script>
-<script src="./src/switches/s102.js"></script>
-<script src="./src/switches/s106.js"></script>
-<script src="./src/switches/stime.js"></script>
-<script src="./src/switches/scontactor.js"></script>
-<script src="./src/components/microelectronics/two_pole.js"></script>
-<script src="./src/components/microelectronics/voltmeter.js"></script>
-<script src="./src/components/microelectronics/ammeter.js"></script>
-<script src="./src/components/microelectronics/resistor.js"></script>
-<script src="./src/components/microelectronics/capacitor.js"></script>
-<script src="./src/components/microelectronics/inductor.js"></script>
-<script src="./src/components/microelectronics/voltage_source.js"></script>
-<script src="./src/components/microelectronics/current_source.js"></script>
-<script src="./src/components/microelectronics/voltage_controlled_voltage_source.js"></script>
-<script src="./src/components/microelectronics/current_controlled_voltage_source.js"></script>
-<script src="./src/components/microelectronics/voltage_controlled_current_source.js"></script>
-<script src="./src/components/microelectronics/current_controlled_current_source.js"></script>
-<script src="./src/components/microelectronics/four_pole.js"></script>
-<script src="./src/components/microelectronics/coupled_inductor.js"></script>
-<script src="./src/components/microelectronics/ideal_transformer.js"></script>
-<script src="./src/components/microelectronics/gyrator.js"></script>
-<script src="./src/components/microelectronics/ideal_amplifier.js"></script>
-<script src="./src/jbox.js"></script>
-<script src="./src/wire.js"></script>
-<script src="./src/scene.js"></script>
-<script src="./src/menu.js"></script>
-<script>
-    var playground = document.getElementById('playground');
-    var menuCanvas = document.getElementById('menu');
-
-    playground.style.position = 'absolute';
-    playground.style.left = 0 + 'px';
-    playground.style.top = 0 + 'px';
-    playground.width = 3.0/4.0 * window.innerWidth;
-    playground.height = window.innerHeight;
-
-    menuCanvas.style.position = 'absolute';
-    menuCanvas.style.left = 3.0/4.0 * window.innerWidth + 'px';
-    menuCanvas.style.top = 0 + 'px';
-    menuCanvas.width = 1.0/4.0 * window.innerWidth;
-    menuCanvas.height = window.innerHeight;
-    
-    var scene = new CScene(playground);
-    var menu = new CMenu(3.0/4.0 * window.innerWidth, 0, menuCanvas, scene);
-
-    const resistor_img = new Image();
-    resistor_img.src = 'assets/svg/resistor.svg';
-    resistor_img.onload = function() { scene.redraw(); };
-    resistor_img.onerror = function() { console.error("failed to load resistor image"); };
-
-    scene.redraw();
-    menu.redraw();
-</script> 
+<script src="bundled_main.js"></script>
 
 </body>
 </html>

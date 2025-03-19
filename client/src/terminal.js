@@ -1,6 +1,8 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CTerminal {
+import { scale, grid_size, TerminalState, Colors } from "./defines";
+
+export class CTerminal {
     constructor (x, y, fillStyle) {
         this.w = 20 * scale;
         this.h = 20 * scale;

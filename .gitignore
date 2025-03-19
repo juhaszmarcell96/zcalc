@@ -1,2 +1,3 @@
 build
 .vscode
+client/bundled_main.js

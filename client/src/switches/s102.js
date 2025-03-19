@@ -1,6 +1,10 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-class CSwitch102 extends IComponent {
+import { IComponent } from "../../component";
+import { Colors, scale } from "../../defines";
+import { CTerminal } from "../../terminal";
+
+export class CSwitch102 extends IComponent {
     constructor (x, y) {
         super(x, y, 90 * scale, 90 * scale);
         this.terminals = {

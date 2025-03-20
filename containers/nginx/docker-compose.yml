@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  nginx_proxy:
+    build: .
+    container_name: nginx_proxy
+    ports:
+      - "443:443"
+    volumes:
+      - ../../client:/usr/share/nginx/html
+      - ./nginx.crt:/etc/nginx/nginx.crt
+      - ./nginx.key:/etc/nginx/nginx.key
+    depends_on:
+      - zcalc_server
+    networks:
+      - zcalc_network
+
+  zcalc_server:
+    build: ../server
+    container_name: zcalc_server
+    expose:
+      - "4444"
+    networks:
+      - zcalc_network
+
+networks:
+  zcalc_network:
+    driver: bridge

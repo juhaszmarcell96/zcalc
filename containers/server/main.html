@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <input type="text" id="messageInput" placeholder="Enter message">
+        <button onclick="sendMessage()">Send</button>
+        <input type="text" id="responseField" readonly>
+
+        <script>
+            const socket = new WebSocket("wss://localhost/ws/");
+
+            socket.onopen = function() {
+                console.log("Connected to WebSocket server");
+            };
+
+            socket.onmessage = function(event) {
+                console.log("Received from server:", event.data);
+                document.getElementById("responseField").value = event.data;
+            };
+
+            socket.onclose = function() {
+                console.log("WebSocket connection closed");
+            };
+
+            socket.onerror = function(error) {
+                console.error("WebSocket error:", error);
+            };
+
+            function sendMessage() {
+                const message = document.getElementById("messageInput").value;
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({ message }));
+                    console.log("Sent:", message);
+                } else {
+                    console.error("WebSocket is not open.");
+                }
+            }
+        </script>
+    </body>
+</html>

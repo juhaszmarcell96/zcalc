@@ -6,6 +6,10 @@ services:
     container_name: nginx_proxy
     ports:
       - "443:443"
+    volumes:
+      - ../../client:/usr/share/nginx/html
+      - ./nginx.crt:/etc/nginx/nginx.crt
+      - ./nginx.key:/etc/nginx/nginx.key
     depends_on:
       - zcalc_server
     networks:

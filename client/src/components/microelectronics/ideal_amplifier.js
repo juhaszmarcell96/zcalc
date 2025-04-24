@@ -3,10 +3,12 @@
 import { IComponent } from "../../component";
 import { Colors, scale } from "../../defines";
 import { CTerminal } from "../../terminal";
+import { ComponentType } from "../../defines";
 
 export class CIdealAmplifier extends IComponent {
     constructor (x, y, img) {
         super(x, y, 140 * scale, 90 * scale);
+        this.type = ComponentType.ideal_amplifier;
 
         const terminal_0_x = -this.w / 2 - 10 * scale;
         const terminal_0_y = -this.h / 2 + 10 * scale;

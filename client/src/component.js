@@ -1,6 +1,6 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-import { grid_size, Coordinates } from "./defines";
+import { grid_size, Coordinates, ComponentType } from "./defines";
 
 export class IComponent {
     constructor (x, y, w, h) {
@@ -14,6 +14,12 @@ export class IComponent {
         this.move_offset_y = 0;
         
         this.angle = 0;
+
+        this.type = ComponentType.resistor;
+    }
+
+    get_type () {
+        return this.type;
     }
 
     draw_terminals(context) {

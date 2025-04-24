@@ -64,6 +64,7 @@ export class CMenu {
         this.add_amplifier_button = new CButton(x_offset, 730, button_w, 40 * scale, Colors.dark_grey, "ideal amplifier");
         this.add_voltmeter_button = new CButton(x_offset, 780, button_w, 40 * scale, Colors.dark_grey, "voltmeter");
         this.add_ammeter_button   = new CButton(x_offset, 830, button_w, 40 * scale, Colors.dark_grey, "ammeter");
+        this.calculate_button     = new CButton(x_offset, 880, button_w, 40 * scale, Colors.red, "calculate");
 
         // basic components
         this.resistor_img = new Image();
@@ -175,6 +176,9 @@ export class CMenu {
                 this.scene.components.push(new CAmmeter(50 * scale, 200 * scale, this.ammeter_img));
                 this.scene.redraw();
             }
+            else if (this.calculate_button.is_inside(x, y)) {
+                this.scene.to_json();
+            }
             event.preventDefault();
         });
     }
@@ -197,6 +201,7 @@ export class CMenu {
         this.add_amplifier_button.draw(this.context);
         this.add_voltmeter_button.draw(this.context);
         this.add_ammeter_button.draw(this.context);
+        this.calculate_button.draw(this.context);
         this.context.translate(0, -this.offset_y);
     }
 };

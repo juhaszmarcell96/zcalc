@@ -21,10 +21,5 @@ menuCanvas.height = window.innerHeight;
 var scene = new CScene(playground);
 var menu = new CMenu(3.0/4.0 * window.innerWidth, 0, menuCanvas, scene);
 
-const resistor_img = new Image();
-resistor_img.src = 'assets/svg/resistor.svg';
-resistor_img.onload = function() { scene.redraw(); };
-resistor_img.onerror = function() { console.error("failed to load resistor image"); };
-
 scene.redraw();
 menu.redraw();

@@ -48,3 +48,21 @@ export class Coordinates {
         this.y = y;
     }
 };
+
+export const ComponentType = {
+    resistor: 0,
+    capacitor: 1,
+    inductor: 2,
+    current_source: 3,
+    voltage_source: 4,
+    ammeter: 5,
+    voltmeter: 6,
+    current_controlled_current_source: 7,
+    current_controlled_voltage_source: 8,
+    voltage_controlled_current_source: 9,
+    voltage_controlled_voltage_source: 10,
+    gyrator: 11,
+    ideal_amplifier: 12,
+    ideal_transformer: 13,
+    coupled_inductor: 14
+};

@@ -11,6 +11,11 @@ export class CTerminal {
         this.lineWidth = 2;
         this.fillStyle = fillStyle;
         this.state = TerminalState.None;
+        this.nodeId = 0;
+    }
+
+    set_node_id (id) {
+        this.nodeId = id;
     }
 
     snap_to_grid () {

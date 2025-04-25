@@ -3,6 +3,7 @@
 import { IComponent } from "./component";
 import { scale, Colors, WireType, Coordinates, grid_size } from "./defines";
 import { CTerminal } from "./terminal";
+import { CNode } from "./node";
 
 export class CWire extends IComponent {
     constructor (type) {
@@ -93,5 +94,16 @@ export class CWire extends IComponent {
 
     rotate () {
         return;
+    }
+    
+    get_nodes () {
+        // puth both terminals into one node, because they are connected
+        let nodes = []
+        let node = new CNode();
+        for (const [key, value] of Object.entries(this.terminals)) {
+            node.append(value);
+        }
+        nodes.push(node);
+        return nodes;
     }
 }

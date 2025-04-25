@@ -6,7 +6,7 @@ export class CNode {
     }
 
     append (terminal) {
-        this.terminals.append(terminal);
+        this.terminals.push(terminal);
     }
 
     empty () {

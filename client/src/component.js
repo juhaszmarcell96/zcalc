@@ -1,6 +1,7 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
 import { grid_size, Coordinates, ComponentType } from "./defines";
+import { CNode } from "./node";
 
 export class IComponent {
     constructor (x, y, w, h) {
@@ -42,6 +43,17 @@ export class IComponent {
 
     set_property (property) {
         console.log('ERROR : "set_property" function not overloaded');
+    }
+
+    get_nodes () {
+        // every terminal is its own node by default, only special components, such as wires shoudl override this behavior
+        let nodes = []
+        for (const [key, value] of Object.entries(this.terminals)) {
+            let node = new CNode();
+            node.append(value);
+            nodes.push(node);
+        }
+        return nodes;
     }
 
     rotate () {

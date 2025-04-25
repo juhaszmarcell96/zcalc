@@ -38,8 +38,7 @@ export const TerminalState = {
     L2 : "L2",
     L3 : "L3",
     N  : "N",
-    PE : "PE",
-    Virtual : "Virtual" /* virtual wire state, overrides None state but gets overridden by every other state -> to see whether wires with None states are connected */
+    PE : "PE"
 };
 
 export class Coordinates {
@@ -65,4 +64,22 @@ export const ComponentType = {
     ideal_amplifier: 12,
     ideal_transformer: 13,
     coupled_inductor: 14
+};
+
+export const Unit = {
+    peta : 0,         // 1e15
+    tera : 1,         // 1e12
+    giga : 2,         // 1e9
+    mega : 3,         // 1e6
+    kilo : 4,         // 1e3
+    hecto : 5,        // 1e2
+    deka : 6,         // 1e1
+    base: 7,          // 1e0
+    deci : 8,         // 1e-1
+    centi : 9,        // 1e-2
+    milli : 10,       // 1e-3
+    micro : 11,       // 1e-6
+    nano : 12,        // 1e-9
+    angstrom : 13,    // 1e-10
+    pico : 14         // 1e-12
 };

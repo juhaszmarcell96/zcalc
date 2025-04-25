@@ -1,6 +1,6 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
-import { Colors, scale } from "./defines";
+import { Colors, scale } from "../defines";
 
 export class CButton {
     constructor (x, y, w, h, fillStyle, text) {

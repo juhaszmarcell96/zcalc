@@ -11,6 +11,11 @@ export class CTerminal {
         this.lineWidth = 2;
         this.fillStyle = fillStyle;
         this.state = TerminalState.None;
+        this.nodeId = 0;
+    }
+
+    set_node_id (id) {
+        this.nodeId = id;
     }
 
     snap_to_grid () {
@@ -68,5 +73,17 @@ export class CTerminal {
 
     is_inside(pos_x, pos_y) {
         return (pos_x > this.x) && (pos_x < (this.x + this.w)) && (pos_y < (this.y + this.h)) && (pos_y > this.y);
+    }
+
+    is_connected_to (terminal) {
+        // TODO : this will not work, because terminals have relative coordinates -> need reference to parent to get absolute coordinates
+        if (!(terminal instanceof CTerminal)) {
+            throw new Error("expected a terminal...");
+        }
+        if (this.x + this.w < terminal.x) { return false; }
+        if (this.x > terminal.x + terminal.w) { return false; }
+        if (this.y + this.h < terminal.y) { return false; }
+        if (this.y > terminal.y + terminal.h) { return false; }
+        return true;
     }
 };

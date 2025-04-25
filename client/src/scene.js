@@ -1,7 +1,7 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
 import { scale, WireType, Colors } from "./defines";
-import { CButton } from "./button";
+import { CButton } from "./controls/button";
 import { CWire } from "./wire";
 
 export class CScene {
@@ -39,8 +39,11 @@ export class CScene {
         this.new_wire = null;
         this.wire_type = WireType.L;
 
+        this.edit_area = null;
+
         this.del_button = null;
         this.rotate_button = null;
+        this.edit_button = null;
         this.context_menu = false;
         this.context_component_index = -1;
 
@@ -129,7 +132,8 @@ export class CScene {
             this.context_component_index = [...this.components].reverse().findIndex(component => component.is_inside(x, y));
             if (this.context_component_index !== -1) {
                 this.del_button = new CButton(x, y, 75 * scale, 40 * scale, Colors.red, "delete");
-                this.rotate_button = new CButton(x, y + this.del_button.h, 75 * scale, 40 * scale, Colors.grey, "rotate");
+                this.rotate_button = new CButton(x, y + this.del_button.h, 75 * scale, 40 * scale, Colors.dark_grey, "rotate");
+                this.edit_button = new CButton(x, y + this.del_button.h + this.rotate_button.h, 75 * scale, 40 * scale, Colors.dark_grey, "edit");
                 this.context_menu = true;
             }
             event.preventDefault();
@@ -144,10 +148,18 @@ export class CScene {
                 else if (this.rotate_button.is_inside(x, y)) {
                     this.components[this.components.length - 1 - this.context_component_index].rotate();
                 }
+                else if (this.edit_button.is_inside(x, y)) {
+                    //this.components[this.components.length - 1 - this.context_component_index].rotate();
+                    console.log("edit");
+                    if (this.edit_area) {
+                        this.edit_area.populate("asd");
+                    }
+                }
             }
             this.context_menu = false;
             this.del_button = null;
             this.rotate_button = null;
+            this.edit_button = null;
             event.preventDefault();
             this.redraw();
         });
@@ -181,24 +193,63 @@ export class CScene {
         if (this.context_menu) {
             this.del_button.draw(this.context);
             this.rotate_button.draw(this.context);
+            this.edit_button.draw(this.context);
         }
     }
 
+    calculate_nodes () {
+        let nodes = [];
+        this.components.forEach(component => {
+            component.get_nodes(nodes);
+        });
+        console.log(JSON.stringify(nodes));
+        let found_change = true;
+        while (found_change) {
+            found_change = false;
+
+            // try to merge every pair of nodes
+            for (let i = 0; i < nodes.length; ++i) {
+                for (let j = i + 1; j < nodes.length; ++j) {
+                    if (!nodes[i] || !nodes[j]) { continue; }
+                    if (nodes[i].merge_if_same_node(nodes[j])) {
+                        // if merged, mark change and clear the merged node
+                        found_change = true;
+                        nodes[j] = null; // mark for deletion
+                    }
+                }
+            }
+    
+            // clean up merged nodes
+            nodes = nodes.filter(node => node && !node.empty());
+        }
+        let node_id = 0;
+        nodes.forEach(node => {
+            node.mark(node_id);
+            ++node_id;
+        });
+    }
+
     to_json () {
+        this.calculate_nodes();
         let json_data = "{";
         json_data += '"c":[';
-        let first = true;
+        let index = 0;
         this.components.forEach(component => {
-            if (first) { first = false; }
-            else { json_data += ','; }
-            json_data += '{';
-            json_data += '"i":';
-            json_data += component.get_type().toString();
-            json_data += '}';
+            const serialized = component.serialize(index);
+            if (serialized)
+            {
+                if (index != 0) { json_data += ','; }
+                json_data += serialized;
+                ++index;
+            }
         });
         json_data += ']';
         json_data += '}';
         console.log(json_data);
+    }
+
+    set_edit_area (edit_area) {
+        this.edit_area = edit_area;
     }
 
 };

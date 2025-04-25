@@ -16,7 +16,7 @@ import { CGyrator } from "./components/microelectronics/gyrator";
 import { CIdealAmplifier } from "./components/microelectronics/ideal_amplifier";
 import { CVoltmeter } from "./components/microelectronics/voltmeter";
 import { CAmmeter } from "./components/microelectronics/ammeter";
-import { CButton } from "./button";
+import { CButton } from "./controls/button";
 
 export class CMenu {
     constructor (x, y, canvas, scene) {
@@ -38,7 +38,7 @@ export class CMenu {
             if (this.offset_y > 0) {
                 this.offset_y = 0;
             }
-            const max_scroll_down = 900 - this.canvas.height;
+            const max_scroll_down = 950 - this.canvas.height;
             if (this.offset_y < -max_scroll_down) {
                 this.offset_y = -max_scroll_down;
             }

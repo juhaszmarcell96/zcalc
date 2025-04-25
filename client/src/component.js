@@ -1,6 +1,7 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
 import { grid_size, Coordinates, ComponentType } from "./defines";
+import { CNode } from "./node";
 
 export class IComponent {
     constructor (x, y, w, h) {
@@ -30,6 +31,28 @@ export class IComponent {
 
     draw (context) {
         console.log('ERROR : "draw" function not overloaded');
+    }
+
+    serialize (id) {
+        // null is returned if the component cannot or should not be serialized (e.g. wires)
+        return null;
+    }
+
+    get_property () {
+        console.log('ERROR : "get_property" function not overloaded');
+    }
+
+    set_property (property) {
+        console.log('ERROR : "set_property" function not overloaded');
+    }
+
+    get_nodes (nodes) {
+        // every terminal is its own node by default, only special components, such as wires shoudl override this behavior
+        for (let [key, value] of Object.entries(this.terminals)) {
+            let node = new CNode();
+            node.append(value);
+            nodes.push(node);
+        }
     }
 
     rotate () {

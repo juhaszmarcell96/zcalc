@@ -38,7 +38,7 @@ export class CMenu {
             if (this.offset_y > 0) {
                 this.offset_y = 0;
             }
-            const max_scroll_down = 900 - this.canvas.height;
+            const max_scroll_down = 950 - this.canvas.height;
             if (this.offset_y < -max_scroll_down) {
                 this.offset_y = -max_scroll_down;
             }

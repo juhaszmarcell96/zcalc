@@ -16,7 +16,7 @@ menuCanvas.style.position = 'absolute';
 menuCanvas.style.left = 3.0/4.0 * window.innerWidth + 'px';
 menuCanvas.style.top = 0 + 'px';
 menuCanvas.width = 1.0/4.0 * window.innerWidth;
-menuCanvas.height = window.innerHeight;
+menuCanvas.height = 8.0/10.0 * window.innerHeight;
 
 var scene = new CScene(playground);
 var menu = new CMenu(3.0/4.0 * window.innerWidth, 0, menuCanvas, scene);

@@ -41,6 +41,7 @@ export class CScene {
 
         this.del_button = null;
         this.rotate_button = null;
+        this.edit_button = null;
         this.context_menu = false;
         this.context_component_index = -1;
 
@@ -129,7 +130,8 @@ export class CScene {
             this.context_component_index = [...this.components].reverse().findIndex(component => component.is_inside(x, y));
             if (this.context_component_index !== -1) {
                 this.del_button = new CButton(x, y, 75 * scale, 40 * scale, Colors.red, "delete");
-                this.rotate_button = new CButton(x, y + this.del_button.h, 75 * scale, 40 * scale, Colors.grey, "rotate");
+                this.rotate_button = new CButton(x, y + this.del_button.h, 75 * scale, 40 * scale, Colors.dark_grey, "rotate");
+                this.edit_button = new CButton(x, y + this.del_button.h + this.rotate_button.h, 75 * scale, 40 * scale, Colors.dark_grey, "edit");
                 this.context_menu = true;
             }
             event.preventDefault();
@@ -144,10 +146,15 @@ export class CScene {
                 else if (this.rotate_button.is_inside(x, y)) {
                     this.components[this.components.length - 1 - this.context_component_index].rotate();
                 }
+                else if (this.edit_button.is_inside(x, y)) {
+                    //this.components[this.components.length - 1 - this.context_component_index].rotate();
+                    console.log("edit");
+                }
             }
             this.context_menu = false;
             this.del_button = null;
             this.rotate_button = null;
+            this.edit_button = null;
             event.preventDefault();
             this.redraw();
         });
@@ -181,6 +188,7 @@ export class CScene {
         if (this.context_menu) {
             this.del_button.draw(this.context);
             this.rotate_button.draw(this.context);
+            this.edit_button.draw(this.context);
         }
     }
 

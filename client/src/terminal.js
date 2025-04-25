@@ -76,6 +76,7 @@ export class CTerminal {
     }
 
     is_connected_to (terminal) {
+        // TODO : this will not work, because terminals have relative coordinates -> need reference to parent to get absolute coordinates
         if (!(terminal instanceof CTerminal)) {
             throw new Error("expected a terminal...");
         }

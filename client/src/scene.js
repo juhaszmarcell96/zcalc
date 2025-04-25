@@ -197,14 +197,51 @@ export class CScene {
         }
     }
 
+    calculate_nodes () {
+        let nodes = [];
+        this.components.forEach(component => {
+            component.get_nodes(nodes);
+        });
+        console.log(JSON.stringify(nodes));
+        let found_change = true;
+        while (found_change) {
+            found_change = false;
+
+            // try to merge every pair of nodes
+            for (let i = 0; i < nodes.length; ++i) {
+                for (let j = i + 1; j < nodes.length; ++j) {
+                    if (!nodes[i] || !nodes[j]) { continue; }
+                    if (nodes[i].merge_if_same_node(nodes[j])) {
+                        // if merged, mark change and clear the merged node
+                        found_change = true;
+                        nodes[j] = null; // mark for deletion
+                    }
+                }
+            }
+    
+            // clean up merged nodes
+            nodes = nodes.filter(node => node && !node.empty());
+        }
+        let node_id = 0;
+        nodes.forEach(node => {
+            node.mark(node_id);
+            ++node_id;
+        });
+    }
+
     to_json () {
+        this.calculate_nodes();
         let json_data = "{";
         json_data += '"c":[';
         let index = 0;
         this.components.forEach(component => {
-            if (index != 0) { json_data += ','; }
-            json_data += component.serialize(index);
-            ++index;
+            const serialized = component.serialize(index);
+            if (serialized)
+            {
+                if (index != 0) { json_data += ','; }
+                json_data += serialized;
+                ++index;
+            }
         });
         json_data += ']';
         json_data += '}';

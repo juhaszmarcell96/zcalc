@@ -96,14 +96,12 @@ export class CWire extends IComponent {
         return;
     }
     
-    get_nodes () {
+    get_nodes (nodes) {
         // puth both terminals into one node, because they are connected
-        let nodes = []
         let node = new CNode();
-        for (const [key, value] of Object.entries(this.terminals)) {
+        for (let [key, value] of Object.entries(this.terminals)) {
             node.append(value);
         }
         nodes.push(node);
-        return nodes;
     }
 }

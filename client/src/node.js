@@ -6,7 +6,9 @@ export class CNode {
     }
 
     append (terminal) {
-        this.terminals.push(terminal);
+        if (terminal) {
+            this.terminals.push(terminal);
+        }
     }
 
     empty () {
@@ -27,5 +29,11 @@ export class CNode {
             }
         }
         return false;
+    }
+
+    mark (nodeId) {
+        this.terminals.forEach(terminal => {
+            terminal.set_node_id(nodeId);
+        });
     }
 };

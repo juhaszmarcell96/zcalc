@@ -34,7 +34,8 @@ export class IComponent {
     }
 
     serialize (id) {
-        console.log('ERROR : "serialize" function not overloaded');
+        // null is returned if the component cannot or should not be serialized (e.g. wires)
+        return null;
     }
 
     get_property () {
@@ -45,15 +46,13 @@ export class IComponent {
         console.log('ERROR : "set_property" function not overloaded');
     }
 
-    get_nodes () {
+    get_nodes (nodes) {
         // every terminal is its own node by default, only special components, such as wires shoudl override this behavior
-        let nodes = []
-        for (const [key, value] of Object.entries(this.terminals)) {
+        for (let [key, value] of Object.entries(this.terminals)) {
             let node = new CNode();
             node.append(value);
             nodes.push(node);
         }
-        return nodes;
     }
 
     rotate () {

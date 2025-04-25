@@ -36,6 +36,14 @@ export class IComponent {
         console.log('ERROR : "serialize" function not overloaded');
     }
 
+    get_property () {
+        console.log('ERROR : "get_property" function not overloaded');
+    }
+
+    set_property (property) {
+        console.log('ERROR : "set_property" function not overloaded');
+    }
+
     rotate () {
         this.angle += 1;
         if (this.angle == 4) {

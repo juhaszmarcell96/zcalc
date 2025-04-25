@@ -32,6 +32,10 @@ export class IComponent {
         console.log('ERROR : "draw" function not overloaded');
     }
 
+    serialize (id) {
+        console.log('ERROR : "serialize" function not overloaded');
+    }
+
     rotate () {
         this.angle += 1;
         if (this.angle == 4) {

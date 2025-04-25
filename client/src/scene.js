@@ -187,14 +187,11 @@ export class CScene {
     to_json () {
         let json_data = "{";
         json_data += '"c":[';
-        let first = true;
+        let index = 0;
         this.components.forEach(component => {
-            if (first) { first = false; }
-            else { json_data += ','; }
-            json_data += '{';
-            json_data += '"i":';
-            json_data += component.get_type().toString();
-            json_data += '}';
+            if (index != 0) { json_data += ','; }
+            json_data += component.serialize(index);
+            ++index;
         });
         json_data += ']';
         json_data += '}';

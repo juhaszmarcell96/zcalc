@@ -74,4 +74,15 @@ export class CTerminal {
     is_inside(pos_x, pos_y) {
         return (pos_x > this.x) && (pos_x < (this.x + this.w)) && (pos_y < (this.y + this.h)) && (pos_y > this.y);
     }
+
+    is_connected_to (terminal) {
+        if (!(terminal instanceof CTerminal)) {
+            throw new Error("expected a terminal...");
+        }
+        if (this.x + this.w < terminal.x) { return false; }
+        if (this.x > terminal.x + terminal.w) { return false; }
+        if (this.y + this.h < terminal.y) { return false; }
+        if (this.y > terminal.y + terminal.h) { return false; }
+        return true;
+    }
 };

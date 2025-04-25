@@ -17,6 +17,7 @@ export const Colors = {
     light_grey : 'rgba(230, 230, 230, 1)',
     red        : 'rgba(178,  34,  34, 1)',
     white      : 'rgba(255, 255, 255, 1)',
+    green      : 'rgba( 19, 124,  19, 1)',
 }
 
 export const Mode = {

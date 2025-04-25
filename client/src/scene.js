@@ -1,7 +1,7 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
 import { scale, WireType, Colors } from "./defines";
-import { CButton } from "./button";
+import { CButton } from "./controls/button";
 import { CWire } from "./wire";
 
 export class CScene {
@@ -38,6 +38,8 @@ export class CScene {
         this.components = [];
         this.new_wire = null;
         this.wire_type = WireType.L;
+
+        this.edit_area = null;
 
         this.del_button = null;
         this.rotate_button = null;
@@ -149,6 +151,9 @@ export class CScene {
                 else if (this.edit_button.is_inside(x, y)) {
                     //this.components[this.components.length - 1 - this.context_component_index].rotate();
                     console.log("edit");
+                    if (this.edit_area) {
+                        this.edit_area.populate("asd");
+                    }
                 }
             }
             this.context_menu = false;
@@ -204,6 +209,10 @@ export class CScene {
         json_data += ']';
         json_data += '}';
         console.log(json_data);
+    }
+
+    set_edit_area (edit_area) {
+        this.edit_area = edit_area;
     }
 
 };

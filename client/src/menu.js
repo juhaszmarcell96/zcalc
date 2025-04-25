@@ -16,7 +16,7 @@ import { CGyrator } from "./components/microelectronics/gyrator";
 import { CIdealAmplifier } from "./components/microelectronics/ideal_amplifier";
 import { CVoltmeter } from "./components/microelectronics/voltmeter";
 import { CAmmeter } from "./components/microelectronics/ammeter";
-import { CButton } from "./button";
+import { CButton } from "./controls/button";
 
 export class CMenu {
     constructor (x, y, canvas, scene) {

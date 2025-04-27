@@ -88,7 +88,6 @@ export class CTerminal {
         }
         const this_pos = this.parent.get_terminal_absolute_coords(this);
         const other_pos = terminal.parent.get_terminal_absolute_coords(terminal);
-        console.log(`${this_pos.x}:${this_pos.y} - ${other_pos.x}:${other_pos.y}`);
         return (this_pos.x == other_pos.x) && (this_pos.y == other_pos.y);
     }
 };

@@ -202,7 +202,6 @@ export class CScene {
         this.components.forEach(component => {
             component.get_nodes(nodes, null, 2);
         });
-        console.log(JSON.stringify(nodes));
         let found_change = true;
         while (found_change) {
             found_change = false;

@@ -8,32 +8,32 @@ export class CContactor extends IComponent {
     constructor (x, y) {
         super(x, y, 180 * scale, 275 * scale);
         this.terminals = {
-            A1  : new CTerminal(-this.w / 2 +  15 * scale, -this.h / 2 -  10 * scale, Colors.l1),
-            L1  : new CTerminal(-this.w / 2 +  45 * scale, -this.h / 2 -  10 * scale, Colors.l3),
-            L2  : new CTerminal(-this.w / 2 +  75 * scale, -this.h / 2 -  10 * scale, Colors.l3),
-            L3  : new CTerminal(-this.w / 2 + 105 * scale, -this.h / 2 -  10 * scale, Colors.l3),
-            NO13: new CTerminal(-this.w / 2 + 135 * scale, -this.h / 2 -  10 * scale, Colors.l3),
-            A2  : new CTerminal(-this.w / 2 + 165 * scale, -this.h / 2 -  10 * scale, Colors.n ),
+            A1  : new CTerminal(this, -this.w / 2 +  15 * scale, -this.h / 2 -  10 * scale, Colors.l1),
+            L1  : new CTerminal(this, -this.w / 2 +  45 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            L2  : new CTerminal(this, -this.w / 2 +  75 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            L3  : new CTerminal(this, -this.w / 2 + 105 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            NO13: new CTerminal(this, -this.w / 2 + 135 * scale, -this.h / 2 -  10 * scale, Colors.l3),
+            A2  : new CTerminal(this, -this.w / 2 + 165 * scale, -this.h / 2 -  10 * scale, Colors.n ),
 
-            T1  : new CTerminal(-this.w / 2 +  45 * scale, -this.h / 2 + 285 * scale, Colors.l3),
-            T2  : new CTerminal(-this.w / 2 +  75 * scale, -this.h / 2 + 285 * scale, Colors.l3),
-            T3  : new CTerminal(-this.w / 2 + 105 * scale, -this.h / 2 + 285 * scale, Colors.l3),
-            NO14: new CTerminal(-this.w / 2 + 135 * scale, -this.h / 2 + 285 * scale, Colors.l3),
+            T1  : new CTerminal(this, -this.w / 2 +  45 * scale, -this.h / 2 + 285 * scale, Colors.l3),
+            T2  : new CTerminal(this, -this.w / 2 +  75 * scale, -this.h / 2 + 285 * scale, Colors.l3),
+            T3  : new CTerminal(this, -this.w / 2 + 105 * scale, -this.h / 2 + 285 * scale, Colors.l3),
+            NO14: new CTerminal(this, -this.w / 2 + 135 * scale, -this.h / 2 + 285 * scale, Colors.l3),
 
-            NO53: new CTerminal(-this.w / 2 +  25 * scale, -this.h / 2 +  60 * scale, Colors.l3),
-            NC61: new CTerminal(-this.w / 2 +  65 * scale, -this.h / 2 +  60 * scale, Colors.l3),
-            NC71: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 +  60 * scale, Colors.l3),
-            NO83: new CTerminal(-this.w / 2 + 150 * scale, -this.h / 2 +  60 * scale, Colors.l3),
+            NO53: new CTerminal(this, -this.w / 2 +  25 * scale, -this.h / 2 +  60 * scale, Colors.l3),
+            NC61: new CTerminal(this, -this.w / 2 +  65 * scale, -this.h / 2 +  60 * scale, Colors.l3),
+            NC71: new CTerminal(this, -this.w / 2 + 110 * scale, -this.h / 2 +  60 * scale, Colors.l3),
+            NO83: new CTerminal(this, -this.w / 2 + 150 * scale, -this.h / 2 +  60 * scale, Colors.l3),
 
-            NO54: new CTerminal(-this.w / 2 +  25 * scale, -this.h / 2 + 110 * scale, Colors.l3),
-            NC62: new CTerminal(-this.w / 2 +  65 * scale, -this.h / 2 + 110 * scale, Colors.l3),
-            NC72: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 + 110 * scale, Colors.l3),
-            NO84: new CTerminal(-this.w / 2 + 150 * scale, -this.h / 2 + 110 * scale, Colors.l3),
+            NO54: new CTerminal(this, -this.w / 2 +  25 * scale, -this.h / 2 + 110 * scale, Colors.l3),
+            NC62: new CTerminal(this, -this.w / 2 +  65 * scale, -this.h / 2 + 110 * scale, Colors.l3),
+            NC72: new CTerminal(this, -this.w / 2 + 110 * scale, -this.h / 2 + 110 * scale, Colors.l3),
+            NO84: new CTerminal(this, -this.w / 2 + 150 * scale, -this.h / 2 + 110 * scale, Colors.l3),
 
-            NC98: new CTerminal(-this.w / 2 +  25 * scale, -this.h / 2 + 210 * scale, Colors.l3),
-            NC97: new CTerminal(-this.w / 2 +  65 * scale, -this.h / 2 + 210 * scale, Colors.l3),
-            NO95: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 + 210 * scale, Colors.l3),
-            NO96: new CTerminal(-this.w / 2 + 150 * scale, -this.h / 2 + 210 * scale, Colors.l3)
+            NC98: new CTerminal(this, -this.w / 2 +  25 * scale, -this.h / 2 + 210 * scale, Colors.l3),
+            NC97: new CTerminal(this, -this.w / 2 +  65 * scale, -this.h / 2 + 210 * scale, Colors.l3),
+            NO95: new CTerminal(this, -this.w / 2 + 110 * scale, -this.h / 2 + 210 * scale, Colors.l3),
+            NO96: new CTerminal(this, -this.w / 2 + 150 * scale, -this.h / 2 + 210 * scale, Colors.l3)
         }
 
         this.prev_closed = false;

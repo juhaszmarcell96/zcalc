@@ -8,9 +8,9 @@ export class CLamp extends IComponent {
     constructor (x, y) {
         super(x, y, 60 * scale, 60 * scale);
         this.terminals = {
-            L : new CTerminal(-30 * scale, 50 * scale, Colors.l1),
-            N : new CTerminal(  0 * scale, 50 * scale, Colors.n),
-            PE: new CTerminal( 30 * scale, 50 * scale, Colors.pe)
+            L : new CTerminal(this, -30 * scale, 50 * scale, Colors.l1),
+            N : new CTerminal(this,   0 * scale, 50 * scale, Colors.n),
+            PE: new CTerminal(this,  30 * scale, 50 * scale, Colors.pe)
         }
         this.on = false;
     }

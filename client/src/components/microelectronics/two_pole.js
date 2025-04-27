@@ -12,8 +12,8 @@ export class CTwoPole extends IComponent {
         const terminal_0_y = this.h / 2 - 10 * scale;
         const terminal_1_y = this.h / 2 - 10 * scale;
         this.terminals = {
-            T1: new CTerminal(terminal_0_x, terminal_0_y, Colors.l3),
-            T2: new CTerminal(terminal_1_x, terminal_1_y, Colors.l3)
+            T1: new CTerminal(this, terminal_0_x, terminal_0_y, Colors.l3),
+            T2: new CTerminal(this, terminal_1_x, terminal_1_y, Colors.l3)
         }
 
         this.img = img

@@ -8,11 +8,11 @@ export class CSource extends IComponent {
     constructor (x, y) {
         super(x, y, 200 * scale, 40 * scale);
         this.terminals = {
-            L1: new CTerminal(-this.w / 2 +  20 * scale, -this.h / 2 + 20 * scale, Colors.l1),
-            L2: new CTerminal(-this.w / 2 +  60 * scale, -this.h / 2 + 20 * scale, Colors.l2),
-            L3: new CTerminal(-this.w / 2 + 100 * scale, -this.h / 2 + 20 * scale, Colors.l3),
-            N : new CTerminal(-this.w / 2 + 140 * scale, -this.h / 2 + 20 * scale, Colors.n),
-            PE: new CTerminal(-this.w / 2 + 180 * scale, -this.h / 2 + 20 * scale, Colors.pe)
+            L1: new CTerminal(this, -this.w / 2 +  20 * scale, -this.h / 2 + 20 * scale, Colors.l1),
+            L2: new CTerminal(this, -this.w / 2 +  60 * scale, -this.h / 2 + 20 * scale, Colors.l2),
+            L3: new CTerminal(this, -this.w / 2 + 100 * scale, -this.h / 2 + 20 * scale, Colors.l3),
+            N : new CTerminal(this, -this.w / 2 + 140 * scale, -this.h / 2 + 20 * scale, Colors.n),
+            PE: new CTerminal(this, -this.w / 2 + 180 * scale, -this.h / 2 + 20 * scale, Colors.pe)
         }
     }
 

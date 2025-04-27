@@ -11,8 +11,8 @@ export class CWire extends IComponent {
         this.type = type;
         this.lineWidth = 2;
         this.terminals = {
-            T1: new CTerminal(0, 0, Colors.l1),
-            T2: new CTerminal(0, 0, Colors.l1)
+            T1: new CTerminal(this, 0, 0, Colors.l1),
+            T2: new CTerminal(this, 0, 0, Colors.l1)
         }
         this.terminals.T1.scale(0.5);
         this.terminals.T2.scale(0.5);

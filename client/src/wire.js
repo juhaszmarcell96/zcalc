@@ -82,6 +82,15 @@ export class CWire extends IComponent {
             this.h = this.h < 0 ? -this.terminals.T1.h : this.terminals.T1.h;
         }
     }
+    
+    get_terminal_absolute_coords (terminal) {
+        for (const [key, value] of Object.entries(this.terminals)) {
+            if (value == terminal) {
+                return new Coordinates (this.x + value.get_middle_x(), this.y + value.get_middle_y());
+            }
+        }
+        return null;
+    }
 
     get_terminal_at (pos_x, pos_y) {
         for (const [key, value] of Object.entries(this.terminals)) {

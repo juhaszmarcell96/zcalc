@@ -8,12 +8,12 @@ export class CTimeSwitch extends IComponent {
     constructor (x, y) {
         super(x, y, 70 * scale, 100 * scale);
         this.terminals = {
-            T1: new CTerminal(-this.w / 2 + 10 * scale, -this.h / 2          - 10 * scale, Colors.l1),
-            T2: new CTerminal(-this.w / 2 + 35 * scale, -this.h / 2          - 10 * scale, Colors.l3),
-            T3: new CTerminal(-this.w / 2 + 60 * scale, -this.h / 2          - 10 * scale, Colors.n),
-            T4: new CTerminal(-this.w / 2 + 10 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
-            T5: new CTerminal(-this.w / 2 + 35 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
-            T6: new CTerminal(-this.w / 2 + 60 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3)
+            T1: new CTerminal(this, -this.w / 2 + 10 * scale, -this.h / 2          - 10 * scale, Colors.l1),
+            T2: new CTerminal(this, -this.w / 2 + 35 * scale, -this.h / 2          - 10 * scale, Colors.l3),
+            T3: new CTerminal(this, -this.w / 2 + 60 * scale, -this.h / 2          - 10 * scale, Colors.n),
+            T4: new CTerminal(this, -this.w / 2 + 10 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            T5: new CTerminal(this, -this.w / 2 + 35 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            T6: new CTerminal(this, -this.w / 2 + 60 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3)
         }
         this.prev_closed = false;
         this.closed = false;

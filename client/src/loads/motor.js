@@ -8,13 +8,13 @@ export class C3PhaseMotor extends IComponent {
     constructor (x, y) {
         super(x, y, 160 * scale, 80 * scale);
         this.terminals = {
-            U1: new CTerminal(-this.w / 2 +  30 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
-            V1: new CTerminal(-this.w / 2 +  70 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
-            W1: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
-            W2: new CTerminal(-this.w / 2 +  30 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
-            U2: new CTerminal(-this.w / 2 +  70 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
-            V2: new CTerminal(-this.w / 2 + 110 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
-            PE: new CTerminal(-this.w / 2 + -10 * scale, -this.h / 2 +        + 40 * scale, Colors.pe)
+            U1: new CTerminal(this, -this.w / 2 +  30 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
+            V1: new CTerminal(this, -this.w / 2 +  70 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
+            W1: new CTerminal(this, -this.w / 2 + 110 * scale, -this.h / 2 +        - 10 * scale, Colors.l3),
+            W2: new CTerminal(this, -this.w / 2 +  30 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            U2: new CTerminal(this, -this.w / 2 +  70 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            V2: new CTerminal(this, -this.w / 2 + 110 * scale, -this.h / 2 + this.h + 10 * scale, Colors.l3),
+            PE: new CTerminal(this, -this.w / 2 + -10 * scale, -this.h / 2 +        + 40 * scale, Colors.pe)
         }
 
         this.error = false;

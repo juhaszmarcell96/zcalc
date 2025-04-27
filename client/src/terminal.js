@@ -3,7 +3,7 @@
 import { scale, grid_size, TerminalState, Colors } from "./defines";
 
 export class CTerminal {
-    constructor (x, y, fillStyle) {
+    constructor (parent, x, y, fillStyle) {
         this.w = 20 * scale;
         this.h = 20 * scale;
         this.set_middle(x, y);
@@ -12,6 +12,12 @@ export class CTerminal {
         this.fillStyle = fillStyle;
         this.state = TerminalState.None;
         this.nodeId = 0;
+        this.parent = parent;
+    }
+
+    toJSON() {
+        const { parent, ...rest } = this;
+        return rest;
     }
 
     set_node_id (id) {
@@ -76,14 +82,12 @@ export class CTerminal {
     }
 
     is_connected_to (terminal) {
-        // TODO : this will not work, because terminals have relative coordinates -> need reference to parent to get absolute coordinates
+        // TODO : fix coordinates after rotation
         if (!(terminal instanceof CTerminal)) {
             throw new Error("expected a terminal...");
         }
-        if (this.x + this.w < terminal.x) { return false; }
-        if (this.x > terminal.x + terminal.w) { return false; }
-        if (this.y + this.h < terminal.y) { return false; }
-        if (this.y > terminal.y + terminal.h) { return false; }
-        return true;
+        const this_pos = this.parent.get_terminal_absolute_coords(this);
+        const other_pos = terminal.parent.get_terminal_absolute_coords(terminal);
+        return (this_pos.x == other_pos.x) && (this_pos.y == other_pos.y);
     }
 };

@@ -21,10 +21,10 @@ export class CFourPole extends IComponent {
         const terminal_3_y = this.h / 2 +  2 * scale;
 
         this.terminals = {
-            T1: new CTerminal(terminal_0_x, terminal_0_y, Colors.l3),
-            T2: new CTerminal(terminal_1_x, terminal_1_y, Colors.l3),
-            T3: new CTerminal(terminal_2_x, terminal_2_y, Colors.l3),
-            T4: new CTerminal(terminal_3_x, terminal_3_y, Colors.l3)
+            T1: new CTerminal(this, terminal_0_x, terminal_0_y, Colors.l3),
+            T2: new CTerminal(this, terminal_1_x, terminal_1_y, Colors.l3),
+            T3: new CTerminal(this, terminal_2_x, terminal_2_y, Colors.l3),
+            T4: new CTerminal(this, terminal_3_x, terminal_3_y, Colors.l3)
         }
 
         this.img = img

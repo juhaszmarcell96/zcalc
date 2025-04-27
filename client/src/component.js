@@ -137,6 +137,16 @@ export class IComponent {
         return null;
     }
 
+    get_terminal_absolute_coords (terminal) {
+        for (const [key, value] of Object.entries(this.terminals)) {
+            if (value == terminal) {
+                const [ x, y ] = this.local_to_global(value.get_middle_x(), value.get_middle_y());
+                return new Coordinates (x, y);
+            }
+        }
+        return null;
+    }
+
     do_stuff () {
         console.log('ERROR : "do_stuff" function not overloaded');
     }

@@ -8,10 +8,10 @@ export class CSwitch102 extends IComponent {
     constructor (x, y) {
         super(x, y, 90 * scale, 90 * scale);
         this.terminals = {
-            T1: new CTerminal(-this.w / 2          - 10 * scale, -this.h / 2 + 30 * scale, Colors.l3),
-            T2: new CTerminal(-this.w / 2          - 10 * scale, -this.h / 2 + 70 * scale, Colors.l3),
-            T3: new CTerminal(-this.w / 2 + this.w + 10 * scale, -this.h / 2 + 30 * scale, Colors.l3),
-            T4: new CTerminal(-this.w / 2 + this.w + 10 * scale, -this.h / 2 + 70 * scale, Colors.l3)
+            T1: new CTerminal(this, -this.w / 2          - 10 * scale, -this.h / 2 + 30 * scale, Colors.l3),
+            T2: new CTerminal(this, -this.w / 2          - 10 * scale, -this.h / 2 + 70 * scale, Colors.l3),
+            T3: new CTerminal(this, -this.w / 2 + this.w + 10 * scale, -this.h / 2 + 30 * scale, Colors.l3),
+            T4: new CTerminal(this, -this.w / 2 + this.w + 10 * scale, -this.h / 2 + 70 * scale, Colors.l3)
         }
         this.closed = false;
     }

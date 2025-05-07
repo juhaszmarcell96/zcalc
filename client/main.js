@@ -7,6 +7,7 @@ import { CEditArea } from "./src/edit_area";
 var playground = document.getElementById('playground');
 var menuCanvas = document.getElementById('menu');
 var editAreaCanvas = document.getElementById('edit_area');
+var editAreaInput = document.getElementById('editAreaInput');
 
 playground.style.position = 'absolute';
 playground.style.left = 0 + 'px';
@@ -28,7 +29,7 @@ editAreaCanvas.height = 2.0/10.0 * window.innerHeight;
 
 var scene = new CScene(playground);
 var menu = new CMenu(3.0/4.0 * window.innerWidth, 0, menuCanvas, scene);
-var edit_area = new CEditArea(3.0/4.0 * window.innerWidth, 8.0/10.0 * window.innerHeight, editAreaCanvas, scene);
+var edit_area = new CEditArea(3.0/4.0 * window.innerWidth, 8.0/10.0 * window.innerHeight, editAreaCanvas, scene, editAreaInput);
 scene.set_edit_area(edit_area);
 
 scene.redraw();

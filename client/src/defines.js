@@ -67,7 +67,7 @@ export const ComponentType = {
     coupled_inductor: 14
 };
 
-export const Unit = {
+export const UnitPrefix = {
     peta : 0,         // 1e15
     tera : 1,         // 1e12
     giga : 2,         // 1e9
@@ -83,4 +83,40 @@ export const Unit = {
     nano : 12,        // 1e-9
     angstrom : 13,    // 1e-10
     pico : 14         // 1e-12
+};
+
+export const UnitPrefixMap = {
+    "peta": UnitPrefix.peta, "P": UnitPrefix.peta,
+    "tera": UnitPrefix.tera, "T": UnitPrefix.tera,
+    "giga": UnitPrefix.giga, "G": UnitPrefix.giga,
+    "mega": UnitPrefix.mega, "M": UnitPrefix.mega,
+    "kilo": UnitPrefix.kilo, "k": UnitPrefix.kilo,
+    "hecto": UnitPrefix.hecto, "h": UnitPrefix.hecto,
+    "deka": UnitPrefix.deka, "da": UnitPrefix.deka,
+    "base": UnitPrefix.base, "": UnitPrefix.base,
+    "deci": UnitPrefix.deci, "d": UnitPrefix.deci,
+    "centi": UnitPrefix.centi, "c": UnitPrefix.centi,
+    "milli": UnitPrefix.milli, "m": UnitPrefix.milli,
+    "micro": UnitPrefix.micro, "u": UnitPrefix.micro,
+    "nano": UnitPrefix.nano, "n": UnitPrefix.nano,
+    "angstrom": UnitPrefix.angstrom, "a": UnitPrefix.angstrom,
+    "pico": UnitPrefix.pico, "p": UnitPrefix.pico
+};
+
+export const ReverseUnitPrefixMap = {
+    [UnitPrefix.peta]: "P",
+    [UnitPrefix.tera]: "T",
+    [UnitPrefix.giga]: "G",
+    [UnitPrefix.mega]: "M",
+    [UnitPrefix.kilo]: "k",
+    [UnitPrefix.hecto]: "h",
+    [UnitPrefix.deka]: "da",
+    [UnitPrefix.base]: "",
+    [UnitPrefix.deci]: "d",
+    [UnitPrefix.centi]: "c",
+    [UnitPrefix.milli]: "m",
+    [UnitPrefix.micro]: "u",
+    [UnitPrefix.nano]: "n",
+    [UnitPrefix.angstrom]: "a",
+    [UnitPrefix.pico]: "p"
 };

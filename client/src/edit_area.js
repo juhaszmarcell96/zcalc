@@ -50,6 +50,25 @@ export class CEditArea {
                 event.preventDefault();
             }
         });
+        canvas.addEventListener("mousedown", (event) => {
+            if (this.visible) {
+                const x = event.clientX - this.x - this.offset_x;
+                const y = event.clientY - this.y - this.offset_y;
+                if (this.textbox.onMouseDown(x, y)) { event.preventDefault(); }
+            }
+        });
+        canvas.addEventListener("mousemove", (event) => {
+            if (this.visible) {
+                const x = event.clientX - this.x - this.offset_x;
+                const y = event.clientY - this.y - this.offset_y;
+                if (this.textbox.onMouseMove(x, y)) { event.preventDefault(); }
+            }
+        });
+        canvas.addEventListener("mouseup", (event) => {
+            if (this.visible) {
+                if (this.textbox.onMouseUp()) { event.preventDefault(); }
+            }
+        });
     }
 
     populate (properties) {

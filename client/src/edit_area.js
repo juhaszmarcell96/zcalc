@@ -40,15 +40,25 @@ export class CEditArea {
         this.apply_button = new CButton(0, this.canvas.height - button_h - 2 * this.offset_y, content_w, button_h, Colors.green, "apply");
 
         this.visible = false;
+        this.component = null;
 
         canvas.addEventListener('click', (event) => {
             if (this.visible) {
                 const x = event.clientX - this.x - this.offset_x;
                 const y = event.clientY - this.y - this.offset_y;
                 if (this.apply_button.is_inside(x, y)) {
-                    //this.scene.components.push(new CResistor(50 * scale, 200 * scale, this.resistor_img));
+                    try {
+                        const editedText = this.editAreaInput.value;
+                        const property = JSON.parse(editedText);
+                        if (this.component) {
+                            this.editAreaInput.value = this.component.set_property(property);
+                        }
+                    }
+                    catch (error) {
+                        this.editAreaInput.value = "invalid JSON";
+                    }
                     this.visible = false;
-                    this.editAreaInput.value = "";
+                    this.component = null;
                     this.redraw();
                 }
                 event.preventDefault();
@@ -56,9 +66,10 @@ export class CEditArea {
         });
     }
 
-    populate (properties) {
-        console.log(properties);
-        this.editAreaInput.value = JSON.stringify(properties, null, "  ");
+    populate (component) {
+        if (!component) { return; }
+        this.component = component;
+        this.editAreaInput.value = JSON.stringify(this.component.get_property(), null, "  ");
         this.visible = true;
         this.redraw();
     }

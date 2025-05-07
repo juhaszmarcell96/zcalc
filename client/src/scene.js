@@ -149,10 +149,8 @@ export class CScene {
                     this.components[this.components.length - 1 - this.context_component_index].rotate();
                 }
                 else if (this.edit_button.is_inside(x, y)) {
-                    //this.components[this.components.length - 1 - this.context_component_index].rotate();
-                    const property = this.components[this.components.length - 1 - this.context_component_index].get_property();
                     if (this.edit_area) {
-                        this.edit_area.populate(property);
+                        this.edit_area.populate(this.components[this.components.length - 1 - this.context_component_index]);
                     }
                 }
             }
@@ -230,21 +228,19 @@ export class CScene {
 
     to_json () {
         this.calculate_nodes();
-        let json_data = "{";
-        json_data += '"c":[';
+        let json_data = {
+            c: []
+        };
         let index = 0;
         this.components.forEach(component => {
             const serialized = component.serialize(index);
             if (serialized)
             {
-                if (index != 0) { json_data += ','; }
-                json_data += serialized;
+                json_data.c.push(serialized);
                 ++index;
             }
         });
-        json_data += ']';
-        json_data += '}';
-        console.log(json_data);
+        console.log(JSON.stringify(json_data, null, "    "));
     }
 
     set_edit_area (edit_area) {

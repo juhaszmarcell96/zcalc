@@ -151,7 +151,6 @@ export class CScene {
                 else if (this.edit_button.is_inside(x, y)) {
                     //this.components[this.components.length - 1 - this.context_component_index].rotate();
                     const property = this.components[this.components.length - 1 - this.context_component_index].get_property();
-                    console.log("edit");
                     if (this.edit_area) {
                         this.edit_area.populate(property);
                     }

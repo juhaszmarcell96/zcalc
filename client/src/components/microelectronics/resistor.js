@@ -12,7 +12,7 @@ export class CResistor extends CTwoPole {
     }
 
     get_property () {
-        return `{"properties":[{"name":"type","editable":false,"type":"string","value":"resistor"},{"name":"value","editable":true,"type":"number","value":"${this.resistance}"},{"name":"unit","editable":true,"value":"ohm","type":"enum","options":["mega ohm","kilo ohm","ohm","milli ohm"]}]}`
+        return {value:this.resistance, unit:"ohm", prefix:""}
     }
 
     set_property (property) {

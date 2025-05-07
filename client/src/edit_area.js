@@ -2,17 +2,26 @@
 
 import { scale, Colors } from "./defines";
 import { CButton } from "./controls/button";
-import { CTextBox } from "./controls/text_box";
 
 export class CEditArea {
-    constructor (x, y, canvas, scene) {
+    constructor (x, y, canvas, scene, editAreaInput) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
         this.scene = scene;
         this.x = x;
         this.y = y;
 
-        this.offset_y = 0;
+        this.offset_x = 10 * scale;
+        this.offset_y = 10 * scale;
+        const button_h = 40 * scale;
+        const content_w = this.canvas.width - 2 * this.offset_x;
+
+        this.editAreaInput = editAreaInput;
+        this.editAreaInput.style.position = 'absolute';
+        this.editAreaInput.style.left = this.x + this.offset_x + 'px';
+        this.editAreaInput.style.top = this.y + this.offset_y + 'px';
+        this.editAreaInput.style.width = content_w + 'px';
+        this.editAreaInput.style.height = (this.canvas.height - button_h - 4 * this.offset_y) + 'px';
 
         canvas.addEventListener("wheel", (event) => {
             /*
@@ -28,51 +37,28 @@ export class CEditArea {
             event.preventDefault();
         });
 
-        const x_offset = 10 * scale;
-        const y_offset = 10 * scale;
-        const button_w = this.canvas.width - 2 * x_offset;
-        const button_h = 40 * scale;
-        this.apply_button = new CButton(x_offset, this.canvas.height - button_h - y_offset, button_w, button_h, Colors.green, "apply");
-
-        this.textbox = new CTextBox(0, 0, this.w, this.h, Colors.grey, "0123456789 ABC abc %$#! ohm");
+        this.apply_button = new CButton(0, this.canvas.height - button_h - 2 * this.offset_y, content_w, button_h, Colors.green, "apply");
 
         this.visible = false;
 
         canvas.addEventListener('click', (event) => {
             if (this.visible) {
-                const x = event.clientX - this.x;
+                const x = event.clientX - this.x - this.offset_x;
                 const y = event.clientY - this.y - this.offset_y;
                 if (this.apply_button.is_inside(x, y)) {
                     //this.scene.components.push(new CResistor(50 * scale, 200 * scale, this.resistor_img));
                     this.visible = false;
+                    this.editAreaInput.value = "";
                     this.redraw();
                 }
                 event.preventDefault();
-            }
-        });
-        canvas.addEventListener("mousedown", (event) => {
-            if (this.visible) {
-                const x = event.clientX - this.x - this.offset_x;
-                const y = event.clientY - this.y - this.offset_y;
-                if (this.textbox.onMouseDown(x, y)) { event.preventDefault(); }
-            }
-        });
-        canvas.addEventListener("mousemove", (event) => {
-            if (this.visible) {
-                const x = event.clientX - this.x - this.offset_x;
-                const y = event.clientY - this.y - this.offset_y;
-                if (this.textbox.onMouseMove(x, y)) { event.preventDefault(); }
-            }
-        });
-        canvas.addEventListener("mouseup", (event) => {
-            if (this.visible) {
-                if (this.textbox.onMouseUp()) { event.preventDefault(); }
             }
         });
     }
 
     populate (properties) {
         console.log(properties);
+        this.editAreaInput.value = JSON.stringify(properties, null, "  ");
         this.visible = true;
         this.redraw();
     }
@@ -80,10 +66,9 @@ export class CEditArea {
     redraw () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.visible) {
-            this.context.translate(0, this.offset_y);
-            this.textbox.draw(this.context);
+            this.context.translate(this.offset_x, this.offset_y);
             this.apply_button.draw(this.context);
-            this.context.translate(0, -this.offset_y);
+            this.context.translate(-this.offset_x, -this.offset_y);
         }
     }
 };

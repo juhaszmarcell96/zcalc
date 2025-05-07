@@ -1,6 +1,7 @@
 /* Copyright (C) 2025 Marcell Juhasz. Licensed for non-commercial use. See LICENSE. */
 
 import { Colors, scale } from "../defines";
+import { CFont } from "./font";
 
 export class CTextBox {
     constructor (x, y, w, h, fillStyle, text) {
@@ -9,21 +10,26 @@ export class CTextBox {
         this.w = w;
         this.h = h;
         this.fillStyle = fillStyle;
-        this.text = text;
+        this.font = new CFont();
+        this.text = [];
+        for (let i = 0; i < text.length; i++) {
+            this.text.push(this.font.get(text[i]));
+        }
     }
 
     draw (context) {
-        context.beginPath();
+        context.imageSmoothingEnabled = false
+        context.translate(this.x, this.y);
+        context.rect(this.x, this.y, this.w, this.h);
+        context.fillStyle = this.fillStyle;
         context.lineWidth = 2 * scale;
         context.strokeStyle = Colors.black;
-        context.font = '12pt "Courier New"';
-        context.fillStyle = Colors.black;
-        var lines = this.text.split('\n');
-        for (var i = 0; i<lines.length; i++) {
-            context.fillText(lines[i], this.x + this.w / 2 - (lines[i].length / 2) * 9.5 * scale, this.y + (i + 1) * 25 * scale);
-        }
+        context.fill();
         context.stroke();
-        context.closePath();
+        for (var i = 0; i < this.text.length; i++) {
+            this.text[i].draw(context, 6 * i * scale * 2, 0, 5 * scale * 2, 11 * scale * 2);
+        }
+        context.translate(-this.x, -this.y);
     }
 
     is_inside(pos_x, pos_y) {

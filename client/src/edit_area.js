@@ -34,6 +34,8 @@ export class CEditArea {
         const button_h = 40 * scale;
         this.apply_button = new CButton(x_offset, this.canvas.height - button_h - y_offset, button_w, button_h, Colors.green, "apply");
 
+        this.textbox = new CTextBox(0, 0, this.w, this.h, Colors.grey, "0123456789 ABC abc %$#! ohm");
+
         this.visible = false;
 
         canvas.addEventListener('click', (event) => {
@@ -60,6 +62,7 @@ export class CEditArea {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.visible) {
             this.context.translate(0, this.offset_y);
+            this.textbox.draw(this.context);
             this.apply_button.draw(this.context);
             this.context.translate(0, -this.offset_y);
         }

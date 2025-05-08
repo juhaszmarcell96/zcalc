@@ -17,6 +17,47 @@
 #include <zcalc/network_builder.hpp>
 #include <zcalc/json/parser.hpp>
 
+/*
+{
+    "c": [
+        {
+            "i": 0,
+            "t": 0,
+            "n0": 0,
+            "n1": 1,
+            "r": 5,
+            "u": "k"
+        },
+        {
+            "i": 1,
+            "t": 1,
+            "n0": 1,
+            "n1": 2,
+            "c": 0.1,
+            "u": "u"
+        },
+        {
+            "i": 2,
+            "t": 2,
+            "n0": 2,
+            "n1": 3,
+            "l": 10,
+            "u": "m"
+        },
+        {
+            "i": 3,
+            "t": 4,
+            "n0": 3,
+            "n1": 0,
+            "v": 5,
+            "u": "",
+            "p": 0,
+            "f": 5000
+        }
+    ]
+}
+*/
+
 TEST(NetworkJsonTest, VoltageDivider) {
     std::string json_network = R"(
         {

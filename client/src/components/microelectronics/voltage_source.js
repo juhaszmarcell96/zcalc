@@ -79,7 +79,7 @@ export class CVoltageSource extends CTwoPole {
             n0: this.terminals.T1.nodeId,
             n1: this.terminals.T2.nodeId,
             v: this.voltage,
-            u: ReverseUnitPrefixMap[this.prefix],
+            u: this.prefix,
             p: this.phase,
             f: this.frequency
         };

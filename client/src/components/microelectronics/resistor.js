@@ -52,7 +52,7 @@ export class CResistor extends CTwoPole {
             n0: this.terminals.T1.nodeId,
             n1: this.terminals.T2.nodeId,
             r: this.resistance,
-            u: ReverseUnitPrefixMap[this.prefix]
+            u: this.prefix
         };
     }
 };

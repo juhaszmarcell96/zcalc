@@ -52,7 +52,7 @@ export class CInductor extends CTwoPole {
             n0: this.terminals.T1.nodeId,
             n1: this.terminals.T2.nodeId,
             l: this.inductance,
-            u: ReverseUnitPrefixMap[this.prefix]
+            u: this.prefix
         };
     }
 };

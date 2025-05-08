@@ -38,7 +38,10 @@ void Session::read_message() {
         [self = shared_from_this()](boost::beast::error_code ec, std::size_t bytes_transferred) {
             boost::ignore_unused(bytes_transferred);
             if (!ec) {
-                // echo the received message back
+                std::string received = boost::beast::buffers_to_string(self->m_buffer.data());
+                self->m_buffer.consume(self->m_buffer.size()); // Clear buffer
+                std::string response = self->process_message(received);
+                self->m_send_buffer = std::make_shared<std::string>(std::move(response));
                 self->write_message();
             }
             else if (ec == boost::beast::websocket::error::closed) {
@@ -55,11 +58,10 @@ void Session::read_message() {
 void Session::write_message() {
     m_websocket.text(m_websocket.got_text());
     m_websocket.async_write(
-        m_buffer.data(),
+        boost::asio::buffer(*m_send_buffer),
         [self = shared_from_this()](boost::beast::error_code ec, std::size_t bytes_transferred) {
             boost::ignore_unused(bytes_transferred);
             if (!ec) {
-                self->m_buffer.consume(self->m_buffer.size()); // Clear buffer
                 self->read_message(); // Wait for next message
             }
             else {
@@ -67,6 +69,10 @@ void Session::write_message() {
             }
         }
     );
+}
+
+std::string Session::process_message(const std::string& msg) {
+    return msg + " from server";
 }
 
 } /* namespace zcalc */

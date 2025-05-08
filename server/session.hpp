@@ -15,6 +15,7 @@
 #include <boost/beast/websocket.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <memory>
+#include <string>
 
 namespace zcalc {
 
@@ -22,11 +23,13 @@ class Session : public std::enable_shared_from_this<Session> {
 private:
     boost::beast::websocket::stream<boost::asio::ip::tcp::socket> m_websocket;
     boost::beast::flat_buffer m_buffer;
+    std::shared_ptr<std::string> m_send_buffer;
     void read_message();
     void write_message();
 public:
     explicit Session(boost::asio::ip::tcp::socket socket) : m_websocket(std::move(socket)) {}
     void start();
+    std::string process_message(const std::string& msg);
 };
 
 } /* namespace zcalc */

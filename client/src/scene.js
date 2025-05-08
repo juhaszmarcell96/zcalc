@@ -224,11 +224,13 @@ export class CScene {
             node.mark(node_id);
             ++node_id;
         });
+        return nodes.length;
     }
 
     to_json () {
-        this.calculate_nodes();
+        const num_nodes = this.calculate_nodes();
         let json_data = {
+            n: num_nodes,
             c: []
         };
         let index = 0;

@@ -19,6 +19,7 @@
 
 /*
 {
+    "n": 4,
     "c": [
         {
             "i": 0,
@@ -61,30 +62,30 @@
 TEST(NetworkJsonTest, VoltageDivider) {
     std::string json_network = R"(
         {
-            "num_nodes": 3,
-            "components": [
+            "n": 3,
+            "c": [
                 {
-                    "id": 0,
-                    "type": "resistor",
-                    "value": 10,
-                    "node_0": 2,
-                    "node_1": 0
+                    "i": 0,
+                    "t": 0,
+                    "r": 10,
+                    "n0": 2,
+                    "n1": 0
                 },
                 {
-                    "id": 1,
-                    "type": "resistor",
-                    "value": 10,
-                    "node_0": 1,
-                    "node_1": 2
+                    "i": 1,
+                    "t": 0,
+                    "r": 10,
+                    "n0": 1,
+                    "n1": 2
                 },
                 {
-                    "id": 2,
-                    "type": "vsource",
-                    "value": 1,
-                    "frequency": 0,
-                    "phase": 1,
-                    "node_0": 1,
-                    "node_1": 0
+                    "i": 2,
+                    "t": 4,
+                    "v": 1,
+                    "f": 0,
+                    "p": 1,
+                    "n0": 1,
+                    "n1": 0
                 }
             ]
         }

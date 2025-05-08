@@ -25,21 +25,21 @@ static constexpr std::size_t equ_current_offset = 0;
 static constexpr std::size_t equ_voltage_offset = 1;
 
 enum class unit_prefix {
-    peta,
-    tera,
-    giga,
-    mega,
-    kilo,
-    hecto,
-    deka,
-    base,
-    deci,
-    centi,
-    milli,
-    micro,
-    nano,
-    angstrom,
-    pico
+    peta     = 0,      // 1e15
+    tera     = 1,      // 1e12
+    giga     = 2,      // 1e9
+    mega     = 3,      // 1e6
+    kilo     = 4,      // 1e3
+    hecto    = 5,      // 1e2
+    deka     = 6,      // 1e1
+    base     = 7,      // 1e0
+    deci     = 8,      // 1e-1
+    centi    = 9,      // 1e-2
+    milli    = 10,     // 1e-3
+    micro    = 11,     // 1e-6
+    nano     = 12,     // 1e-9
+    angstrom = 13,     // 1e-10
+    pico     = 14      // 1e-12
 };
 
 static inline double get_prefixed_unit_value (double value, unit_prefix prefix) {

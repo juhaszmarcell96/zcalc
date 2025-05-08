@@ -17,30 +17,31 @@ export class CResistor extends CTwoPole {
 
     set_property (property) {
         if (typeof property !== 'object' || property === null) {
-            console.error("Invalid property: not an object");
+            console.error("invalid property: not an object");
             return;
         }
-        // value
-        if ('value' in property) {
-            this.resistance = parseFloat(property.value);
-        }
-        else {
-            return "missing 'value' in property";
-        }
-        // unit
+        // check for errors so that no partial fill happens
+        if (!('value' in property)) { return "missing 'value' in property"; }
         if ('unit' in property) {
-            if (property.unit != "ohm") {
-                return "unit must be 'ohm'";
+            if (property.unit != "ohm" && property.unit != "Ω") {
+                return "unit must be 'ohm' or 'Ω'";
             }
         }
-        // prefix
+        let prefix = this.prefix;
         if ('prefix' in property) {
-            const prefix = UnitPrefixMap[property.prefix];
+            prefix = UnitPrefixMap[property.prefix];
             if (prefix === undefined) {
                 return "invalid prefix";
             }
-            this.prefix = prefix;
         }
+        const resistance = parseFloat(property.value);
+        if (isNaN(resistance)) { return "invalid resistance value"; }
+        if (resistance < 0.0) { return "resistance cannot be negative..."; }
+
+        // error check passed, set parameters
+        this.resistance = resistance;
+        this.prefix = prefix;
+
         return "success"
     }
 
@@ -51,7 +52,7 @@ export class CResistor extends CTwoPole {
             n0: this.terminals.T1.nodeId,
             n1: this.terminals.T2.nodeId,
             r: this.resistance,
-            u: ReverseUnitPrefixMap[this.prefix]
+            u: this.prefix
         };
     }
 };

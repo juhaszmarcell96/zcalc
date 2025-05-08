@@ -1,3 +1,14 @@
+/*
+ * Copyright (C) 2025 Marcell Juhasz
+ *
+ * This software is licensed under a non-commercial license.
+ * Non-commercial use (personal, academic, research) is allowed for free.
+ * Commercial use requires a paid license.
+ * Hosting as a service is prohibited without explicit permission.
+ *
+ * See LICENSE for details or contact marcell.juhasz96@gmail.com.
+ */
+
 #include <gtest/gtest.h>
 
 #include <zcalc/common.hpp>
@@ -6,33 +17,75 @@
 #include <zcalc/network_builder.hpp>
 #include <zcalc/json/parser.hpp>
 
+/*
+{
+    "n": 4,
+    "c": [
+        {
+            "i": 0,
+            "t": 0,
+            "n0": 0,
+            "n1": 1,
+            "r": 5,
+            "u": "k"
+        },
+        {
+            "i": 1,
+            "t": 1,
+            "n0": 1,
+            "n1": 2,
+            "c": 0.1,
+            "u": "u"
+        },
+        {
+            "i": 2,
+            "t": 2,
+            "n0": 2,
+            "n1": 3,
+            "l": 10,
+            "u": "m"
+        },
+        {
+            "i": 3,
+            "t": 4,
+            "n0": 3,
+            "n1": 0,
+            "v": 5,
+            "u": "",
+            "p": 0,
+            "f": 5000
+        }
+    ]
+}
+*/
+
 TEST(NetworkJsonTest, VoltageDivider) {
     std::string json_network = R"(
         {
-            "num_nodes": 3,
-            "components": [
+            "n": 3,
+            "c": [
                 {
-                    "id": 0,
-                    "type": "resistor",
-                    "value": 10,
-                    "node_0": 2,
-                    "node_1": 0
+                    "i": 0,
+                    "t": 0,
+                    "r": 10,
+                    "n0": 2,
+                    "n1": 0
                 },
                 {
-                    "id": 1,
-                    "type": "resistor",
-                    "value": 10,
-                    "node_0": 1,
-                    "node_1": 2
+                    "i": 1,
+                    "t": 0,
+                    "r": 10,
+                    "n0": 1,
+                    "n1": 2
                 },
                 {
-                    "id": 2,
-                    "type": "vsource",
-                    "value": 1,
-                    "frequency": 0,
-                    "phase": 1,
-                    "node_0": 1,
-                    "node_1": 0
+                    "i": 2,
+                    "t": 4,
+                    "v": 1,
+                    "f": 0,
+                    "p": 1,
+                    "n0": 1,
+                    "n1": 0
                 }
             ]
         }

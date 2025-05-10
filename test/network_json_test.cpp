@@ -68,6 +68,7 @@ TEST(NetworkJsonTest, VoltageDivider) {
                     "i": 0,
                     "t": 0,
                     "r": 10,
+                    "u": 7,
                     "n0": 2,
                     "n1": 0
                 },
@@ -75,6 +76,7 @@ TEST(NetworkJsonTest, VoltageDivider) {
                     "i": 1,
                     "t": 0,
                     "r": 10,
+                    "u": 7,
                     "n0": 1,
                     "n1": 2
                 },
@@ -82,6 +84,7 @@ TEST(NetworkJsonTest, VoltageDivider) {
                     "i": 2,
                     "t": 4,
                     "v": 1,
+                    "u": 7,
                     "f": 0,
                     "p": 1,
                     "n0": 1,

@@ -60,7 +60,7 @@ public:
                         const auto node_0 = static_cast<std::size_t>(component.at(key_node_0).as_number()); // TODO : node index check?
                         const auto node_1 = static_cast<std::size_t>(component.at(key_node_1).as_number()); // TODO : node index check?
                         const auto resistance = component.at(key_resistance).as_number(); // TODO : resistance value check?
-                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_index).as_number())); // TODO : prefix check or just go with base?
+                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_prefix).as_number())); // TODO : prefix check or just go with base?
                         network.add_resistor(std::to_string(id), get_prefixed_unit_value(resistance, prefix), std::to_string(node_0), std::to_string(node_1));
                         break;
                     }
@@ -68,7 +68,7 @@ public:
                         const auto node_0 = static_cast<std::size_t>(component.at(key_node_0).as_number()); // TODO : node index check?
                         const auto node_1 = static_cast<std::size_t>(component.at(key_node_1).as_number()); // TODO : node index check?
                         const auto capacitance = component.at(key_capacitance).as_number(); // TODO : capacitance value check?
-                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_index).as_number())); // TODO : prefix check or just go with base?
+                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_prefix).as_number())); // TODO : prefix check or just go with base?
                         network.add_capacitor(std::to_string(id), get_prefixed_unit_value(capacitance, prefix), std::to_string(node_0), std::to_string(node_1));
                         break;
                     }
@@ -76,7 +76,7 @@ public:
                         const auto node_0 = static_cast<std::size_t>(component.at(key_node_0).as_number()); // TODO : node index check?
                         const auto node_1 = static_cast<std::size_t>(component.at(key_node_1).as_number()); // TODO : node index check?
                         const auto inductance = component.at(key_inductance).as_number(); // TODO : inductance value check?
-                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_index).as_number())); // TODO : prefix check or just go with base?
+                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_prefix).as_number())); // TODO : prefix check or just go with base?
                         network.add_inductor(std::to_string(id), get_prefixed_unit_value(inductance, prefix), std::to_string(node_0), std::to_string(node_1));
                         break;
                     }
@@ -86,7 +86,7 @@ public:
                         const auto voltage = component.at(key_voltage).as_number();
                         const auto frequency = component.at(key_frequency).as_number();
                         // TODO : phase
-                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_index).as_number())); // TODO : prefix check or just go with base?
+                        const auto prefix = static_cast<unit_prefix>(static_cast<int>(component.at(key_prefix).as_number())); // TODO : prefix check or just go with base?
                         network.add_voltage_source (std::to_string(id), get_prefixed_unit_value(voltage, prefix), math::Frequency::create_from_rad_per_sec(frequency), std::to_string(node_0), std::to_string(node_1));
                         break;
                     }

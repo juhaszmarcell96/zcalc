@@ -14,8 +14,14 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/io_context.hpp>
 #include <iostream>
+#include <sstream>
 
 #include "session.hpp"
+
+#include <zcalc/network.hpp>
+#include <zcalc/network_calculator.hpp>
+#include <zcalc/network_builder.hpp>
+#include <zcalc/json/parser.hpp>
 
 namespace zcalc {
 
@@ -71,8 +77,45 @@ void Session::write_message() {
     );
 }
 
+// send from client: {"n":3,"c":[{"i":0,"t":0,"r":10,"u":7,"n0":2,"n1":0},{"i":1,"t":0,"r":10,"u":7,"n0":1,"n1":2},{"i":2,"t":4,"v":1,"u":7,"f":0,"p":1,"n0":1,"n1":0}]}
 std::string Session::process_message(const std::string& msg) {
-    return msg + " from server";
+    zcalc::json::JsonParser parser { msg };
+    try {
+        const auto json = parser.parse();
+        auto network = zcalc::NetworkBuilder::from_json(json);
+        if (!network.has_value()) {
+            return "failed to parse network";
+        }
+        const auto results = zcalc::NetworkCalculator::compute(network.value());
+        zcalc::json::Array responses;
+        for (const auto& [key, val] : results) {
+            zcalc::json::Array phasors;
+            for (const auto& phasor : val) {
+                phasors.push_back(
+                    zcalc::json::Object{
+                        {"m", phasor.get_magnitude()},
+                        {"p", phasor.get_phase().as_radians()},
+                        {"f", phasor.get_frequency().as_rad_per_sec()}
+                    }
+                );
+            }
+            responses.push_back(
+                zcalc::json::Object{
+                    {"n", key},
+                    {"r", std::move(phasors)}
+                }
+            );
+        }
+        std::stringstream ss;
+        ss << responses;
+        return ss.str();
+    }
+    catch (const std::runtime_error& e) {
+        return e.what();
+    }
+    catch (...) {
+        return "unknown error";
+    }
 }
 
 } /* namespace zcalc */
